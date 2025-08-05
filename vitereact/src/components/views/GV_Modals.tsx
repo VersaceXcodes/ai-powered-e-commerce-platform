@@ -19,7 +19,7 @@ const GV_Modals: React.FC = () => {
   const modal_payload = useAppStore(state => (state as any).modal_payload);
   const set_error = useAppStore(state => state.set_error);
   const clear_error = useAppStore(state => state.clear_error);
-  const set_global_loading = useAppStore(state => state.set_global_loading);
+
   const clear_global_loading = useAppStore(state => state.clear_global_loading);
 
   // These are mapped from the globalState architecture
@@ -343,9 +343,9 @@ const GV_Modals: React.FC = () => {
                           deleteCartItemMutation.mutate(localModalPayload.cart_item_id);
                         }
                       }}
-                      disabled={deleteCartItemMutation.isLoading}
+                      disabled={deleteCartItemMutation.isPending}
                     >
-                      {deleteCartItemMutation.isLoading ? "Removing..." : "Remove"}
+                      {deleteCartItemMutation.isPending ? "Removing..." : "Remove"}
                     </button>
                   </div>
                 </div>
@@ -376,9 +376,9 @@ const GV_Modals: React.FC = () => {
                           clearCartMutation.mutate(localModalPayload.cart_id);
                         }
                       }}
-                      disabled={clearCartMutation.isLoading}
+                      disabled={clearCartMutation.isPending}
                     >
-                      {clearCartMutation.isLoading ? "Clearing..." : "Clear Cart"}
+                      {clearCartMutation.isPending ? "Clearing..." : "Clear Cart"}
                     </button>
                   </div>
                 </div>
@@ -409,9 +409,9 @@ const GV_Modals: React.FC = () => {
                           deleteWishlistMutation.mutate(localModalPayload?.wishlist_id);
                         }
                       }}
-                      disabled={deleteWishlistMutation.isLoading}
+                      disabled={deleteWishlistMutation.isPending}
                     >
-                      {deleteWishlistMutation.isLoading ? "Deleting..." : "Delete"}
+                      {deleteWishlistMutation.isPending ? "Deleting..." : "Delete"}
                     </button>
                   </div>
                 </div>
@@ -453,12 +453,12 @@ const GV_Modals: React.FC = () => {
                       className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-400"
                       aria-label={localActiveModal === "edit_wishlist_name" ? "Save changes" : "Create wishlist"}
                       disabled={
-                        (localActiveModal === "edit_wishlist_name" && updateWishlistMutation.isLoading) ||
-                        (localActiveModal === "create_wishlist" && createWishlistMutation.isLoading)
+                        (localActiveModal === "edit_wishlist_name" && updateWishlistMutation.isPending) ||
+                        (localActiveModal === "create_wishlist" && createWishlistMutation.isPending)
                       }
                     >
-                      {(localActiveModal === "create_wishlist" && createWishlistMutation.isLoading) ||
-                        (localActiveModal === "edit_wishlist_name" && updateWishlistMutation.isLoading)
+                      {(localActiveModal === "create_wishlist" && createWishlistMutation.isPending) ||
+                        (localActiveModal === "edit_wishlist_name" && updateWishlistMutation.isPending)
                         ? (localActiveModal === "create_wishlist" ? "Creating..." : "Saving...")
                         : (localActiveModal === "create_wishlist" ? "Create" : "Save")}
                     </button>

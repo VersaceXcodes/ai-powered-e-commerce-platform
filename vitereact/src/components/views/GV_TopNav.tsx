@@ -12,17 +12,7 @@ interface SearchSuggestion {
   price: number;
 }
 
-interface User {
-  user_id: string;
-  name: string;
-  email: string;
-  password_hash?: string;
-  role: 'customer' | 'vendor' | 'admin';
-  profile_image_url: string | null;
-  is_blocked: boolean;
-  created_at: string;
-  updated_at: string;
-}
+
 
 const API_BASE = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}`;
 
@@ -30,7 +20,7 @@ const API_BASE = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
 const fetchSearchSuggestions = async ({
   queryKey
 }: {
-  queryKey: [string, string, string | undefined];
+  queryKey: readonly [string, string, string | undefined];
 }) => {
   const [_key, searchQuery, token] = queryKey;
   if (!searchQuery || searchQuery.trim() === '') return [];
@@ -66,7 +56,7 @@ const GV_TopNav: React.FC = () => {
   // -- Zustand: Only individual selectors!
   const current_user = useAppStore(state => state.authentication_state.current_user);
   const is_authenticated = useAppStore(state => state.authentication_state.authentication_status.is_authenticated);
-  const is_auth_loading = useAppStore(state => state.authentication_state.authentication_status.is_loading);
+
   const auth_token = useAppStore(state => state.authentication_state.auth_token);
 
   const cart_items = useAppStore(state => state.cart_state.items);
@@ -78,7 +68,7 @@ const GV_TopNav: React.FC = () => {
   const logout_user = useAppStore(state => state.logout_user);
 
   // Modals/overlays - open trigger logic is up to global state, here we just call events
-  const set_selected_wishlist_id = useAppStore(state => state.set_selected_wishlist_id);
+
 
   // --- Local State ---
   const [search_input, setSearchInput] = useState(global_search_query || '');
@@ -90,8 +80,7 @@ const GV_TopNav: React.FC = () => {
 
   // --- Navigation ---
   const navigate = useNavigate();
-  const location = useLocation();
-  const queryClient = useQueryClient();
+
 
   // --- Compute badge counts ---
   const cart_items_count = cart_items ? cart_items.reduce((acc, item) => acc + (item.quantity || 0), 0) : 0;
@@ -103,9 +92,7 @@ const GV_TopNav: React.FC = () => {
   const {
     data: searchSuggestions,
     isLoading: isLoadingSuggestions,
-    isError: isErrorSuggestions,
     refetch: fetchSuggestions,
-    error: fetchSuggestionsError,
   } = useQuery<SearchSuggestion[], Error>({
     queryKey: ['search_suggestions', search_input, auth_token],
     queryFn: fetchSearchSuggestions,
@@ -153,7 +140,8 @@ const GV_TopNav: React.FC = () => {
 
   // Update dropdownOn on focus/blur
   useEffect(() => {
-    if (dropdownOpen && !(searchSuggestions?.length || search_suggestions_store.length)) {
+    const suggestions = searchSuggestions as SearchSuggestion[] | undefined;
+    if (dropdownOpen && !(suggestions?.length || search_suggestions_store.length)) {
       setDropdownOpen(false);
     }
     // eslint-disable-next-line

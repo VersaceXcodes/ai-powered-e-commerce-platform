@@ -1,26 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useAppStore } from "@/store/main";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
-// Types (from store)
-type NotificationEntity = ReturnType<
-  typeof useAppStore
-> extends { notification_state: { notifications: infer N } }
-  ? N extends Array<infer Item>
-    ? Item
-    : never
-  : never;
-
-interface NotificationListResponse {
-  notifications: NotificationEntity[];
-  total: number;
-}
-
-interface NotificationResponse {
-  notification: NotificationEntity;
-}
+import { Notification, NotificationListResponse, NotificationResponse } from "@schema";
 
 const API_BASE = `${import.meta.env.VITE_API_BASE_URL || "http://localhost:3000"}`;
 
@@ -63,13 +47,7 @@ const GV_NotificationCenter: React.FC = () => {
   const [panelError, setPanelError] = useState<string | null>(null);
 
   // --- React Query: Fetch notifications ---
-  const {
-    data: notifQuery,
-    isLoading,
-    isFetching,
-    isError,
-    refetch,
-  } = useQuery<NotificationListResponse, Error>({
+  const notificationsQuery = useQuery<NotificationListResponse, Error>({
     queryKey: [
       "notifications",
       currentUser?.user_id,
@@ -94,14 +72,23 @@ const GV_NotificationCenter: React.FC = () => {
       return resp.data;
     },
     enabled: !!currentUser && !!authToken && show, // Only fetch when open and logged in
-    onSuccess: (data) => {
-      // Sync to store (in case!)
-      setNotificationState({ notifications: data.notifications });
-    },
-    onError: (err) => setPanelError(err.message),
     staleTime: 2 * 60 * 1000,
     refetchOnWindowFocus: true,
   });
+
+  // Sync data to store when query succeeds
+  useEffect(() => {
+    if (notificationsQuery.data?.notifications) {
+      setNotificationState({ notifications: notificationsQuery.data.notifications });
+    }
+  }, [notificationsQuery.data, setNotificationState]);
+
+  // Handle query errors
+  useEffect(() => {
+    if (notificationsQuery.error) {
+      setPanelError(notificationsQuery.error.message);
+    }
+  }, [notificationsQuery.error]);
 
   // --- Mark as read mutation ---
   const markAsReadMutation = useMutation<
@@ -150,43 +137,12 @@ const GV_NotificationCenter: React.FC = () => {
     }
   };
 
-  // --- Open/Link Notification Target ---
-  const handleNotifClick = (n: NotificationEntity) => {
-    // Mark as read if not already
-    if (!n.is_read) {
-      markAsReadMutation.mutate(n.notification_id);
-    }
-    // Determine route to go based on type/entity
-    if (n.related_entity_type && n.related_entity_id) {
-      let href = "#";
-      switch (n.related_entity_type) {
-        case "order":
-        case "orders":
-          href = `/orders/${n.related_entity_id}`;
-          break;
-        case "product":
-        case "products":
-          href = `/products/${n.related_entity_id}`;
-          break;
-        case "review":
-        case "reviews":
-          href = `/admin/reviews`; // Generic, no direct review page
-          break;
-        case "bulk_import":
-          href = `/admin/products`; // No direct route; fallback
-          break;
-        default:
-          href = "#";
-      }
-      // Use <Link> rendering below
-      window.location.href = href;
-    }
-  };
+
 
   // --- Notification list to display ---
-  const notifList = notifQuery?.notifications ?? storeNotifs;
+  const notifList = notificationsQuery.data?.notifications ?? storeNotifs;
   const unreadCount =
-    typeof notifQuery?.notifications !== "undefined"
+    typeof notificationsQuery.data?.notifications !== "undefined"
       ? notifList.filter((n) => !n.is_read).length
       : storeUnread;
 
@@ -445,7 +401,7 @@ const GV_NotificationCenter: React.FC = () => {
                   </div>
                 ) : (
                   <ul className="divide-y divide-gray-100 min-h-[160px]">
-                    {notifList.map((n, idx) => {
+                    {notifList.map((n) => {
                       // Type icon map
                       let meta =
                         typeMeta[n.type as keyof typeof typeMeta] ??
@@ -465,7 +421,7 @@ const GV_NotificationCenter: React.FC = () => {
                       });
 
                       // Route for context/Link wrapping
-                      let href = null;
+                      let href: string | null = null;
                       if (n.related_entity_type && n.related_entity_id) {
                         switch (n.related_entity_type) {
                           case "order":
@@ -478,10 +434,10 @@ const GV_NotificationCenter: React.FC = () => {
                             break;
                           case "review":
                           case "reviews":
-                            href = `/admin/reviews`;
+                            href = "/admin/reviews";
                             break;
                           case "bulk_import":
-                            href = `/admin/products`;
+                            href = "/admin/products";
                             break;
                           default:
                             href = null;
@@ -525,7 +481,7 @@ const GV_NotificationCenter: React.FC = () => {
                           {!n.is_read && (
                             <button
                               className="ml-2 px-2 py-1 rounded text-xs font-medium text-blue-600 hover:bg-blue-100 transition"
-                              disabled={markAsReadMutation.isLoading}
+                              disabled={markAsReadMutation.isPending}
                               aria-label="Mark as read"
                               tabIndex={0}
                               onClick={(e) => {
@@ -548,7 +504,7 @@ const GV_NotificationCenter: React.FC = () => {
                               tabIndex={0}
                               aria-label={safeContent}
                               className="no-underline"
-                              onClick={(e) => {
+                              onClick={() => {
                                 if (!n.is_read) markAsReadMutation.mutate(n.notification_id);
                               }}
                             >

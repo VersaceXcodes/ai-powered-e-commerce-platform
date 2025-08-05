@@ -863,3 +863,73 @@ export type SearchTerm = z.infer<typeof searchTermSchema>;
 export type CreateSearchTermInput = z.infer<typeof createSearchTermInputSchema>;
 export type UpdateSearchTermInput = z.infer<typeof updateSearchTermInputSchema>;
 export type SearchSearchTermInput = z.infer<typeof searchSearchTermInputSchema>;
+
+// Response schemas for API endpoints
+export const notificationListResponseSchema = z.object({
+  notifications: z.array(notificationSchema),
+  total: z.number()
+});
+
+export const orderListResponseSchema = z.object({
+  orders: z.array(orderSchema),
+  total: z.number()
+});
+
+export const productReviewListResponseSchema = z.object({
+  product_reviews: z.array(productReviewSchema),
+  total: z.number()
+});
+
+export const userListResponseSchema = z.object({
+  users: z.array(userSchema),
+  total: z.number()
+});
+
+export const productListResponseSchema = z.object({
+  products: z.array(productSchema),
+  total: z.number()
+});
+
+export const categoryListResponseSchema = z.object({
+  categories: z.array(categorySchema)
+});
+
+export const productImageListResponseSchema = z.object({
+  product_images: z.array(productImageSchema)
+});
+
+export const productCategoryListResponseSchema = z.object({
+  product_categories: z.array(productCategorySchema)
+});
+
+export const vendorProductListResponseSchema = z.object({
+  vendor_products: z.array(productSchema),
+  total: z.number()
+});
+
+export const ordersListResponseSchema = z.object({
+  orders: z.array(orderSchema),
+  total: z.number()
+});
+
+export const notificationResponseSchema = notificationSchema;
+
+export const searchSuggestionSchema = z.object({
+  product_id: z.string(),
+  name: z.string(),
+  price: z.number(),
+  image_url: z.string().nullable()
+});
+
+export type NotificationListResponse = z.infer<typeof notificationListResponseSchema>;
+export type OrderListResponse = z.infer<typeof orderListResponseSchema>;
+export type ProductReviewListResponse = z.infer<typeof productReviewListResponseSchema>;
+export type UserListResponse = z.infer<typeof userListResponseSchema>;
+export type ProductListResponse = z.infer<typeof productListResponseSchema>;
+export type CategoryListResponse = z.infer<typeof categoryListResponseSchema>;
+export type ProductImageListResponse = z.infer<typeof productImageListResponseSchema>;
+export type ProductCategoryListResponse = z.infer<typeof productCategoryListResponseSchema>;
+export type VendorProductListResponse = z.infer<typeof vendorProductListResponseSchema>;
+export type OrdersListResponse = z.infer<typeof ordersListResponseSchema>;
+export type NotificationResponse = z.infer<typeof notificationResponseSchema>;
+export type SearchSuggestion = z.infer<typeof searchSuggestionSchema>;
