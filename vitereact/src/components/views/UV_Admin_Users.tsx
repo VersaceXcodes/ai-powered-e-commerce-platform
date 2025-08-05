@@ -3,7 +3,7 @@ import axios from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAppStore } from "@/store/main";
 import { User } from "@schema"; // type, not used for runtime validation
-import { Link } from "react-router-dom";
+
 
 // Constants
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
@@ -111,13 +111,6 @@ const UV_Admin_Users: React.FC = () => {
     placeholderData: (previousData) => previousData,
     retry: 1,
     enabled: !!authToken,
-    onError: (err: any) => {
-      setTableError(
-        typeof err?.response?.data?.message === "string"
-          ? err.response.data.message
-          : "Failed to load users."
-      );
-    },
   });
 
   // --- Modal: Load selected user inline quickview ---
@@ -735,10 +728,10 @@ const UV_Admin_Users: React.FC = () => {
                   <button
                     className="bg-red-700 text-white px-3 py-1 rounded hover:bg-red-800"
                     onClick={() => blockUserMutation.mutate({ user_id: pendingUserAction.user_id, is_blocked: true })}
-                    disabled={blockUserMutation.isLoading}
+                    disabled={blockUserMutation.isPending}
                     tabIndex={0}
                   >
-                    {blockUserMutation.isLoading ? "Blocking..." : "Confirm"}
+                    {blockUserMutation.isPending ? "Blocking..." : "Confirm"}
                   </button>
                 </div>
               </>
@@ -757,10 +750,10 @@ const UV_Admin_Users: React.FC = () => {
                   <button
                     className="bg-green-700 text-white px-3 py-1 rounded hover:bg-green-800"
                     onClick={() => blockUserMutation.mutate({ user_id: pendingUserAction.user_id, is_blocked: false })}
-                    disabled={blockUserMutation.isLoading}
+                    disabled={blockUserMutation.isPending}
                     tabIndex={0}
                   >
-                    {blockUserMutation.isLoading ? "Unblocking..." : "Confirm"}
+                    {blockUserMutation.isPending ? "Unblocking..." : "Confirm"}
                   </button>
                 </div>
               </>
@@ -779,10 +772,10 @@ const UV_Admin_Users: React.FC = () => {
                   <button
                     className="bg-blue-700 text-white px-3 py-1 rounded hover:bg-blue-800"
                     onClick={() => changeRoleMutation.mutate({ user_id: pendingUserAction.user_id, newRole: pendingUserAction.newRole! })}
-                    disabled={changeRoleMutation.isLoading}
+                    disabled={changeRoleMutation.isPending}
                     tabIndex={0}
                   >
-                    {changeRoleMutation.isLoading ? "Updating..." : "Confirm"}
+                    {changeRoleMutation.isPending ? "Updating..." : "Confirm"}
                   </button>
                 </div>
               </>

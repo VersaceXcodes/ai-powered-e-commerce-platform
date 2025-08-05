@@ -588,7 +588,7 @@ const UV_Admin_Orders: React.FC = () => {
                                 // delivered is the final status, no next status
                                 handleUpdateStatus(order.order_id, nextStatus);
                               }}
-                              disabled={updateOrderStatusMutation.isLoading}
+                              disabled={updateOrderStatusMutation.isPending}
                             >
                               <svg xmlns="http://www.w3.org/2000/svg" className="inline h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                             </button>
@@ -604,7 +604,7 @@ const UV_Admin_Orders: React.FC = () => {
                                 e.stopPropagation();
                                 handleUpdateStatus(order.order_id, "cancelled");
                               }}
-                              disabled={updateOrderStatusMutation.isLoading}
+                              disabled={updateOrderStatusMutation.isPending}
                             >
                               <svg xmlns="http://www.w3.org/2000/svg" className="inline h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                             </button>
@@ -619,7 +619,7 @@ const UV_Admin_Orders: React.FC = () => {
                               e.stopPropagation();
                               handleDeleteOrder(order.order_id);
                             }}
-                            disabled={deleteOrderMutation.isLoading}
+                            disabled={deleteOrderMutation.isPending}
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" className="inline h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-1 12a2 2 0 01-2 2H8a2 2 0 01-2-2L5 7m5-4h4a2 2 0 012 2v2H7V5a2 2 0 012-2zm0 0V3a1 1 0 011-1h2a1 1 0 011 1v2" /></svg>
                           </button>

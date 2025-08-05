@@ -3,7 +3,7 @@ import { useAppStore } from "@/store/main";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { z } from "zod";
-import { Link } from "react-router-dom";
+
 
 // --- TYPE IMPORTS (from Zod schemas) ---
 import {
@@ -53,7 +53,6 @@ const API_BASE = `${import.meta.env.VITE_API_BASE_URL || "http://localhost:3000"
 const UV_Admin_Categories: React.FC = () => {
   // --- Zustand GLOBAL AUTH STATE (individual selectors) ---
   const authToken = useAppStore((state) => state.authentication_state.auth_token);
-  const currentUser = useAppStore((state) => state.authentication_state.current_user);
 
   // --- Local State ---
   const [selected_category_id, setSelectedCategoryId] = useState<string | null>(null);
@@ -80,8 +79,6 @@ const UV_Admin_Categories: React.FC = () => {
     data: categoriesData,
     isLoading: isLoadingCategories,
     isError: isCategoriesError,
-    error: categoriesError,
-    refetch: refetchCategories,
   } = useQuery<Category[], Error>({
     queryKey: ["categories"],
     queryFn: async () => {
@@ -197,24 +194,6 @@ const UV_Admin_Categories: React.FC = () => {
         error?.response?.data?.message ||
           "This category cannot be deleted (it may still have assigned products or child categories)."
       );
-    },
-  });
-
-  // --- ASSIGN PRODUCT TO CATEGORY
-  const assignProductMutation = useMutation({
-    mutationFn: async ({ product_id, category_id }: { product_id: string; category_id: string }) => {
-      await axios.post(
-        `${API_BASE}/products/${product_id}/categories`,
-        { category_id },
-        { headers: { Authorization: `Bearer ${authToken}` } }
-      );
-    },
-    onSuccess: () => {
-      setSuccessMessage("Product assigned to category.");
-      refetchProducts();
-    },
-    onError: (error: any) => {
-      setErrorMessage(error?.response?.data?.message || "Could not assign product.");
     },
   });
 
@@ -542,14 +521,14 @@ const UV_Admin_Categories: React.FC = () => {
                     type="submit"
                     className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:opacity-60"
                     disabled={
-                      createCategoryMutation.isLoading || editCategoryMutation.isLoading
+                      createCategoryMutation.isPending || editCategoryMutation.isPending
                     }
                   >
                     {show_form_modal === "add"
-                      ? createCategoryMutation.isLoading
+                      ? createCategoryMutation.isPending
                         ? "Creating..."
                         : "Create"
-                      : editCategoryMutation.isLoading
+                      : editCategoryMutation.isPending
                       ? "Saving..."
                       : "Save"}
                   </button>
@@ -585,9 +564,9 @@ const UV_Admin_Categories: React.FC = () => {
                   onClick={() => {
                     deleteCategoryMutation.mutate(pending_delete_category_id);
                   }}
-                  disabled={deleteCategoryMutation.isLoading}
+                  disabled={deleteCategoryMutation.isPending}
                 >
-                  {deleteCategoryMutation.isLoading ? "Deleting..." : "Delete"}
+                  {deleteCategoryMutation.isPending ? "Deleting..." : "Delete"}
                 </button>
               </div>
             </div>

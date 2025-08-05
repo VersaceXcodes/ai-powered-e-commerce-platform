@@ -390,10 +390,11 @@ const UV_Admin_Reviews: React.FC = () => {
                     : "visible"
                 }
                 onChange={(e) => {
-                  handleFilterChange(
-                    "is_hidden",
-                    e.target.value === "" ? undefined : e.target.value === "hidden"
-                  );
+                  if (e.target.value === "") {
+                    setTableFilters(prev => ({ ...prev, is_hidden: undefined }));
+                  } else {
+                    handleFilterChange("is_hidden", e.target.value === "hidden");
+                  }
                 }}
                 className="border px-2 py-2 rounded w-32 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                 aria-label="Filter by visibility"
@@ -652,7 +653,7 @@ const UV_Admin_Reviews: React.FC = () => {
                             : "bg-red-600 border-red-700 text-white hover:bg-red-700"
                         } transition disabled:opacity-50`}
                         disabled={
-                          hideUnhideReviewMutation.isLoading &&
+                          hideUnhideReviewMutation.isPending &&
                           selectedReviewId === review.review_id
                         }
                         aria-label={review.is_hidden ? "Unhide review" : "Hide review"}
@@ -666,7 +667,7 @@ const UV_Admin_Reviews: React.FC = () => {
                           });
                         }}
                       >
-                        {hideUnhideReviewMutation.isLoading &&
+                        {hideUnhideReviewMutation.isPending &&
                         selectedReviewId === review.review_id ? (
                           <svg
                             className="animate-spin h-4 w-4 mr-1"

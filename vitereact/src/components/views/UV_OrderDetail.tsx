@@ -430,9 +430,9 @@ const UV_OrderDetail: React.FC = () => {
               aria-label="Cancel Order"
               onClick={handleCancelClick}
               ref={cancelButtonRef}
-              disabled={cancelOrderMutation.isLoading}
+              disabled={cancelOrderMutation.isPending}
             >
-              {cancelOrderMutation.isLoading ? (
+              {cancelOrderMutation.isPending ? (
                 <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
                   fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10"
@@ -482,10 +482,10 @@ const UV_OrderDetail: React.FC = () => {
                   className="px-4 py-2 text-sm font-medium rounded border border-red-700 bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400"
                   onClick={handleConfirmCancel}
                   aria-label="Confirm cancel order"
-                  disabled={cancelOrderMutation.isLoading}
+                  disabled={cancelOrderMutation.isPending}
                   tabIndex={0}
                 >
-                  {cancelOrderMutation.isLoading ? "Cancelling..." : "Confirm Cancel"}
+                  {cancelOrderMutation.isPending ? "Cancelling..." : "Confirm Cancel"}
                 </button>
               </div>
             </div>

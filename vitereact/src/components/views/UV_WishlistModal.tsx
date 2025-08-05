@@ -109,7 +109,7 @@ const UV_WishlistModal: React.FC = () => {
   useEffect(() => {
     if (!currentUser || !authToken) return;
     // Only re-fetch if not loaded by WebSocket
-    queryClient.invalidateQueries(['wishlists_for_user', currentUser.user_id]);
+    queryClient.invalidateQueries({ queryKey: ['wishlists_for_user', currentUser.user_id] });
     // eslint-disable-next-line
   }, [currentUser?.user_id]);
 
@@ -353,8 +353,8 @@ const UV_WishlistModal: React.FC = () => {
   };
 
   // --- RENDER ---
-  const isLoading = isWishlistsLoading || createWishlistMutation.isLoading || renameWishlistMutation.isLoading ||
-    deleteWishlistMutation.isLoading || removeProductMutation.isLoading || addToCartMutation.isLoading || moveProductMutation.isLoading;
+  const isLoading = isWishlistsLoading || createWishlistMutation.isPending || renameWishlistMutation.isPending ||
+    deleteWishlistMutation.isPending || removeProductMutation.isPending || addToCartMutation.isPending || moveProductMutation.isPending;
 
   return (
     <>
@@ -503,7 +503,7 @@ const UV_WishlistModal: React.FC = () => {
                           onClick={() => handleAddToCart(p)}
                           className="bg-blue-600 hover:bg-blue-700 text-white rounded px-3 py-1 text-xs font-semibold"
                           tabIndex={0}
-                          disabled={addToCartMutation.isLoading}
+                          disabled={addToCartMutation.isPending}
                         >
                           Add to Cart
                         </button>
@@ -575,10 +575,10 @@ const UV_WishlistModal: React.FC = () => {
                     }
                     <button
                       type="submit"
-                      disabled={createWishlistMutation.isLoading}
+                      disabled={createWishlistMutation.isPending}
                       className="bg-blue-600 hover:bg-blue-700 text-white rounded px-4 py-2 font-semibold"
                     >
-                      {createWishlistMutation.isLoading ? "Creating..." : "Create"}
+                      {createWishlistMutation.isPending ? "Creating..." : "Create"}
                     </button>
                   </form>
                 </div>
@@ -616,10 +616,10 @@ const UV_WishlistModal: React.FC = () => {
                     }
                     <button
                       type="submit"
-                      disabled={renameWishlistMutation.isLoading}
+                      disabled={renameWishlistMutation.isPending}
                       className="bg-blue-600 hover:bg-blue-700 text-white rounded px-4 py-2 font-semibold"
                     >
-                      {renameWishlistMutation.isLoading ? "Renaming..." : "Save"}
+                      {renameWishlistMutation.isPending ? "Renaming..." : "Save"}
                     </button>
                   </form>
                 </div>

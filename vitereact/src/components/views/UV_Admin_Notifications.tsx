@@ -166,12 +166,9 @@ const UV_Admin_Notifications: React.FC = () => {
   }, [realtimeNotifications, realtimeUnreadCount]);
   
   // ---------- FILTERED LIST -------------
-  let notificationsToShow: Notification[] = [];
-  if (notifData && 'notifications' in notifData && Array.isArray(notifData.notifications)) {
-    const filteredNotifs = showUnreadOnly
-      ? notifData.notifications
-      : notifData.notifications.filter(n => !n.is_read);
-  }
+  const notificationsToShow = notifData && 'notifications' in notifData && Array.isArray(notifData.notifications) 
+    ? notifData.notifications 
+    : [];
 
   // --------- PAGING/SHOW MORE ------------
   const SLICE_SIZE = 25;
@@ -360,7 +357,7 @@ const UV_Admin_Notifications: React.FC = () => {
                               : <span>{notif.content}</span>
                             }
                             <div className="text-xs text-gray-400 mt-1">
-                              {formatDateTime(notif.created_at)}
+                              {formatDateTime(typeof notif.created_at === 'string' ? notif.created_at : notif.created_at.toISOString())}
                             </div>
                           </div>
                         </div>

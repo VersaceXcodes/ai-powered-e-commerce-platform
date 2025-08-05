@@ -232,7 +232,7 @@ const UV_Checkout: React.FC = () => {
     } catch {/* onError will be called */}
   };
 
-  const isSubmitting = orderStatus === 'submitting' || submitOrderMutation.isLoading;
+  const isSubmitting = orderStatus === 'submitting' || submitOrderMutation.isPending;
 
   // --- RENDER ---
   return (

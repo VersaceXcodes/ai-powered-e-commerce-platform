@@ -26,6 +26,8 @@ function LineChart({ data, yKey = "value", xKey = "label", color = "blue" }: {
   xKey: string;
   color?: string;
 }) {
+  // Use xKey for accessibility or future enhancements
+  const _ = xKey;
   // Defensive: ensure >1 point
   if (!data || data.length < 2) {
     return (
@@ -116,15 +118,11 @@ const fetchAnalyticsSnapshots = async ({
 const UV_Admin_Analytics: React.FC = () => {
   // CRITICAL: Individual Zustand selectors only!
   const token = useAppStore((s) => s.authentication_state.auth_token);
-  const currentUser = useAppStore((s) => s.authentication_state.current_user);
   const socket = useAppStore((s) => s.socket);
 
   // Local state
   const [selectedDateRange, setSelectedDateRange] = useState<string>(DATE_RANGE_PRESETS[0].value);
   const [chartDrilldown, setChartDrilldown] = useState<{ metric: string; extra?: any } | null>(null);
-
-  // React Query
-  const queryClient = useQueryClient();
   const {
     data: analyticsSnapshots = [],
     isLoading,
@@ -349,7 +347,7 @@ const UV_Admin_Analytics: React.FC = () => {
                           <svg className="w-4 h-4 text-green-400" fill="none" viewBox="0 0 19 19"><circle cx="9.5" cy="9.5" r="8.5" stroke="currentColor" /><line x1="9.5" y1="5" x2="9.5" y2="9.5" stroke="currentColor" strokeLinecap="round"/><circle cx="9.5" cy="13.5" r="1" fill="currentColor" /></svg>
                         </button>
                       </div>
-                      <LineChart data={avgOrderValueSeries} yKey="value" color="green" />
+                      <LineChart data={avgOrderValueSeries} yKey="value" xKey="label" color="green" />
                     </div>
                     <Link
                       to="/admin/orders"
@@ -381,7 +379,7 @@ const UV_Admin_Analytics: React.FC = () => {
                           <svg className="w-4 h-4 text-indigo-400" fill="none" viewBox="0 0 19 19"><circle cx="9.5" cy="9.5" r="8.5" stroke="currentColor" /><line x1="9.5" y1="5" x2="9.5" y2="9.5" stroke="currentColor" strokeLinecap="round"/><circle cx="9.5" cy="13.5" r="1" fill="currentColor" /></svg>
                         </button>
                       </div>
-                      <LineChart data={totalOrdersSeries} yKey="value" color="indigo" />
+                      <LineChart data={totalOrdersSeries} yKey="value" xKey="label" color="indigo" />
                     </div>
                     <Link
                       to="/admin/orders"
@@ -413,7 +411,7 @@ const UV_Admin_Analytics: React.FC = () => {
                           <svg className="w-4 h-4 text-orange-400" fill="none" viewBox="0 0 19 19"><circle cx="9.5" cy="9.5" r="8.5" stroke="currentColor" /><line x1="9.5" y1="5" x2="9.5" y2="9.5" stroke="currentColor" strokeLinecap="round"/><circle cx="9.5" cy="13.5" r="1" fill="currentColor" /></svg>
                         </button>
                       </div>
-                      <LineChart data={lowInventorySeries} yKey="value" color="orange" />
+                      <LineChart data={lowInventorySeries} yKey="value" xKey="label" color="orange" />
                     </div>
                     <Link
                       to="/admin/products"
@@ -445,7 +443,7 @@ const UV_Admin_Analytics: React.FC = () => {
                           <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 19 19"><circle cx="9.5" cy="9.5" r="8.5" stroke="currentColor" /><line x1="9.5" y1="5" x2="9.5" y2="9.5" stroke="currentColor" strokeLinecap="round"/><circle cx="9.5" cy="13.5" r="1" fill="currentColor" /></svg>
                         </button>
                       </div>
-                      <LineChart data={userRegistrationSeries} yKey="value" color="gray" />
+                      <LineChart data={userRegistrationSeries} yKey="value" xKey="label" color="gray" />
                     </div>
                     <Link
                       to="/admin/users"

@@ -29,14 +29,16 @@ const PER_PAGE = 20;
 const PRODUCT_STATUS_LABELS: Record<ProductStatus, string> = {
   active: 'Active',
   inactive: 'Inactive',
-  archived: 'Archived',
+  pending: 'Pending',
+  deleted: 'Deleted',
 };
 
 const STATUS_DROPDOWN_OPTIONS: { label: string; value: string }[] = [
   { label: 'All Statuses', value: '' },
   { label: 'Active', value: 'active' },
   { label: 'Inactive', value: 'inactive' },
-  { label: 'Archived', value: 'archived' },
+  { label: 'Pending', value: 'pending' },
+  { label: 'Deleted', value: 'deleted' },
 ];
 
 // --- QUERY FXNS ---
@@ -185,7 +187,7 @@ const UV_Vendor_Products: React.FC = () => {
     mutationFn: (vars: { product_id: string; token: string }) =>
       deleteVendorProduct(vars),
     onSuccess: () => {
-      queryClient.invalidateQueries(['vendor_products']);
+      queryClient.invalidateQueries({ queryKey: ['vendor_products'] });
       setLocalError(null);
     },
     onError: (err: any) => {
@@ -203,7 +205,7 @@ const UV_Vendor_Products: React.FC = () => {
     mutationFn: (vars: { product: Product; next_status: ProductStatus; token: string }) =>
       updateVendorProductStatus(vars),
     onSuccess: () => {
-      queryClient.invalidateQueries(['vendor_products']);
+      queryClient.invalidateQueries({ queryKey: ['vendor_products'] });
       setLocalError(null);
     },
     onError: (err: any) => {
@@ -277,13 +279,13 @@ const UV_Vendor_Products: React.FC = () => {
       setLocalError('Invalid auth token');
       return;
     }
-    // Toggle only active <-> inactive. Archived remain archived.
-    let next_status: ProductStatus;
+    // Toggle only active <-> inactive. Deleted remain deleted.
+    let next_status: ProductStatus = 'inactive';
     if (product.status === 'active') next_status = 'inactive';
     else if (product.status === 'inactive') next_status = 'active';
-    else next_status = 'archived'; // Archived can't toggle
-    if (product.status === 'archived') {
-      setLocalError('Cannot change status for archived products.');
+    else next_status = 'deleted'; // Deleted can't toggle
+    if (product.status === 'deleted') {
+      setLocalError('Cannot change status for deleted products.');
       return;
     }
     mutateStatus({ product, next_status, token: authToken });
@@ -485,7 +487,7 @@ const UV_Vendor_Products: React.FC = () => {
                             )}
 
                             {/* Delete */}
-                            {product.status !== 'archived' && (
+                            {product.status !== 'deleted' && (
                               <button
                                 tabIndex={0}
                                 className="inline-flex items-center px-2 py-1 text-xs font-medium rounded bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 focus:outline-none focus:ring-2 focus:ring-red-300 ml-1"

@@ -329,7 +329,7 @@ const GV_NotificationCenter: React.FC = () => {
                   onChange={(e) => setSortOrder(e.target.value as "asc" | "desc")}
                   className="text-xs border rounded px-2 py-1 focus:outline-blue-600 bg-white"
                   aria-label="Sort notifications"
-                  disabled={notificationsQuery.isFetching}
+                  disabled={notificationsFetching}
                 >
                   <option value="desc">Newest First</option>
                   <option value="asc">Oldest First</option>

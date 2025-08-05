@@ -38,7 +38,7 @@ const UV_Admin_Products: React.FC = () => {
   const [status, setStatus] = useState(searchParams.get("status") || "");
   const [categoryId, setCategoryId] = useState(searchParams.get("category_id") || "");
   const [vendorId, setVendorId] = useState(searchParams.get("vendor_id") || "");
-  const [sortBy, setSortBy] = useState<SORT_OPTIONS[number]["value"]>(searchParams.get("sort_by") || "created_at");
+  const [sortBy, setSortBy] = useState<typeof SORT_OPTIONS[number]["value"]>(searchParams.get("sort_by") || "created_at");
   const [sortOrder, setSortOrder] = useState(searchParams.get("sort_order") || "desc");
   const [page, setPage] = useState<number>(parseInt(searchParams.get("page") || "1"));
   const [perPage] = useState(24);
@@ -618,7 +618,7 @@ const UV_Admin_Products: React.FC = () => {
           <button
             type="button"
             className="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded text-xs font-semibold focus:ring-2 focus:ring-red-400"
-            disabled={bulkDeleteMutation.isLoading}
+            disabled={bulkDeleteMutation.isPending}
             aria-label="Bulk delete"
             onClick={() => {
               setActionError(null);
@@ -628,7 +628,7 @@ const UV_Admin_Products: React.FC = () => {
               }
             }}
           >
-            {bulkDeleteMutation.isLoading ? "Deleting..." : "Delete Selected"}
+            {bulkDeleteMutation.isPending ? "Deleting..." : "Delete Selected"}
           </button>
           <button
             type="button"
@@ -799,7 +799,7 @@ const UV_Admin_Products: React.FC = () => {
                             deleteProductMutation.mutate(product.product_id);
                           }
                         }}
-                        disabled={deleteProductMutation.isLoading}
+                        disabled={deleteProductMutation.isPending}
                       >
                         Delete
                       </button>
@@ -874,9 +874,9 @@ const UV_Admin_Products: React.FC = () => {
       {/* Accessibility: hidden live region for dynamic operations */}
       <div aria-live="polite" className="sr-only">
         {loadingProducts && "Loading products..."}
-        {deleteProductMutation.isLoading && "Deleting product..."}
-        {bulkDeleteMutation.isLoading && "Deleting selected products..."}
-        {startBulkImportMutation.isLoading && "Bulk import starting..."}
+        {deleteProductMutation.isPending && "Deleting product..."}
+        {bulkDeleteMutation.isPending && "Deleting selected products..."}
+        {startBulkImportMutation.isPending && "Bulk import starting..."}
       </div>
     </>
   );

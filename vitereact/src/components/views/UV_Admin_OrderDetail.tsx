@@ -49,32 +49,32 @@ const ORDER_STATUS_TRANSITIONS: Record<string, string[]> = {
 };
 
 // --- React Query fetchers ---
-const fetchOrderDetail = async ({ queryKey }: { queryKey: any[] }): Promise<Order> => {
-  const [_key, order_id, token] = queryKey;
+const fetchOrderDetail = async ({ queryKey }: { queryKey: readonly unknown[] }): Promise<Order> => {
+  const [_key, order_id, token] = queryKey as [string, string, string];
   const { data } = await axios.get<Order>(
     `${API_BASE}/orders/${encodeURIComponent(order_id)}`,
     { headers: { Authorization: `Bearer ${token}` } }
   );
   return data;
 };
-const fetchOrderItems = async ({ queryKey }: { queryKey: any[] }): Promise<OrderItem[]> => {
-  const [_key, order_id, token] = queryKey;
+const fetchOrderItems = async ({ queryKey }: { queryKey: readonly unknown[] }): Promise<OrderItem[]> => {
+  const [_key, order_id, token] = queryKey as [string, string, string];
   const { data } = await axios.get<{ order_items: OrderItem[] }>(
     `${API_BASE}/orders/${encodeURIComponent(order_id)}/items`,
     { headers: { Authorization: `Bearer ${token}` } }
   );
   return data.order_items;
 };
-const fetchOrderStatusHistory = async ({ queryKey }: { queryKey: any[] }): Promise<OrderStatusHistory[]> => {
-  const [_key, order_id, token] = queryKey;
+const fetchOrderStatusHistory = async ({ queryKey }: { queryKey: readonly unknown[] }): Promise<OrderStatusHistory[]> => {
+  const [_key, order_id, token] = queryKey as [string, string, string];
   const { data } = await axios.get<{ order_status_histories: OrderStatusHistory[] }>(
     `${API_BASE}/orders/${encodeURIComponent(order_id)}/status-history`,
     { headers: { Authorization: `Bearer ${token}` } }
   );
   return data.order_status_histories;
 };
-const fetchUser = async ({ queryKey }: { queryKey: any[] }): Promise<User> => {
-  const [_key, user_id, token] = queryKey;
+const fetchUser = async ({ queryKey }: { queryKey: readonly unknown[] }): Promise<User> => {
+  const [_key, user_id, token] = queryKey as [string, string, string];
   const { data } = await axios.get<User>(
     `${API_BASE}/users/${encodeURIComponent(user_id)}`,
     { headers: { Authorization: `Bearer ${token}` } }
@@ -111,10 +111,8 @@ const UV_Admin_OrderDetail: React.FC = () => {
   // 1. Main order object
   const {
     data: order,
-    isLoading: orderLoading,
     isError: orderError,
     error: orderErrorObj,
-    refetch: refetchOrder
   } = useQuery<Order, Error>({
     queryKey: ['order', order_id, authToken],
     queryFn: fetchOrderDetail,
@@ -127,7 +125,6 @@ const UV_Admin_OrderDetail: React.FC = () => {
     isLoading: orderItemsLoading,
     isError: orderItemsError,
     error: orderItemsErrorObj,
-    refetch: refetchOrderItems
   } = useQuery<OrderItem[], Error>({
     queryKey: ['order_items', order_id, authToken],
     queryFn: fetchOrderItems,
@@ -140,7 +137,6 @@ const UV_Admin_OrderDetail: React.FC = () => {
     isLoading: orderStatusLoading,
     isError: orderStatusError,
     error: orderStatusErrorObj,
-    refetch: refetchOrderStatus
   } = useQuery<OrderStatusHistory[], Error>({
     queryKey: ['order_status_history', order_id, authToken],
     queryFn: fetchOrderStatusHistory,
@@ -194,9 +190,9 @@ const UV_Admin_OrderDetail: React.FC = () => {
       );
       return data;
     },
-    onSuccess: (ret) => {
-      queryClient.invalidateQueries(['order', order_id, authToken]);
-      queryClient.invalidateQueries(['order_status_history', order_id, authToken]);
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['order', order_id, authToken] });
+      queryClient.invalidateQueries({ queryKey: ['order_status_history', order_id, authToken] });
       setShowStatusDialog(false);
       setChangeStatus('');
       setMutationError(null);
@@ -225,7 +221,7 @@ const UV_Admin_OrderDetail: React.FC = () => {
       );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['order_status_history', order_id, authToken]);
+      queryClient.invalidateQueries({ queryKey: ['order_status_history', order_id, authToken] });
       setNoteInput('');
       setMutationError(null);
       setNoteMutationLoading(false);
@@ -482,11 +478,11 @@ const UV_Admin_OrderDetail: React.FC = () => {
                       type="button"
                       onClick={() => setShowStatusDialog(!showStatusDialog)}
                       className="inline-flex items-center px-3 py-2 rounded-md bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 focus:outline-none"
-                      disabled={updateOrderStatusMutation.isLoading}
+                      disabled={updateOrderStatusMutation.isPending}
                       aria-label="Change order status"
                       tabIndex={0}
                     >
-                      {updateOrderStatusMutation.isLoading && (
+                      {updateOrderStatusMutation.isPending && (
                         <svg className="animate-spin w-4 h-4 mr-1 text-white" fill="none" viewBox="0 0 24 24">
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -531,9 +527,9 @@ const UV_Admin_OrderDetail: React.FC = () => {
                       <button
                         type="submit"
                         className="px-4 py-2 bg-indigo-700 text-white rounded hover:bg-indigo-800 text-sm"
-                        disabled={!changeStatus || updateOrderStatusMutation.isLoading}
+                        disabled={!changeStatus || updateOrderStatusMutation.isPending}
                       >
-                        {updateOrderStatusMutation.isLoading ? "Saving..." : "Update"}
+                        {updateOrderStatusMutation.isPending ? "Saving..." : "Update"}
                       </button>
                       <button
                         type="button"
@@ -645,9 +641,9 @@ const UV_Admin_OrderDetail: React.FC = () => {
                     <button
                       className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 text-sm"
                       onClick={() => deleteOrderMutation.mutate()}
-                      disabled={deleteOrderMutation.isLoading}
+                      disabled={deleteOrderMutation.isPending}
                     >
-                      {deleteOrderMutation.isLoading ? "Deleting..." : "Delete Order"}
+                      {deleteOrderMutation.isPending ? "Deleting..." : "Delete Order"}
                     </button>
                     <button
                       className="px-4 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 text-sm"

@@ -79,54 +79,60 @@ const UV_AdminDashboard: React.FC = () => {
   // For error display when fetching
   const [errorBanner, setErrorBanner] = React.useState<string | null>(null);
 
-  const queryClient = useQueryClient();
   const firstLoadComplete = useRef(false);
 
   // --- React Query: Analytics snapshot ---
   const {
     isLoading: isLoadingDash,
-    error: dashError,
     refetch: refetchDash,
-  } = useQuery<AdminDashboardState, Error>(
-    ['admin-dashboard:analytics'],
-    async () => {
+  } = useQuery<AdminDashboardState, Error>({
+    queryKey: ['admin-dashboard:analytics'],
+    queryFn: async () => {
       if (!authToken) throw new Error('Not authenticated');
       return await fetchDashboardAnalytics(authToken);
     },
-    {
-      enabled: !!authToken,
-      refetchOnWindowFocus: false, // Real-time handles general freshness
-      onSuccess: (metrics) => {
-        setAdminDashboardState(metrics);
-      },
-      onError: (err) => {
-        setErrorBanner(err.message);
-      },
-    }
-  );
+    enabled: !!authToken,
+    refetchOnWindowFocus: false, // Real-time handles general freshness
+  });
 
   // --- React Query: Notifications ---
   const {
     isLoading: isNotifLoading,
-    error: notifError,
     refetch: refetchNotifs,
-  } = useQuery<NotificationEntity[], Error>(
-    ['admin-dashboard:notifications'],
-    async () => {
+  } = useQuery<NotificationEntity[], Error>({
+    queryKey: ['admin-dashboard:notifications'],
+    queryFn: async () => {
       if (!authToken) throw new Error('Not authenticated');
       return await fetchAdminNotifications(authToken);
     },
-    {
-      enabled: !!authToken,
-      refetchOnWindowFocus: false,
-      onSuccess: (result) => {
-        setNotificationState({ notifications: result });
-      },
-      onError: (err) => {
-        setErrorBanner(err.message);
-      },
+    enabled: !!authToken,
+    refetchOnWindowFocus: false,
+  });
+
+  // Handle successful data fetching
+  React.useEffect(() => {
+    if (isLoadingDash) return;
+    
+    // Fetch and set dashboard analytics
+    if (authToken) {
+      fetchDashboardAnalytics(authToken)
+        .then(metrics => setAdminDashboardState(metrics))
+        .catch(err => setErrorBanner(err.message));
     }
-  );
+  }, [isLoadingDash, authToken, setAdminDashboardState]);
+
+  React.useEffect(() => {
+    if (isNotifLoading) return;
+    
+    // Fetch and set notifications
+    if (authToken) {
+      fetchAdminNotifications(authToken)
+        .then(result => setNotificationState({ notifications: result }))
+        .catch(err => {
+          setErrorBanner(err.message);
+        });
+    }
+  }, [isNotifLoading, authToken, setNotificationState]);
 
   // --- WebSocket: Listen for real-time updates ---
   // Store is updated by socket event listeners already
