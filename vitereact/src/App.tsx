@@ -89,13 +89,6 @@ const VendorRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 };
 
 // --- Views that use minimal/no chrome (NO TopNav/Footer/Toasts/Notifs/Modals) ---
-const AUTH_MINIMAL_PATHS = [
-  '/login',
-  '/register',
-  '/password-reset-request',
-  '/password-reset',
-  '/404'
-];
 
 function useShowGlobalChrome() {
   // We want global UI for all except minimal/standalone views

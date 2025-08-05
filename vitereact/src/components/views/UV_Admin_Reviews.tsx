@@ -124,7 +124,7 @@ const UV_Admin_Reviews: React.FC = () => {
       }
       return parsed.data;
     },
-    keepPreviousData: true,
+    placeholderData: (previousData) => previousData,
     retry: 1,
   });
 

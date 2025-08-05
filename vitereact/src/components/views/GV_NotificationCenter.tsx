@@ -4,7 +4,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
-import { Notification, NotificationListResponse, NotificationResponse } from "@schema";
+import { NotificationListResponse, NotificationResponse } from "@schema";
 
 const API_BASE = `${import.meta.env.VITE_API_BASE_URL || "http://localhost:3000"}`;
 
@@ -47,7 +47,13 @@ const GV_NotificationCenter: React.FC = () => {
   const [panelError, setPanelError] = useState<string | null>(null);
 
   // --- React Query: Fetch notifications ---
-  const notificationsQuery = useQuery<NotificationListResponse, Error>({
+  const {
+    data: notificationsData,
+    error: notificationsError,
+    isLoading: notificationsLoading,
+    isFetching: notificationsFetching,
+    refetch: refetchNotifications
+  } = useQuery<NotificationListResponse, Error>({
     queryKey: [
       "notifications",
       currentUser?.user_id,
@@ -78,17 +84,24 @@ const GV_NotificationCenter: React.FC = () => {
 
   // Sync data to store when query succeeds
   useEffect(() => {
-    if (notificationsQuery.data?.notifications) {
-      setNotificationState({ notifications: notificationsQuery.data.notifications });
+    if (notificationsData?.notifications) {
+      // Convert Date objects to strings for store compatibility
+      const convertedNotifications = notificationsData.notifications.map(notification => ({
+        ...notification,
+        created_at: notification.created_at instanceof Date 
+          ? notification.created_at.toISOString() 
+          : notification.created_at
+      }));
+      setNotificationState({ notifications: convertedNotifications });
     }
-  }, [notificationsQuery.data, setNotificationState]);
+  }, [notificationsData, setNotificationState]);
 
   // Handle query errors
   useEffect(() => {
-    if (notificationsQuery.error) {
-      setPanelError(notificationsQuery.error.message);
+    if (notificationsError) {
+      setPanelError(notificationsError.message);
     }
-  }, [notificationsQuery.error]);
+  }, [notificationsError]);
 
   // --- Mark as read mutation ---
   const markAsReadMutation = useMutation<
@@ -107,9 +120,15 @@ const GV_NotificationCenter: React.FC = () => {
       return resp.data;
     },
     onSuccess: (data) => {
-      // Update store
-      pushNotification(data.notification);
-      refetch();
+      // Update store - convert Date to string for store compatibility
+      const convertedNotification = {
+        ...data,
+        created_at: data.created_at instanceof Date 
+          ? data.created_at.toISOString() 
+          : data.created_at
+      };
+      pushNotification(convertedNotification);
+      refetchNotifications();
     },
     onError: (err) => {
       setPanelError(err.message);
@@ -140,9 +159,9 @@ const GV_NotificationCenter: React.FC = () => {
 
 
   // --- Notification list to display ---
-  const notifList = notificationsQuery.data?.notifications ?? storeNotifs;
+  const notifList = notificationsData?.notifications ?? storeNotifs;
   const unreadCount =
-    typeof notificationsQuery.data?.notifications !== "undefined"
+    typeof notificationsData?.notifications !== "undefined"
       ? notifList.filter((n) => !n.is_read).length
       : storeUnread;
 
@@ -289,14 +308,14 @@ const GV_NotificationCenter: React.FC = () => {
                   className="p-2 rounded hover:bg-gray-100 text-gray-500 focus:outline-none"
                   aria-label="Refresh"
                   title="Refresh"
-                  disabled={isFetching || isLoading}
+                  disabled={notificationsFetching || notificationsLoading}
                   onClick={() => {
                     setPanelError(null);
-                    refetch();
+                    refetchNotifications();
                   }}
                 >
                   <svg
-                    className={`w-5 h-5 ${isFetching ? "animate-spin" : ""}`}
+                    className={`w-5 h-5 ${notificationsFetching ? "animate-spin" : ""}`}
                     fill="none"
                     stroke="currentColor"
                     strokeWidth={2}
@@ -310,7 +329,7 @@ const GV_NotificationCenter: React.FC = () => {
                   onChange={(e) => setSortOrder(e.target.value as "asc" | "desc")}
                   className="text-xs border rounded px-2 py-1 focus:outline-blue-600 bg-white"
                   aria-label="Sort notifications"
-                  disabled={isFetching}
+                  disabled={notificationsQuery.isFetching}
                 >
                   <option value="desc">Newest First</option>
                   <option value="asc">Oldest First</option>
@@ -356,7 +375,7 @@ const GV_NotificationCenter: React.FC = () => {
             </div>
 
             {/* Error or loading state */}
-            {(isLoading || isFetching) && (
+            {(notificationsLoading || notificationsFetching) && (
               <div className="flex-1 flex items-center justify-center py-8">
                 <svg className="animate-spin h-8 w-8 text-blue-600" viewBox="0 0 24 24">
                   <circle
@@ -389,7 +408,7 @@ const GV_NotificationCenter: React.FC = () => {
             )}
 
             {/* Notifications listing */}
-            {!isLoading && !isFetching && !panelError && (
+            {!notificationsLoading && !notificationsFetching && !panelError && (
               <>
                 {(!notifList || notifList.length === 0) ? (
                   <div className="flex flex-1 flex-col items-center justify-center py-12 px-4 text-center">

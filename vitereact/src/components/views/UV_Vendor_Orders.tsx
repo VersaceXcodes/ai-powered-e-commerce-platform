@@ -179,7 +179,7 @@ const UV_Vendor_Orders: React.FC = () => {
       );
     },
     enabled: !!currentUser && !!authToken, // don't run if not authed
-    keepPreviousData: true,
+    placeholderData: (previousData) => previousData,
     staleTime: 30 * 1000,
   });
 

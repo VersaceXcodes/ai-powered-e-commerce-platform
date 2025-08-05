@@ -108,7 +108,7 @@ const UV_Admin_Users: React.FC = () => {
       });
       return resp.data;
     },
-    keepPreviousData: true,
+    placeholderData: (previousData) => previousData,
     retry: 1,
     enabled: !!authToken,
     onError: (err: any) => {

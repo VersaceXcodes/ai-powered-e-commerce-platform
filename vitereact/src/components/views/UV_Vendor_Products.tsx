@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useAppStore } from '@/store/main';
 
 // --- SCHEMA TYPES (from Zod, per backend DB:zodschemas) ---
-type ProductStatus = 'active' | 'inactive' | 'archived';
+type ProductStatus = 'active' | 'inactive' | 'pending' | 'deleted';
 
 // Inline Product type as per schema (for type safety)
 interface Product {
@@ -173,7 +173,7 @@ const UV_Vendor_Products: React.FC = () => {
         token: authToken || '',
       }),
     enabled: !!currentUser && !!authToken,
-    keepPreviousData: true,
+    placeholderData: (previousData) => previousData,
   });
 
   // --- DELETE PRODUCT ---

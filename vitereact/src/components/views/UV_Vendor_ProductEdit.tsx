@@ -84,7 +84,6 @@ const UV_Vendor_ProductEdit: React.FC = () => {
       return res.data as Product;
     },
     enabled: !!is_edit_mode && !!product_id_param,
-    onSuccess: (prod) => setProduct(prod),
   });
 
   // ---- FETCH: Product images (if edit mode)
@@ -103,7 +102,6 @@ const UV_Vendor_ProductEdit: React.FC = () => {
       return res.data;
     },
     enabled: !!is_edit_mode && !!product_id_param,
-    onSuccess: (data) => setProductImages(data.product_images),
   });
 
   // ---- FETCH: All categories
@@ -111,6 +109,7 @@ const UV_Vendor_ProductEdit: React.FC = () => {
     data: categoriesData,
     isLoading: categoriesLoading,
     isError: categoriesError,
+    refetch: refetchCategories,
   } = useQuery<{ categories: Category[] }, Error>({
     queryKey: ["categories"],
     queryFn: async () => {
@@ -119,10 +118,9 @@ const UV_Vendor_ProductEdit: React.FC = () => {
       });
       return res.data;
     },
-    onSuccess: (data) => setCategories(data.categories),
   });
 
-  // --- FETCH: Categories assigned to this product (edit mode)
+  // ---- FETCH: Assigned categories (if edit mode)
   const {
     data: assignedCategoriesRaw,
     isLoading: assignedCategoriesLoading,
@@ -138,17 +136,14 @@ const UV_Vendor_ProductEdit: React.FC = () => {
       return res.data;
     },
     enabled: !!is_edit_mode && !!product_id_param,
-    onSuccess: (data) => {
-      setSelectedCategoryIds(data.product_categories.map((pc) => pc.category_id));
-    },
   });
 
   // --- Populate from fetches (first time mount)
   useEffect(() => {
     if (productData && is_edit_mode) setProduct(productData);
-    if (productImagesData && is_edit_mode) setProductImages(productImagesData.product_images);
-    if (categoriesData) setCategories(categoriesData.categories);
-    if (assignedCategoriesRaw && is_edit_mode)
+    if (productImagesData && is_edit_mode && 'product_images' in productImagesData) setProductImages(productImagesData.product_images);
+    if (categoriesData && 'categories' in categoriesData) setCategories(categoriesData.categories);
+    if (assignedCategoriesRaw && is_edit_mode && 'product_categories' in assignedCategoriesRaw)
       setSelectedCategoryIds(assignedCategoriesRaw.product_categories.map((pc) => pc.category_id));
     // eslint-disable-next-line
   }, [productData, productImagesData, categoriesData, assignedCategoriesRaw]);
@@ -364,7 +359,7 @@ const UV_Vendor_ProductEdit: React.FC = () => {
         description: product.description,
         price: product.price,
         inventory_count: product.inventory_count,
-        status: product.status as "active" | "inactive" | "archived",
+        status: product.status as "active" | "inactive" | "pending" | "deleted",
         vendor_id: current_user?.user_id ?? null,
       };
       createProductMutation.mutate(input);
@@ -376,7 +371,7 @@ const UV_Vendor_ProductEdit: React.FC = () => {
         description: product.description,
         price: product.price,
         inventory_count: product.inventory_count,
-        status: product.status as "active" | "inactive" | "archived",
+        status: product.status as "active" | "inactive" | "pending" | "deleted",
         vendor_id: current_user?.user_id ?? null,
       };
       updateProductMutation.mutate(input);
@@ -412,10 +407,11 @@ const UV_Vendor_ProductEdit: React.FC = () => {
   };
 
   // --- General Utilities
-  const statusOptions: Array<{ label: string; value: "active" | "inactive" | "archived" }> = [
+  const statusOptions: Array<{ label: string; value: "active" | "inactive" | "pending" | "deleted" }> = [
     { label: "Active", value: "active" },
     { label: "Inactive", value: "inactive" },
-    { label: "Archived", value: "archived" },
+    { label: "Pending", value: "pending" },
+    { label: "Deleted", value: "deleted" },
   ];
 
   return (

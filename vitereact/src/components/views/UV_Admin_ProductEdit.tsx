@@ -17,7 +17,7 @@ import {
 } from '@schema'; // <-- assumes Zod typegen is available; if not, declare below
 
 // --- Helpers for schema fallback ---
-type ProductStatus = 'active' | 'inactive' | 'archived';
+type ProductStatus = 'active' | 'inactive' | 'pending' | 'deleted';
 
 const API_BASE = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}`;
 
@@ -664,7 +664,8 @@ const UV_Admin_ProductEdit: React.FC = () => {
               >
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
-                <option value="archived">Archived</option>
+                <option value="pending">Pending</option>
+                <option value="deleted">Deleted</option>
               </select>
 
               {/* Vendor assignment (only if there are vendors) */}

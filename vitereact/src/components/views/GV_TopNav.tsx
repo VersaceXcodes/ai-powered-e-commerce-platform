@@ -1,28 +1,17 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { Link, useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useAppStore } from '@/store/main';
-
-// --- Types from Store/Zod (see "@/store/main.tsx" and zod schemas) ---
-interface SearchSuggestion {
-  product_id: string;
-  name: string;
-  image_url: string;
-  price: number;
-}
+import { SearchSuggestion } from '@schema';
 
 
 
 const API_BASE = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}`;
 
 // --- Query: Search Suggestions ---
-const fetchSearchSuggestions = async ({
-  queryKey
-}: {
-  queryKey: readonly [string, string, string | undefined];
-}) => {
-  const [_key, searchQuery, token] = queryKey;
+const fetchSearchSuggestions = async ({ queryKey }: { queryKey: readonly unknown[] }) => {
+  const [_key, searchQuery, token] = queryKey as readonly [string, string, string | undefined];
   if (!searchQuery || searchQuery.trim() === '') return [];
   const resp = await axios.get(
     `${API_BASE}/search_terms`,
@@ -178,13 +167,16 @@ const GV_TopNav: React.FC = () => {
 
   // --- Search bar keyboard navigation ---
   const handleSearchInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (!dropdownOpen && (searchSuggestions?.length || search_suggestions_store?.length)) {
+    const searchSuggestionsArray = Array.isArray(searchSuggestions) ? searchSuggestions : [];
+    const storeArray = Array.isArray(search_suggestions_store) ? search_suggestions_store : [];
+    
+    if (!dropdownOpen && (searchSuggestionsArray.length || storeArray.length)) {
       setDropdownOpen(true);
     }
     const suggestions =
-      searchSuggestions && searchSuggestions.length > 0
-        ? searchSuggestions
-        : search_suggestions_store;
+      searchSuggestionsArray.length > 0
+        ? searchSuggestionsArray
+        : storeArray;
 
     switch (e.key) {
       case "ArrowDown":
@@ -298,11 +290,7 @@ const GV_TopNav: React.FC = () => {
           current_user?.name || 'User'
         )}&background=0D8ABC&color=fff`;
 
-  // --- Nav routes (customer view) ---
-  const navLinks = [
-    { label: "Shop", href: "/products" },
-    ...(is_authenticated ? [{ label: "Orders", href: "/orders" }] : []),
-  ];
+
 
   // --- Admin links (sidebar/drawer OR top if desktop) ---
   const adminLinks = [
@@ -407,11 +395,11 @@ const GV_TopNav: React.FC = () => {
                         Loading...
                       </div>
                     )}
-                    {!isLoadingSuggestions && searchSuggestions && searchSuggestions.length === 0 && (
+                    {!isLoadingSuggestions && Array.isArray(searchSuggestions) && searchSuggestions.length === 0 && (
                       <div className="p-4 text-gray-400">No suggestions found.</div>
                     )}
                     {!isLoadingSuggestions &&
-                      searchSuggestions &&
+                      Array.isArray(searchSuggestions) &&
                       searchSuggestions.length > 0 &&
                       searchSuggestions.map((s, idx) => (
                         <button

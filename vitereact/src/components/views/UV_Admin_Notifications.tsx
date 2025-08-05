@@ -5,20 +5,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 // --- ZOD types (for type safety, not actual runtime validation here) ---
-import { z } from 'zod';
-import { notificationSchema, notificationListResponseSchema } from '@schema'; // pretend these are available like so
-
-// If not available, redefinition for TS usability
-export interface Notification {
-  notification_id: string;
-  user_id: string | null;
-  content: string;
-  type: string;
-  is_read: boolean;
-  related_entity_type: string | null;
-  related_entity_id: string | null;
-  created_at: string;
-}
+import { Notification, NotificationListResponse } from '@schema';
 
 // ---- API interaction ----
 const API_BASE = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}`;
@@ -80,10 +67,7 @@ const UV_Admin_Notifications: React.FC = () => {
     error,
     refetch,
     isFetching,
-  } = useQuery<{
-    notifications: Notification[];
-    total: number;
-  }, Error>({
+  } = useQuery<NotificationListResponse, Error>({
     queryKey: ['admin-notifications', currentUserId], // will refetch on user change
     queryFn: async () => {
       if (!authToken || !currentUserId) throw new Error('Missing authentication');
@@ -101,15 +85,21 @@ const UV_Admin_Notifications: React.FC = () => {
           }
         }
       );
-      // Zod validation for safety (pretend as runtime)
-      const parsed = notificationListResponseSchema.safeParse(resp.data);
-      if (!parsed.success) throw new Error('Invalid serverside notification data');
+      // Return the data directly - React Query will handle the response
+      const data = resp.data as NotificationListResponse;
+      // Convert Date objects to strings for store compatibility
+      const convertedNotifications = data.notifications.map(notification => ({
+        ...notification,
+        created_at: notification.created_at instanceof Date 
+          ? notification.created_at.toISOString() 
+          : notification.created_at
+      }));
       // We sync the global notification_state to newest
       setNotificationState({
-        notifications: parsed.data.notifications,
-        unread_count: parsed.data.notifications.filter((n: Notification) => !n.is_read).length,
+        notifications: convertedNotifications,
+        unread_count: convertedNotifications.filter((n) => !n.is_read).length,
       });
-      return parsed.data;
+      return data;
     },
     enabled: !!authToken && !!currentUserId,
     staleTime: 60 * 1000,
@@ -128,7 +118,7 @@ const UV_Admin_Notifications: React.FC = () => {
       // Either Zod validation, or trust API response:
       return resp.data as Notification;
     },
-    onSuccess: (_data, notification_id) => {
+    onSuccess: (_data, _notification_id) => {
       // Refetch notifications
       queryClient.invalidateQueries({ queryKey: ['admin-notifications', currentUserId] });
     },
@@ -143,7 +133,9 @@ const UV_Admin_Notifications: React.FC = () => {
     setIsLoadingBulkMark(true);
     try {
       // Find all unread notification IDs
-      const unreadNotifs = notifData.notifications.filter(n => !n.is_read);
+      const unreadNotifs = 'notifications' in notifData && Array.isArray(notifData.notifications) 
+        ? notifData.notifications.filter(n => !n.is_read) 
+        : [];
       for (const n of unreadNotifs) {
         // For accessibility: don't hammer server, wait per req. Could optimize with Promise.allSettled but MVP is serial.
         // eslint-disable-next-line no-await-in-loop
@@ -161,7 +153,10 @@ const UV_Admin_Notifications: React.FC = () => {
   useEffect(() => {
     // If user switches away (or socket pushes new), we want to refetch if counts mismatch.
     // Only trigger if store notifications length > query, i.e. live event
-    if (Array.isArray(realtimeNotifications) && notifData && realtimeNotifications.length > notifData.notifications.length) {
+    if (Array.isArray(realtimeNotifications) && notifData && 'notifications' in notifData && Array.isArray(notifData.notifications) && realtimeNotifications.length > notifData.notifications.length) {
+      refetch();
+    }
+    if (typeof realtimeUnreadCount === 'number' && notifData && 'notifications' in notifData && Array.isArray(notifData.notifications) && realtimeUnreadCount !== notifData.notifications.filter(n => !n.is_read).length) {
       refetch();
     }
     // If unread count changes in realtime and is more recent than query, refetch.
@@ -172,8 +167,8 @@ const UV_Admin_Notifications: React.FC = () => {
   
   // ---------- FILTERED LIST -------------
   let notificationsToShow: Notification[] = [];
-  if (notifData?.notifications) {
-    notificationsToShow = filter === 'all'
+  if (notifData && 'notifications' in notifData && Array.isArray(notifData.notifications)) {
+    const filteredNotifs = showUnreadOnly
       ? notifData.notifications
       : notifData.notifications.filter(n => !n.is_read);
   }
@@ -293,8 +288,8 @@ const UV_Admin_Notifications: React.FC = () => {
               tabIndex={0}
             >
               Unread
-              {notifData?.notifications?.some(n => !n.is_read) && (
-                <span className="inline-flex items-center ml-1 px-1.5 py-0.5 text-xs font-semibold rounded-full bg-red-50 text-red-800 border border-red-100">
+              {notifData && 'notifications' in notifData && Array.isArray(notifData.notifications) && notifData.notifications.some(n => !n.is_read) && (
+                <span className="ml-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
                   {notifData.notifications.filter(n => !n.is_read).length}
                 </span>
               )}
@@ -377,10 +372,10 @@ const UV_Admin_Notifications: React.FC = () => {
                               className={`inline-flex items-center px-2 py-1 rounded-md bg-blue-600 text-white text-xs font-medium hover:bg-blue-700 focus:outline-none transition shadow-sm mt-1`}
                               aria-label="Mark notification as read"
                               onClick={() => handleMarkAsRead(notif.notification_id)}
-                              disabled={markAsReadMutation.isLoading && selectedNotificationId === notif.notification_id}
+                              disabled={markAsReadMutation.isPending && selectedNotificationId === notif.notification_id}
                               tabIndex={0}
                             >
-                              {markAsReadMutation.isLoading && selectedNotificationId === notif.notification_id ? (
+                              {markAsReadMutation.isPending && selectedNotificationId === notif.notification_id ? (
                                 <svg className="animate-spin w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24">
                                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>

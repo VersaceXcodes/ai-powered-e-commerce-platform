@@ -232,7 +232,7 @@ const UV_ProductList: React.FC = () => {
         page,
         per_page: perPage,
       }),
-    keepPreviousData: true,
+    placeholderData: (previousData) => previousData,
     retry: 1,
   });
 

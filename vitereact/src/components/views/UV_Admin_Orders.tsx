@@ -25,7 +25,7 @@ const ORDER_STATUS_OPTIONS = [
   { value: "processing", label: "Processing" },
   { value: "shipped", label: "Shipped" },
   { value: "delivered", label: "Delivered" },
-  { value: "completed", label: "Completed" },
+
   { value: "cancelled", label: "Cancelled" },
 ];
 
@@ -157,7 +157,7 @@ const UV_Admin_Orders: React.FC = () => {
       return parsed.data;
     },
     enabled: !!authToken,
-    keepPreviousData: true,
+    placeholderData: (previousData) => previousData,
     staleTime: 30000,
   });
 
@@ -542,7 +542,7 @@ const UV_Admin_Orders: React.FC = () => {
                       <td className="py-1">{order.email}</td>
                       <td className="py-1">
                         <span className={`inline-block rounded px-2 py-0.5 text-xs font-semibold ${
-                          order.status === 'completed'
+                          order.status === 'delivered'
                             ? 'bg-green-100 text-green-800'
                             : order.status === 'processing'
                             ? 'bg-yellow-100 text-yellow-800'
@@ -572,7 +572,7 @@ const UV_Admin_Orders: React.FC = () => {
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" className="inline h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H9m6 0a3 3 0 11-6 0 3 3 0 016 0zm-6 4v2a2 2 0 002 2h4a2 2 0 002-2v-2"/></svg>
                           </Link>
-                          {order.status !== "completed" && order.status !== "cancelled" && (
+                          {order.status !== "delivered" && order.status !== "cancelled" && (
                             <button
                               className="text-green-700 hover:text-green-900 px-1"
                               aria-label="Advance status"
@@ -585,7 +585,7 @@ const UV_Admin_Orders: React.FC = () => {
                                 if (order.status === "created") nextStatus = "processing";
                                 else if (order.status === "processing") nextStatus = "shipped";
                                 else if (order.status === "shipped") nextStatus = "delivered";
-                                else if (order.status === "delivered") nextStatus = "completed";
+                                // delivered is the final status, no next status
                                 handleUpdateStatus(order.order_id, nextStatus);
                               }}
                               disabled={updateOrderStatusMutation.isLoading}

@@ -132,7 +132,7 @@ const UV_Admin_Products: React.FC = () => {
       return res.data;
     },
     enabled: !!authToken,
-    keepPreviousData: true,
+    placeholderData: (previousData) => previousData,
   });
   const products: Product[] = productsData?.products || [];
   const total = productsData?.total || 0;

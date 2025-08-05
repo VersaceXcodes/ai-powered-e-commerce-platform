@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { z } from "zod";
-import { orderSchema } from "@/schema"; // Type-only import; see below for local TS type
+import { orderSchema } from "@schema"; // Type-only import; see below for local TS type
 import { useAppStore } from "@/store/main";
 
 // --- Type (for local validation and typesafety) ---

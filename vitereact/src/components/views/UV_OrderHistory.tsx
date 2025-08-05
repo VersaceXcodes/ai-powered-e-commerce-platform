@@ -114,7 +114,7 @@ const UV_OrderHistory: React.FC = () => {
     queryFn: () => fetchOrders(filters, authToken || ''),
     enabled: !!filters.user_id && !!authToken,
     staleTime: 60 * 1000, // 1 minute
-    keepPreviousData: true,
+    placeholderData: (previousData) => previousData,
     retry: 1,
     onError: (err) => {
       setLocalError(err.message || 'Failed to load your orders.');
