@@ -23,7 +23,8 @@
 
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*": ["./src/*"],
+			"@schema": ["../backend/schema.ts"]
 		}
 	},
 	"include": ["src"],

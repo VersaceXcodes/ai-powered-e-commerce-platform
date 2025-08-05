@@ -70,12 +70,9 @@
     "use-react-screenshot": "^4.0.0",
     "vaul": "^0.9.3",
     "zod": "^3.23.8",
-    "zustand": "*",
-    "zustand/middleware": "*",
-    "dependencies": "*",
-    "@schema": "*",
-    "classnames": "*",
-    "@headlessui/react": "*"
+    "zustand": "^4.5.5",
+    "classnames": "^2.5.1",
+    "@headlessui/react": "^2.1.8"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
