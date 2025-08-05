@@ -2,18 +2,33 @@
 
 import express from 'express';
 import cors from "cors";
-import dotenv from "dotenv";
+import * as dotenv from "dotenv";
 import morgan from "morgan";
-import fs from "fs";
-import path from 'path';
-import jwt from 'jsonwebtoken';
-import http from 'http';
+import * as fs from "fs";
+import * as path from 'path';
+import * as jwt from 'jsonwebtoken';
+import * as http from 'http';
 import { fileURLToPath } from 'url';
 import { v4 as uuidv4 } from 'uuid';
 import multer from 'multer';
-import { Server as SocketIOServer } from "socket.io";
+import { Server as SocketIOServer, Socket } from "socket.io";
 // Import all zod schemas
-import * as schemas from './schema.ts';
+import * as schemas from './schema.js';
+
+// Extend Socket interface to include custom properties
+interface CustomSocket extends Socket {
+  user?: any;
+  cart_id?: string;
+}
+
+// Extend Express Request interface to include user property
+declare global {
+  namespace Express {
+    interface Request {
+      user?: any;
+    }
+  }
+}
 
 dotenv.config();
 
@@ -34,14 +49,14 @@ const {
 } = process.env;
 
 // POSTGRES
-import pkg from 'pg';
+import * as pkg from 'pg';
 const { Pool } = pkg;
 
 const pool = new Pool(
   DATABASE_URL
     ? {
       connectionString: DATABASE_URL,
-      ssl: { require: true }
+      ssl: { rejectUnauthorized: false }
     }
     : {
       host: PGHOST,
@@ -49,7 +64,7 @@ const pool = new Pool(
       user: PGUSER,
       password: PGPASSWORD,
       port: Number(PGPORT),
-      ssl: { require: true },
+      ssl: { rejectUnauthorized: false },
     }
 );
 
@@ -98,7 +113,7 @@ const authenticateToken = async (req, res, next) => {
   }
   if (!token) return res.status(401).json({ message: "Access token required" });
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET) as any;
     // Modernized - direct query by user_id for current user
     const result = await pool.query(
       'SELECT * FROM users WHERE user_id = $1',
@@ -127,11 +142,11 @@ const requireVendor = (req, res, next) => {
 };
 
 // SOCKET.IO JWT AUTH FOR ALL CORE EVENTS
-io.use(async (socket, next) => {
+io.use(async (socket: CustomSocket, next) => {
   try {
     const { token, cart_id } = socket.handshake.auth || {};
     if (token) {
-      const decoded = jwt.verify(token, JWT_SECRET);
+      const decoded = jwt.verify(token, JWT_SECRET) as any;
       const result = await pool.query(
         'SELECT * FROM users WHERE user_id = $1',
         [decoded.user_id]
@@ -145,7 +160,7 @@ io.use(async (socket, next) => {
     } else {
       return next(new Error('Not Authenticated'));
     }
-  } catch (err) {
+  } catch (err: any) {
     return next(new Error('Auth error: ' + (err.message || 'Unknown')));
   }
 });
@@ -155,7 +170,7 @@ function emitRoom(event, room, data) {
   io.to(room).emit(event, data);
 }
 // Attach user to socket room on connect for later targeting
-io.on('connection', (socket) => {
+io.on('connection', (socket: CustomSocket) => {
   if (socket.user) {
     socket.join(`user:${socket.user.user_id}`);
     if (socket.user.role === 'admin') socket.join('admins');
@@ -372,17 +387,17 @@ app.get('/users', authenticateToken, requireAdmin, async (req, res) => {
     }
     if (req.query.role) {
       clauses.push(`role = $${argIdx}`);
-      args.push(req.query.role);
+      args.push(String(req.query.role));
       argIdx++;
     }
     if (clauses.length) q += " WHERE " + clauses.join(" AND ");
     // Sorting
-    let sort_by = ['name', 'email', 'role', 'created_at', 'updated_at'].includes(req.query.sort_by) ? req.query.sort_by : 'created_at';
+    let sort_by = ['name', 'email', 'role', 'created_at', 'updated_at'].includes(req.query.sort_by as string) ? req.query.sort_by as string : 'created_at';
     let sort_order = req.query.sort_order === 'asc' ? 'asc' : 'desc';
     q += ` ORDER BY ${sort_by} ${sort_order}`;
     // Pagination
-    let limit = Math.min(parseInt(req.query.limit) || 10, 100);
-    let offset = parseInt(req.query.offset) || 0;
+    let limit = Math.min(parseInt(req.query.limit as string) || 10, 100);
+    let offset = parseInt(req.query.offset as string) || 0;
     q += ` LIMIT ${limit} OFFSET ${offset}`;
     const result = await pool.query(q, args);
     res.json({ users: result.rows });
@@ -527,6 +542,6 @@ app.get('*', (req, res) => {
 export { app, pool };
 
 // START SERVER LISTENING
-server.listen(PORT, '0.0.0.0', () => {
+server.listen(Number(PORT), '0.0.0.0', () => {
   console.log(`AIOCart backend running at http://localhost:${PORT} (public)`);
 });

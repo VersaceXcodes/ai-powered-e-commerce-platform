@@ -1,0 +1,644 @@
+import { z } from 'zod';
+/** USERS TABLE **/
+export const roleEnum = z.enum(['customer', 'admin', 'vendor']); // Extend as necessary
+export const userSchema = z.object({
+    user_id: z.string(),
+    name: z.string(),
+    email: z.string().email(),
+    password_hash: z.string(),
+    role: roleEnum.default('customer'),
+    profile_image_url: z.string().nullable(),
+    is_blocked: z.boolean(),
+    created_at: z.coerce.date(),
+    updated_at: z.coerce.date()
+});
+export const createUserInputSchema = z.object({
+    name: z.string().min(1).max(255),
+    email: z.string().email(),
+    password_hash: z.string().min(8),
+    role: roleEnum.optional(),
+    profile_image_url: z.string().url().nullable().optional()
+});
+export const updateUserInputSchema = z.object({
+    user_id: z.string(),
+    name: z.string().min(1).max(255).optional(),
+    email: z.string().email().optional(),
+    password_hash: z.string().min(8).optional(),
+    role: roleEnum.optional(),
+    profile_image_url: z.string().url().nullable().optional(),
+    is_blocked: z.boolean().optional()
+});
+export const searchUserInputSchema = z.object({
+    query: z.string().optional(),
+    limit: z.number().int().positive().default(10),
+    offset: z.number().int().nonnegative().default(0),
+    sort_by: z.enum([
+        'name', 'email', 'role', 'created_at', 'updated_at'
+    ]).default('created_at'),
+    sort_order: z.enum(['asc', 'desc']).default('desc'),
+    is_blocked: z.boolean().optional(),
+    role: roleEnum.optional()
+});
+/** PASSWORD_RESET_TOKENS TABLE **/
+export const passwordResetTokenSchema = z.object({
+    reset_token: z.string(),
+    user_id: z.string(),
+    expires_at: z.coerce.date(),
+    used: z.boolean(),
+    created_at: z.coerce.date(),
+});
+export const createPasswordResetTokenInputSchema = z.object({
+    user_id: z.string(),
+    expires_at: z.coerce.date()
+});
+export const updatePasswordResetTokenInputSchema = z.object({
+    reset_token: z.string(),
+    used: z.boolean().optional()
+});
+export const searchPasswordResetTokenInputSchema = z.object({
+    user_id: z.string().optional(),
+    used: z.boolean().optional(),
+    limit: z.number().int().positive().default(10),
+    offset: z.number().int().nonnegative().default(0),
+    sort_by: z.enum(['created_at', 'expires_at']).default('created_at'),
+    sort_order: z.enum(['asc', 'desc']).default('desc')
+});
+/** CATEGORIES TABLE **/
+export const categorySchema = z.object({
+    category_id: z.string(),
+    name: z.string(),
+    parent_category_id: z.string().nullable(),
+    created_at: z.coerce.date(),
+    updated_at: z.coerce.date()
+});
+export const createCategoryInputSchema = z.object({
+    name: z.string().min(1).max(255),
+    parent_category_id: z.string().nullable().optional()
+});
+export const updateCategoryInputSchema = z.object({
+    category_id: z.string(),
+    name: z.string().min(1).max(255).optional(),
+    parent_category_id: z.string().nullable().optional()
+});
+export const searchCategoryInputSchema = z.object({
+    query: z.string().optional(),
+    parent_category_id: z.string().nullable().optional(),
+    limit: z.number().int().positive().default(10),
+    offset: z.number().int().nonnegative().default(0),
+    sort_by: z.enum(['name', 'created_at']).default('created_at'),
+    sort_order: z.enum(['asc', 'desc']).default('desc')
+});
+/** VENDORS TABLE **/
+export const vendorSchema = z.object({
+    vendor_id: z.string(),
+    user_id: z.string(),
+    display_name: z.string(),
+    contact_email: z.string().email(),
+    created_at: z.coerce.date(),
+    updated_at: z.coerce.date()
+});
+export const createVendorInputSchema = z.object({
+    user_id: z.string(),
+    display_name: z.string().min(1).max(255),
+    contact_email: z.string().email(),
+});
+export const updateVendorInputSchema = z.object({
+    vendor_id: z.string(),
+    display_name: z.string().min(1).max(255).optional(),
+    contact_email: z.string().email().optional(),
+});
+export const searchVendorInputSchema = z.object({
+    query: z.string().optional(),
+    limit: z.number().int().positive().default(10),
+    offset: z.number().int().nonnegative().default(0),
+    sort_by: z.enum(['display_name', 'created_at']).default('created_at'),
+    sort_order: z.enum(['asc', 'desc']).default('desc')
+});
+/** PRODUCTS TABLE **/
+export const productStatusEnum = z.enum(['active', 'inactive', 'pending', 'deleted']);
+export const productSchema = z.object({
+    product_id: z.string(),
+    name: z.string(),
+    description: z.string(),
+    price: z.number(),
+    inventory_count: z.number(),
+    status: productStatusEnum.default('active'),
+    vendor_id: z.string().nullable(),
+    average_rating: z.number(),
+    total_ratings: z.number(),
+    created_at: z.coerce.date(),
+    updated_at: z.coerce.date()
+});
+export const createProductInputSchema = z.object({
+    name: z.string().min(1).max(255),
+    description: z.string(),
+    price: z.number().min(0),
+    inventory_count: z.number().int().min(0),
+    status: productStatusEnum.optional(),
+    vendor_id: z.string().nullable().optional()
+});
+export const updateProductInputSchema = z.object({
+    product_id: z.string(),
+    name: z.string().min(1).max(255).optional(),
+    description: z.string().optional(),
+    price: z.number().min(0).optional(),
+    inventory_count: z.number().int().min(0).optional(),
+    status: productStatusEnum.optional(),
+    vendor_id: z.string().nullable().optional()
+});
+export const searchProductInputSchema = z.object({
+    query: z.string().optional(),
+    status: productStatusEnum.optional(),
+    vendor_id: z.string().optional(),
+    min_price: z.number().min(0).optional(),
+    max_price: z.number().min(0).optional(),
+    limit: z.number().int().positive().default(10),
+    offset: z.number().int().nonnegative().default(0),
+    sort_by: z.enum(['name', 'price', 'created_at', 'average_rating']).default('created_at'),
+    sort_order: z.enum(['asc', 'desc']).default('desc')
+});
+/** PRODUCT_IMAGES TABLE **/
+export const productImageSchema = z.object({
+    product_image_id: z.string(),
+    product_id: z.string(),
+    image_url: z.string().url(),
+    sort_order: z.number().int(),
+    is_thumbnail: z.boolean(),
+});
+export const createProductImageInputSchema = z.object({
+    product_id: z.string(),
+    image_url: z.string().url(),
+    sort_order: z.number().int().default(0).optional(),
+    is_thumbnail: z.boolean().optional()
+});
+export const updateProductImageInputSchema = z.object({
+    product_image_id: z.string(),
+    image_url: z.string().url().optional(),
+    sort_order: z.number().int().optional(),
+    is_thumbnail: z.boolean().optional()
+});
+export const searchProductImageInputSchema = z.object({
+    product_id: z.string().optional(),
+    is_thumbnail: z.boolean().optional(),
+    limit: z.number().int().positive().default(10),
+    offset: z.number().int().nonnegative().default(0),
+    sort_by: z.enum(['sort_order', 'product_image_id']).default('sort_order'),
+    sort_order: z.enum(['asc', 'desc']).default('asc')
+});
+/** PRODUCT_CATEGORIES TABLE **/
+export const productCategorySchema = z.object({
+    product_id: z.string(),
+    category_id: z.string(),
+    created_at: z.coerce.date(),
+    updated_at: z.coerce.date()
+});
+export const createProductCategoryInputSchema = z.object({
+    product_id: z.string(),
+    category_id: z.string()
+});
+export const updateProductCategoryInputSchema = z.object({
+    product_id: z.string(),
+    category_id: z.string()
+    // No updatable fields by common practice
+});
+export const searchProductCategoryInputSchema = z.object({
+    product_id: z.string().optional(),
+    category_id: z.string().optional(),
+    limit: z.number().int().positive().default(10),
+    offset: z.number().int().nonnegative().default(0),
+    sort_by: z.enum(['created_at']).default('created_at'),
+    sort_order: z.enum(['asc', 'desc']).default('desc')
+});
+/** WISHLISTS TABLE **/
+export const wishlistSchema = z.object({
+    wishlist_id: z.string(),
+    user_id: z.string(),
+    title: z.string(),
+    created_at: z.coerce.date(),
+    updated_at: z.coerce.date()
+});
+export const createWishlistInputSchema = z.object({
+    user_id: z.string(),
+    title: z.string().min(1).max(255)
+});
+export const updateWishlistInputSchema = z.object({
+    wishlist_id: z.string(),
+    title: z.string().min(1).max(255).optional()
+});
+export const searchWishlistInputSchema = z.object({
+    user_id: z.string().optional(),
+    title: z.string().optional(),
+    limit: z.number().int().positive().default(10),
+    offset: z.number().int().nonnegative().default(0),
+    sort_by: z.enum(['created_at', 'title']).default('created_at'),
+    sort_order: z.enum(['asc', 'desc']).default('desc')
+});
+/** WISHLIST_PRODUCTS TABLE **/
+export const wishlistProductSchema = z.object({
+    wishlist_id: z.string(),
+    product_id: z.string(),
+    added_at: z.coerce.date(),
+});
+export const createWishlistProductInputSchema = z.object({
+    wishlist_id: z.string(),
+    product_id: z.string()
+});
+export const updateWishlistProductInputSchema = z.object({
+    wishlist_id: z.string(),
+    product_id: z.string()
+    // No additional updatable fields 
+});
+export const searchWishlistProductInputSchema = z.object({
+    wishlist_id: z.string().optional(),
+    product_id: z.string().optional(),
+    limit: z.number().int().positive().default(10),
+    offset: z.number().int().nonnegative().default(0),
+    sort_by: z.enum(['added_at']).default('added_at'),
+    sort_order: z.enum(['asc', 'desc']).default('desc')
+});
+/** CARTS TABLE **/
+export const cartSchema = z.object({
+    cart_id: z.string(),
+    user_id: z.string().nullable(),
+    is_guest: z.boolean(),
+    subtotal: z.number(),
+    tax: z.number(),
+    shipping: z.number(),
+    total: z.number(),
+    updated_at: z.coerce.date(),
+    created_at: z.coerce.date()
+});
+export const createCartInputSchema = z.object({
+    user_id: z.string().nullable().optional(),
+    is_guest: z.boolean().default(false).optional(),
+    subtotal: z.number().min(0).default(0).optional(),
+    tax: z.number().min(0).default(0).optional(),
+    shipping: z.number().min(0).default(0).optional(),
+    total: z.number().min(0).default(0).optional()
+});
+export const updateCartInputSchema = z.object({
+    cart_id: z.string(),
+    user_id: z.string().nullable().optional(),
+    is_guest: z.boolean().optional(),
+    subtotal: z.number().min(0).optional(),
+    tax: z.number().min(0).optional(),
+    shipping: z.number().min(0).optional(),
+    total: z.number().min(0).optional()
+});
+export const searchCartInputSchema = z.object({
+    user_id: z.string().optional(),
+    is_guest: z.boolean().optional(),
+    limit: z.number().int().positive().default(10),
+    offset: z.number().int().nonnegative().default(0),
+    sort_by: z.enum(['created_at', 'updated_at']).default('updated_at'),
+    sort_order: z.enum(['asc', 'desc']).default('desc')
+});
+/** CART_ITEMS TABLE **/
+export const cartItemSchema = z.object({
+    cart_item_id: z.string(),
+    cart_id: z.string(),
+    product_id: z.string(),
+    name: z.string(),
+    price: z.number(),
+    quantity: z.number().int(),
+    image_url: z.string().nullable(),
+    max_quantity: z.number().int(),
+    vendor_name: z.string().nullable(),
+    added_at: z.coerce.date(),
+});
+export const createCartItemInputSchema = z.object({
+    cart_id: z.string(),
+    product_id: z.string(),
+    name: z.string().min(1).max(255),
+    price: z.number().min(0),
+    quantity: z.number().int().min(1),
+    image_url: z.string().url().nullable().optional(),
+    max_quantity: z.number().int().min(1),
+    vendor_name: z.string().nullable().optional()
+});
+export const updateCartItemInputSchema = z.object({
+    cart_item_id: z.string(),
+    quantity: z.number().int().min(1).optional(),
+    price: z.number().min(0).optional(),
+    image_url: z.string().url().nullable().optional(),
+    max_quantity: z.number().int().min(1).optional(),
+    vendor_name: z.string().nullable().optional()
+});
+export const searchCartItemInputSchema = z.object({
+    cart_id: z.string().optional(),
+    product_id: z.string().optional(),
+    limit: z.number().int().positive().default(10),
+    offset: z.number().int().nonnegative().default(0),
+    sort_by: z.enum(['added_at', 'cart_item_id']).default('added_at'),
+    sort_order: z.enum(['asc', 'desc']).default('desc')
+});
+/** ORDERS TABLE **/
+export const orderStatusEnum = z.enum(['created', 'processing', 'shipped', 'delivered', 'cancelled']); // extend as needed
+export const orderSchema = z.object({
+    order_id: z.string(),
+    user_id: z.string(),
+    order_number: z.string(),
+    status: orderStatusEnum.default('created'),
+    subtotal: z.number(),
+    tax: z.number(),
+    shipping: z.number(),
+    total: z.number(),
+    shipping_address: z.string(),
+    billing_address: z.string(),
+    phone: z.string(),
+    email: z.string().email(),
+    created_at: z.coerce.date(),
+    updated_at: z.coerce.date(),
+    cancelled_at: z.coerce.date().nullable(),
+    cancelled_by_user_id: z.string().nullable()
+});
+export const createOrderInputSchema = z.object({
+    user_id: z.string(),
+    order_number: z.string().min(1).max(64),
+    status: orderStatusEnum.optional(),
+    subtotal: z.number().min(0),
+    tax: z.number().min(0),
+    shipping: z.number().min(0),
+    total: z.number().min(0),
+    shipping_address: z.string(),
+    billing_address: z.string(),
+    phone: z.string().min(7).max(20),
+    email: z.string().email(),
+    cancelled_at: z.coerce.date().nullable().optional(),
+    cancelled_by_user_id: z.string().nullable().optional()
+});
+export const updateOrderInputSchema = z.object({
+    order_id: z.string(),
+    status: orderStatusEnum.optional(),
+    subtotal: z.number().min(0).optional(),
+    tax: z.number().min(0).optional(),
+    shipping: z.number().min(0).optional(),
+    total: z.number().min(0).optional(),
+    shipping_address: z.string().optional(),
+    billing_address: z.string().optional(),
+    phone: z.string().min(7).max(20).optional(),
+    email: z.string().email().optional(),
+    cancelled_at: z.coerce.date().nullable().optional(),
+    cancelled_by_user_id: z.string().nullable().optional()
+});
+export const searchOrderInputSchema = z.object({
+    user_id: z.string().optional(),
+    order_number: z.string().optional(),
+    status: orderStatusEnum.optional(),
+    limit: z.number().int().positive().default(10),
+    offset: z.number().int().nonnegative().default(0),
+    sort_by: z.enum(['created_at', 'total', 'status']).default('created_at'),
+    sort_order: z.enum(['asc', 'desc']).default('desc')
+});
+/** ORDER_ITEMS TABLE **/
+export const orderItemSchema = z.object({
+    order_item_id: z.string(),
+    order_id: z.string(),
+    product_id: z.string(),
+    name: z.string(),
+    price: z.number(),
+    quantity: z.number().int(),
+    image_url: z.string().nullable(),
+    vendor_id: z.string().nullable()
+});
+export const createOrderItemInputSchema = z.object({
+    order_id: z.string(),
+    product_id: z.string(),
+    name: z.string().min(1).max(255),
+    price: z.number().min(0),
+    quantity: z.number().int().min(1),
+    image_url: z.string().url().nullable().optional(),
+    vendor_id: z.string().nullable().optional()
+});
+export const updateOrderItemInputSchema = z.object({
+    order_item_id: z.string(),
+    price: z.number().min(0).optional(),
+    quantity: z.number().int().min(1).optional(),
+    image_url: z.string().url().nullable().optional(),
+    vendor_id: z.string().nullable().optional()
+});
+export const searchOrderItemInputSchema = z.object({
+    order_id: z.string().optional(),
+    product_id: z.string().optional(),
+    vendor_id: z.string().optional(),
+    limit: z.number().int().positive().default(10),
+    offset: z.number().int().nonnegative().default(0),
+    sort_by: z.enum(['order_item_id']).default('order_item_id'),
+    sort_order: z.enum(['asc', 'desc']).default('desc')
+});
+/** ORDER_STATUS_HISTORY TABLE **/
+export const orderStatusHistorySchema = z.object({
+    order_status_history_id: z.string(),
+    order_id: z.string(),
+    status: orderStatusEnum,
+    updated_by_user_id: z.string(),
+    updated_at: z.coerce.date()
+});
+export const createOrderStatusHistoryInputSchema = z.object({
+    order_id: z.string(),
+    status: orderStatusEnum,
+    updated_by_user_id: z.string()
+});
+export const updateOrderStatusHistoryInputSchema = z.object({
+    order_status_history_id: z.string(),
+    status: orderStatusEnum.optional(),
+    updated_by_user_id: z.string().optional()
+});
+export const searchOrderStatusHistoryInputSchema = z.object({
+    order_id: z.string().optional(),
+    status: orderStatusEnum.optional(),
+    limit: z.number().int().positive().default(10),
+    offset: z.number().int().nonnegative().default(0),
+    sort_by: z.enum(['updated_at']).default('updated_at'),
+    sort_order: z.enum(['asc', 'desc']).default('desc')
+});
+/** PRODUCT_REVIEWS TABLE **/
+export const productReviewSchema = z.object({
+    review_id: z.string(),
+    product_id: z.string(),
+    user_id: z.string(),
+    rating: z.number().min(1).max(5),
+    review_text: z.string().nullable(),
+    review_image_url: z.string().url().nullable(),
+    is_hidden: z.boolean(),
+    created_at: z.coerce.date(),
+    updated_at: z.coerce.date()
+});
+export const createProductReviewInputSchema = z.object({
+    product_id: z.string(),
+    user_id: z.string(),
+    rating: z.number().int().min(1).max(5),
+    review_text: z.string().nullable().optional(),
+    review_image_url: z.string().url().nullable().optional(),
+    is_hidden: z.boolean().optional()
+});
+export const updateProductReviewInputSchema = z.object({
+    review_id: z.string(),
+    rating: z.number().int().min(1).max(5).optional(),
+    review_text: z.string().nullable().optional(),
+    review_image_url: z.string().url().nullable().optional(),
+    is_hidden: z.boolean().optional()
+});
+export const searchProductReviewInputSchema = z.object({
+    product_id: z.string().optional(),
+    user_id: z.string().optional(),
+    is_hidden: z.boolean().optional(),
+    limit: z.number().int().positive().default(10),
+    offset: z.number().int().nonnegative().default(0),
+    sort_by: z.enum(['created_at', 'rating']).default('created_at'),
+    sort_order: z.enum(['asc', 'desc']).default('desc')
+});
+/** NOTIFICATIONS TABLE **/
+export const notificationSchema = z.object({
+    notification_id: z.string(),
+    user_id: z.string().nullable(),
+    content: z.string(),
+    type: z.string(),
+    is_read: z.boolean(),
+    related_entity_type: z.string().nullable(),
+    related_entity_id: z.string().nullable(),
+    created_at: z.coerce.date()
+});
+export const createNotificationInputSchema = z.object({
+    user_id: z.string().nullable().optional(),
+    content: z.string().min(1).max(1024),
+    type: z.string().min(1).max(128),
+    is_read: z.boolean().optional(),
+    related_entity_type: z.string().nullable().optional(),
+    related_entity_id: z.string().nullable().optional()
+});
+export const updateNotificationInputSchema = z.object({
+    notification_id: z.string(),
+    is_read: z.boolean().optional()
+});
+export const searchNotificationInputSchema = z.object({
+    user_id: z.string().optional(),
+    type: z.string().optional(),
+    is_read: z.boolean().optional(),
+    limit: z.number().int().positive().default(10),
+    offset: z.number().int().nonnegative().default(0),
+    sort_by: z.enum(['created_at']).default('created_at'),
+    sort_order: z.enum(['asc', 'desc']).default('desc')
+});
+/** AI_RECOMMENDATIONS TABLE **/
+export const aiRecommendationSchema = z.object({
+    recommendation_id: z.string(),
+    user_id: z.string().nullable(),
+    product_id: z.string(),
+    context_type: z.string(),
+    context_product_id: z.string().nullable(),
+    reason: z.string(),
+    created_at: z.coerce.date()
+});
+export const createAIRecommendationInputSchema = z.object({
+    user_id: z.string().nullable().optional(),
+    product_id: z.string(),
+    context_type: z.string(),
+    context_product_id: z.string().nullable().optional(),
+    reason: z.string().min(1).max(1024)
+});
+export const updateAIRecommendationInputSchema = z.object({
+    recommendation_id: z.string(),
+    reason: z.string().min(1).max(1024).optional()
+});
+export const searchAIRecommendationInputSchema = z.object({
+    user_id: z.string().optional(),
+    product_id: z.string().optional(),
+    context_type: z.string().optional(),
+    limit: z.number().int().positive().default(10),
+    offset: z.number().int().nonnegative().default(0),
+    sort_by: z.enum(['created_at']).default('created_at'),
+    sort_order: z.enum(['asc', 'desc']).default('desc')
+});
+/** ANALYTICS_SNAPSHOTS TABLE **/
+export const analyticsSnapshotSchema = z.object({
+    snapshot_id: z.string(),
+    date_range: z.string(),
+    revenue_total: z.number(),
+    avg_order_value: z.number(),
+    total_orders: z.number().int(),
+    inventory_low_count: z.number().int(),
+    user_registration_count: z.number().int(),
+    created_at: z.coerce.date()
+});
+export const createAnalyticsSnapshotInputSchema = z.object({
+    date_range: z.string(),
+    revenue_total: z.number().min(0),
+    avg_order_value: z.number().min(0),
+    total_orders: z.number().int().min(0),
+    inventory_low_count: z.number().int().min(0),
+    user_registration_count: z.number().int().min(0)
+});
+export const updateAnalyticsSnapshotInputSchema = z.object({
+    snapshot_id: z.string(),
+    revenue_total: z.number().min(0).optional(),
+    avg_order_value: z.number().min(0).optional(),
+    total_orders: z.number().int().min(0).optional(),
+    inventory_low_count: z.number().int().min(0).optional(),
+    user_registration_count: z.number().int().min(0).optional()
+});
+export const searchAnalyticsSnapshotInputSchema = z.object({
+    date_range: z.string().optional(),
+    limit: z.number().int().positive().default(10),
+    offset: z.number().int().nonnegative().default(0),
+    sort_by: z.enum(['created_at']).default('created_at'),
+    sort_order: z.enum(['asc', 'desc']).default('desc')
+});
+/** BULK_PRODUCT_IMPORTS TABLE **/
+export const bulkProductImportSchema = z.object({
+    import_id: z.string(),
+    user_id: z.string(),
+    status: z.string(),
+    file_url: z.string().url(),
+    error_log: z.string().nullable(),
+    created_at: z.coerce.date(),
+    completed_at: z.coerce.date().nullable()
+});
+export const createBulkProductImportInputSchema = z.object({
+    user_id: z.string(),
+    status: z.string().min(1).max(64),
+    file_url: z.string().url(),
+    error_log: z.string().nullable().optional(),
+    completed_at: z.coerce.date().nullable().optional()
+});
+export const updateBulkProductImportInputSchema = z.object({
+    import_id: z.string(),
+    status: z.string().min(1).max(64).optional(),
+    error_log: z.string().nullable().optional(),
+    completed_at: z.coerce.date().nullable().optional()
+});
+export const searchBulkProductImportInputSchema = z.object({
+    user_id: z.string().optional(),
+    status: z.string().optional(),
+    limit: z.number().int().positive().default(10),
+    offset: z.number().int().nonnegative().default(0),
+    sort_by: z.enum(['created_at', 'status']).default('created_at'),
+    sort_order: z.enum(['asc', 'desc']).default('desc')
+});
+/** SEARCH_TERMS TABLE **/
+export const searchTermSchema = z.object({
+    search_term_id: z.string(),
+    user_id: z.string().nullable(),
+    query: z.string(),
+    result_count: z.number().int(),
+    created_at: z.coerce.date()
+});
+export const createSearchTermInputSchema = z.object({
+    user_id: z.string().nullable().optional(),
+    query: z.string().min(1).max(512),
+    result_count: z.number().int().min(0)
+});
+export const updateSearchTermInputSchema = z.object({
+    search_term_id: z.string(),
+    query: z.string().min(1).max(512).optional(),
+    result_count: z.number().int().min(0).optional()
+});
+export const searchSearchTermInputSchema = z.object({
+    user_id: z.string().optional(),
+    query: z.string().optional(),
+    limit: z.number().int().positive().default(10),
+    offset: z.number().int().nonnegative().default(0),
+    sort_by: z.enum(['created_at', 'result_count']).default('created_at'),
+    sort_order: z.enum(['asc', 'desc']).default('desc')
+});
+//# sourceMappingURL=schema.js.map
