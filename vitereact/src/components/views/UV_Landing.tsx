@@ -4,7 +4,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { useAppStore } from "@/store/main";
 
-import type { AiRecommendation, Product, Category } from "@schema";
+import type { AIRecommendation, Product, Category } from "@schema";
 
 // --- API helpers ---
 const API_BASE =
@@ -14,7 +14,7 @@ const API_BASE =
 // NOTE: Returns ai_recommendations: AiRecommendation[]
 const fetchAiRecommendations = async (
   user_id: string | null
-): Promise<AiRecommendation[]> => {
+): Promise<AIRecommendation[]> => {
   const params: Record<string, string> = {};
   if (user_id) params.user_id = user_id;
   const { data } = await axios.get(`${API_BASE}/ai/recommendations`, {
