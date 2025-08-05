@@ -1,0 +1,2971 @@
+>
+```yaml
+
+openapi: 3.0.0
+
+info:
+  title: AIOCart API
+  version: "1.0.0"
+  description: API for AIOCart – AI-Powered E-Commerce Platform, as per PRD/FRD & Zod schemas.
+servers:
+  - url: http://localhost:3000
+
+security:
+  - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    # --- USERS (Authentication & Profiles) ---
+    User:
+      type: object
+      properties:
+        user_id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        password_hash:
+          type: string
+        role:
+          type: string
+          enum: [customer, admin, vendor]
+          default: customer
+        profile_image_url:
+          type: string
+          format: uri
+          nullable: true
+        is_blocked:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required: [user_id, name, email, password_hash, role, is_blocked, created_at, updated_at]
+
+    CreateUserInput:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        email:
+          type: string
+          format: email
+        password_hash:
+          type: string
+          minLength: 8
+        role:
+          type: string
+          enum: [customer, admin, vendor]
+        profile_image_url:
+          type: string
+          format: uri
+          nullable: true
+      required: [name, email, password_hash]
+
+    UpdateUserInput:
+      type: object
+      properties:
+        user_id:
+          type: string
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        email:
+          type: string
+          format: email
+        password_hash:
+          type: string
+          minLength: 8
+        role:
+          type: string
+          enum: [customer, admin, vendor]
+        profile_image_url:
+          type: string
+          format: uri
+          nullable: true
+        is_blocked:
+          type: boolean
+      required: [user_id]
+
+    SearchUserInput:
+      type: object
+      properties:
+        query:
+          type: string
+        limit:
+          type: integer
+          minimum: 1
+          default: 10
+        offset:
+          type: integer
+          minimum: 0
+          default: 0
+        sort_by:
+          type: string
+          enum: [name, email, role, created_at, updated_at]
+          default: created_at
+        sort_order:
+          type: string
+          enum: [asc, desc]
+          default: desc
+        is_blocked:
+          type: boolean
+        role:
+          type: string
+          enum: [customer, admin, vendor]
+      required: []
+
+    # ---- PASSWORD RESET ----
+    PasswordResetToken:
+      type: object
+      properties:
+        reset_token:
+          type: string
+        user_id:
+          type: string
+        expires_at:
+          type: string
+          format: date-time
+        used:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+      required: [reset_token, user_id, expires_at, used, created_at]
+
+    CreatePasswordResetTokenInput:
+      type: object
+      properties:
+        user_id:
+          type: string
+        expires_at:
+          type: string
+          format: date-time
+      required: [user_id, expires_at]
+
+    UpdatePasswordResetTokenInput:
+      type: object
+      properties:
+        reset_token:
+          type: string
+        used:
+          type: boolean
+      required: [reset_token]
+
+    # ---- CATEGORIES ----
+    Category:
+      type: object
+      properties:
+        category_id:
+          type: string
+        name:
+          type: string
+        parent_category_id:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required: [category_id, name, created_at, updated_at]
+
+    CreateCategoryInput:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        parent_category_id:
+          type: string
+          nullable: true
+      required: [name]
+
+    UpdateCategoryInput:
+      type: object
+      properties:
+        category_id:
+          type: string
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        parent_category_id:
+          type: string
+          nullable: true
+      required: [category_id]
+
+    SearchCategoryInput:
+      type: object
+      properties:
+        query:
+          type: string
+        parent_category_id:
+          type: string
+          nullable: true
+        limit:
+          type: integer
+          default: 10
+        offset:
+          type: integer
+          default: 0
+        sort_by:
+          type: string
+          enum: [name, created_at]
+          default: created_at
+        sort_order:
+          type: string
+          enum: [asc, desc]
+          default: desc
+      required: []
+
+    # ---- VENDORS ----
+    Vendor:
+      type: object
+      properties:
+        vendor_id:
+          type: string
+        user_id:
+          type: string
+        display_name:
+          type: string
+        contact_email:
+          type: string
+          format: email
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required: [vendor_id, user_id, display_name, contact_email, created_at, updated_at]
+
+    CreateVendorInput:
+      type: object
+      properties:
+        user_id:
+          type: string
+        display_name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        contact_email:
+          type: string
+          format: email
+      required: [user_id, display_name, contact_email]
+
+    UpdateVendorInput:
+      type: object
+      properties:
+        vendor_id:
+          type: string
+        display_name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        contact_email:
+          type: string
+          format: email
+      required: [vendor_id]
+
+    SearchVendorInput:
+      type: object
+      properties:
+        query:
+          type: string
+        limit:
+          type: integer
+          default: 10
+        offset:
+          type: integer
+          default: 0
+        sort_by:
+          type: string
+          enum: [display_name, created_at]
+          default: created_at
+        sort_order:
+          type: string
+          enum: [asc, desc]
+          default: desc
+      required: []
+
+    # ---- PRODUCTS ----
+    Product:
+      type: object
+      properties:
+        product_id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        inventory_count:
+          type: integer
+        status:
+          type: string
+          enum: [active, inactive, pending, deleted]
+          default: active
+        vendor_id:
+          type: string
+          nullable: true
+        average_rating:
+          type: number
+        total_ratings:
+          type: number
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required: [product_id, name, description, price, inventory_count, status, average_rating, total_ratings, created_at, updated_at]
+
+    CreateProductInput:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type: string
+        price:
+          type: number
+          minimum: 0
+        inventory_count:
+          type: integer
+          minimum: 0
+        status:
+          type: string
+          enum: [active, inactive, pending, deleted]
+        vendor_id:
+          type: string
+          nullable: true
+      required: [name, description, price, inventory_count]
+
+    UpdateProductInput:
+      type: object
+      properties:
+        product_id:
+          type: string
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type: string
+        price:
+          type: number
+          minimum: 0
+        inventory_count:
+          type: integer
+          minimum: 0
+        status:
+          type: string
+          enum: [active, inactive, pending, deleted]
+        vendor_id:
+          type: string
+          nullable: true
+      required: [product_id]
+
+    SearchProductInput:
+      type: object
+      properties:
+        query:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive, pending, deleted]
+        vendor_id:
+          type: string
+        min_price:
+          type: number
+          minimum: 0
+        max_price:
+          type: number
+          minimum: 0
+        limit:
+          type: integer
+          default: 10
+        offset:
+          type: integer
+          default: 0
+        sort_by:
+          type: string
+          enum: [name, price, created_at, average_rating]
+          default: created_at
+        sort_order:
+          type: string
+          enum: [asc, desc]
+          default: desc
+      required: []
+
+    # ---- PRODUCT IMAGES ----
+    ProductImage:
+      type: object
+      properties:
+        product_image_id:
+          type: string
+        product_id:
+          type: string
+        image_url:
+          type: string
+          format: uri
+        sort_order:
+          type: integer
+        is_thumbnail:
+          type: boolean
+      required: [product_image_id, product_id, image_url, sort_order, is_thumbnail]
+
+    CreateProductImageInput:
+      type: object
+      properties:
+        product_id:
+          type: string
+        image_url:
+          type: string
+          format: uri
+        sort_order:
+          type: integer
+          default: 0
+        is_thumbnail:
+          type: boolean
+      required: [product_id, image_url]
+
+    UpdateProductImageInput:
+      type: object
+      properties:
+        product_image_id:
+          type: string
+        image_url:
+          type: string
+          format: uri
+        sort_order:
+          type: integer
+        is_thumbnail:
+          type: boolean
+      required: [product_image_id]
+
+    SearchProductImageInput:
+      type: object
+      properties:
+        product_id:
+          type: string
+        is_thumbnail:
+          type: boolean
+        limit:
+          type: integer
+          default: 10
+        offset:
+          type: integer
+          default: 0
+        sort_by:
+          type: string
+          enum: [sort_order, product_image_id]
+          default: sort_order
+        sort_order:
+          type: string
+          enum: [asc, desc]
+          default: asc
+      required: []
+
+    # ---- PRODUCT CATEGORIES ----
+    ProductCategory:
+      type: object
+      properties:
+        product_id:
+          type: string
+        category_id:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required: [product_id, category_id, created_at, updated_at]
+
+    CreateProductCategoryInput:
+      type: object
+      properties:
+        product_id:
+          type: string
+        category_id:
+          type: string
+      required: [product_id, category_id]
+
+    UpdateProductCategoryInput:
+      type: object
+      properties:
+        product_id:
+          type: string
+        category_id:
+          type: string
+      required: [product_id, category_id]
+
+    SearchProductCategoryInput:
+      type: object
+      properties:
+        product_id:
+          type: string
+        category_id:
+          type: string
+        limit:
+          type: integer
+          default: 10
+        offset:
+          type: integer
+          default: 0
+        sort_by:
+          type: string
+          enum: [created_at]
+          default: created_at
+        sort_order:
+          type: string
+          enum: [asc, desc]
+          default: desc
+      required: []
+
+    # ---- WISHLISTS ----
+    Wishlist:
+      type: object
+      properties:
+        wishlist_id:
+          type: string
+        user_id:
+          type: string
+        title:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required: [wishlist_id, user_id, title, created_at, updated_at]
+
+    CreateWishlistInput:
+      type: object
+      properties:
+        user_id:
+          type: string
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+      required: [user_id, title]
+
+    UpdateWishlistInput:
+      type: object
+      properties:
+        wishlist_id:
+          type: string
+        title:
+          type: string
+          minLength: 1
+          maxLength: 255
+      required: [wishlist_id]
+
+    SearchWishlistInput:
+      type: object
+      properties:
+        user_id:
+          type: string
+        title:
+          type: string
+        limit:
+          type: integer
+          default: 10
+        offset:
+          type: integer
+          default: 0
+        sort_by:
+          type: string
+          enum: [created_at, title]
+          default: created_at
+        sort_order:
+          type: string
+          enum: [asc, desc]
+          default: desc
+      required: []
+
+    # ---- WISHLIST PRODUCTS ----
+    WishlistProduct:
+      type: object
+      properties:
+        wishlist_id:
+          type: string
+        product_id:
+          type: string
+        added_at:
+          type: string
+          format: date-time
+      required: [wishlist_id, product_id, added_at]
+
+    CreateWishlistProductInput:
+      type: object
+      properties:
+        wishlist_id:
+          type: string
+        product_id:
+          type: string
+      required: [wishlist_id, product_id]
+
+    UpdateWishlistProductInput:
+      type: object
+      properties:
+        wishlist_id:
+          type: string
+        product_id:
+          type: string
+      required: [wishlist_id, product_id]
+
+    SearchWishlistProductInput:
+      type: object
+      properties:
+        wishlist_id:
+          type: string
+        product_id:
+          type: string
+        limit:
+          type: integer
+          default: 10
+        offset:
+          type: integer
+          default: 0
+        sort_by:
+          type: string
+          enum: [added_at]
+          default: added_at
+        sort_order:
+          type: string
+          enum: [asc, desc]
+          default: desc
+      required: []
+
+    # ---- CARTS ----
+    Cart:
+      type: object
+      properties:
+        cart_id:
+          type: string
+        user_id:
+          type: string
+          nullable: true
+        is_guest:
+          type: boolean
+        subtotal:
+          type: number
+        tax:
+          type: number
+        shipping:
+          type: number
+        total:
+          type: number
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required: [cart_id, is_guest, subtotal, tax, shipping, total, created_at, updated_at]
+
+    CreateCartInput:
+      type: object
+      properties:
+        user_id:
+          type: string
+          nullable: true
+        is_guest:
+          type: boolean
+          default: false
+        subtotal:
+          type: number
+          minimum: 0
+          default: 0
+        tax:
+          type: number
+          minimum: 0
+          default: 0
+        shipping:
+          type: number
+          minimum: 0
+          default: 0
+        total:
+          type: number
+          minimum: 0
+          default: 0
+      required: []
+
+    UpdateCartInput:
+      type: object
+      properties:
+        cart_id:
+          type: string
+        user_id:
+          type: string
+          nullable: true
+        is_guest:
+          type: boolean
+        subtotal:
+          type: number
+          minimum: 0
+        tax:
+          type: number
+          minimum: 0
+        shipping:
+          type: number
+          minimum: 0
+        total:
+          type: number
+          minimum: 0
+      required: [cart_id]
+
+    SearchCartInput:
+      type: object
+      properties:
+        user_id:
+          type: string
+        is_guest:
+          type: boolean
+        limit:
+          type: integer
+          default: 10
+        offset:
+          type: integer
+          default: 0
+        sort_by:
+          type: string
+          enum: [created_at, updated_at]
+          default: updated_at
+        sort_order:
+          type: string
+          enum: [asc, desc]
+          default: desc
+      required: []
+
+    # ---- CART ITEMS ----
+    CartItem:
+      type: object
+      properties:
+        cart_item_id:
+          type: string
+        cart_id:
+          type: string
+        product_id:
+          type: string
+        name:
+          type: string
+        price:
+          type: number
+        quantity:
+          type: integer
+        image_url:
+          type: string
+          nullable: true
+        max_quantity:
+          type: integer
+        vendor_name:
+          type: string
+          nullable: true
+        added_at:
+          type: string
+          format: date-time
+      required: [cart_item_id, cart_id, product_id, name, price, quantity, max_quantity, added_at]
+
+    CreateCartItemInput:
+      type: object
+      properties:
+        cart_id:
+          type: string
+        product_id:
+          type: string
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        price:
+          type: number
+          minimum: 0
+        quantity:
+          type: integer
+          minimum: 1
+        image_url:
+          type: string
+          format: uri
+          nullable: true
+        max_quantity:
+          type: integer
+          minimum: 1
+        vendor_name:
+          type: string
+          nullable: true
+      required: [cart_id, product_id, name, price, quantity, max_quantity]
+
+    UpdateCartItemInput:
+      type: object
+      properties:
+        cart_item_id:
+          type: string
+        quantity:
+          type: integer
+          minimum: 1
+        price:
+          type: number
+          minimum: 0
+        image_url:
+          type: string
+          format: uri
+          nullable: true
+        max_quantity:
+          type: integer
+          minimum: 1
+        vendor_name:
+          type: string
+          nullable: true
+      required: [cart_item_id]
+
+    SearchCartItemInput:
+      type: object
+      properties:
+        cart_id:
+          type: string
+        product_id:
+          type: string
+        limit:
+          type: integer
+          default: 10
+        offset:
+          type: integer
+          default: 0
+        sort_by:
+          type: string
+          enum: [added_at, cart_item_id]
+          default: added_at
+        sort_order:
+          type: string
+          enum: [asc, desc]
+          default: desc
+      required: []
+
+    # ---- ORDERS ----
+    Order:
+      type: object
+      properties:
+        order_id:
+          type: string
+        user_id:
+          type: string
+        order_number:
+          type: string
+        status:
+          type: string
+          enum: [created, processing, shipped, delivered, cancelled]
+          default: created
+        subtotal:
+          type: number
+        tax:
+          type: number
+        shipping:
+          type: number
+        total:
+          type: number
+        shipping_address:
+          type: string
+        billing_address:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+          format: email
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        cancelled_at:
+          type: string
+          format: date-time
+          nullable: true
+        cancelled_by_user_id:
+          type: string
+          nullable: true
+      required: [order_id, user_id, order_number, status, subtotal, tax, shipping, total, shipping_address, billing_address, phone, email, created_at, updated_at]
+
+    CreateOrderInput:
+      type: object
+      properties:
+        user_id:
+          type: string
+        order_number:
+          type: string
+          minLength: 1
+          maxLength: 64
+        status:
+          type: string
+          enum: [created, processing, shipped, delivered, cancelled]
+        subtotal:
+          type: number
+          minimum: 0
+        tax:
+          type: number
+          minimum: 0
+        shipping:
+          type: number
+          minimum: 0
+        total:
+          type: number
+          minimum: 0
+        shipping_address:
+          type: string
+        billing_address:
+          type: string
+        phone:
+          type: string
+          minLength: 7
+          maxLength: 20
+        email:
+          type: string
+          format: email
+        cancelled_at:
+          type: string
+          format: date-time
+          nullable: true
+        cancelled_by_user_id:
+          type: string
+          nullable: true
+      required: [user_id, order_number, subtotal, tax, shipping, total, shipping_address, billing_address, phone, email]
+
+    UpdateOrderInput:
+      type: object
+      properties:
+        order_id:
+          type: string
+        status:
+          type: string
+          enum: [created, processing, shipped, delivered, cancelled]
+        subtotal:
+          type: number
+          minimum: 0
+        tax:
+          type: number
+          minimum: 0
+        shipping:
+          type: number
+          minimum: 0
+        total:
+          type: number
+          minimum: 0
+        shipping_address:
+          type: string
+        billing_address:
+          type: string
+        phone:
+          type: string
+          minLength: 7
+          maxLength: 20
+        email:
+          type: string
+          format: email
+        cancelled_at:
+          type: string
+          format: date-time
+          nullable: true
+        cancelled_by_user_id:
+          type: string
+          nullable: true
+      required: [order_id]
+
+    SearchOrderInput:
+      type: object
+      properties:
+        user_id:
+          type: string
+        order_number:
+          type: string
+        status:
+          type: string
+          enum: [created, processing, shipped, delivered, cancelled]
+        limit:
+          type: integer
+          default: 10
+        offset:
+          type: integer
+          default: 0
+        sort_by:
+          type: string
+          enum: [created_at, total, status]
+          default: created_at
+        sort_order:
+          type: string
+          enum: [asc, desc]
+          default: desc
+      required: []
+
+    # ---- ORDER ITEMS ----
+    OrderItem:
+      type: object
+      properties:
+        order_item_id:
+          type: string
+        order_id:
+          type: string
+        product_id:
+          type: string
+        name:
+          type: string
+        price:
+          type: number
+        quantity:
+          type: integer
+        image_url:
+          type: string
+          nullable: true
+        vendor_id:
+          type: string
+          nullable: true
+      required: [order_item_id, order_id, product_id, name, price, quantity]
+
+    CreateOrderItemInput:
+      type: object
+      properties:
+        order_id:
+          type: string
+        product_id:
+          type: string
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        price:
+          type: number
+          minimum: 0
+        quantity:
+          type: integer
+          minimum: 1
+        image_url:
+          type: string
+          format: uri
+          nullable: true
+        vendor_id:
+          type: string
+          nullable: true
+      required: [order_id, product_id, name, price, quantity]
+
+    UpdateOrderItemInput:
+      type: object
+      properties:
+        order_item_id:
+          type: string
+        price:
+          type: number
+          minimum: 0
+        quantity:
+          type: integer
+          minimum: 1
+        image_url:
+          type: string
+          format: uri
+          nullable: true
+        vendor_id:
+          type: string
+          nullable: true
+      required: [order_item_id]
+
+    SearchOrderItemInput:
+      type: object
+      properties:
+        order_id:
+          type: string
+        product_id:
+          type: string
+        vendor_id:
+          type: string
+        limit:
+          type: integer
+          default: 10
+        offset:
+          type: integer
+          default: 0
+        sort_by:
+          type: string
+          enum: [order_item_id]
+          default: order_item_id
+        sort_order:
+          type: string
+          enum: [asc, desc]
+          default: desc
+      required: []
+
+    # ---- ORDER STATUS HISTORY ----
+    OrderStatusHistory:
+      type: object
+      properties:
+        order_status_history_id:
+          type: string
+        order_id:
+          type: string
+        status:
+          type: string
+          enum: [created, processing, shipped, delivered, cancelled]
+        updated_by_user_id:
+          type: string
+        updated_at:
+          type: string
+          format: date-time
+      required: [order_status_history_id, order_id, status, updated_by_user_id, updated_at]
+
+    CreateOrderStatusHistoryInput:
+      type: object
+      properties:
+        order_id:
+          type: string
+        status:
+          type: string
+          enum: [created, processing, shipped, delivered, cancelled]
+        updated_by_user_id:
+          type: string
+      required: [order_id, status, updated_by_user_id]
+
+    UpdateOrderStatusHistoryInput:
+      type: object
+      properties:
+        order_status_history_id:
+          type: string
+        status:
+          type: string
+          enum: [created, processing, shipped, delivered, cancelled]
+        updated_by_user_id:
+          type: string
+      required: [order_status_history_id]
+
+    SearchOrderStatusHistoryInput:
+      type: object
+      properties:
+        order_id:
+          type: string
+        status:
+          type: string
+          enum: [created, processing, shipped, delivered, cancelled]
+        limit:
+          type: integer
+          default: 10
+        offset:
+          type: integer
+          default: 0
+        sort_by:
+          type: string
+          enum: [updated_at]
+          default: updated_at
+        sort_order:
+          type: string
+          enum: [asc, desc]
+          default: desc
+      required: []
+
+    # ---- PRODUCT REVIEWS ----
+    ProductReview:
+      type: object
+      properties:
+        review_id:
+          type: string
+        product_id:
+          type: string
+        user_id:
+          type: string
+        rating:
+          type: number
+          minimum: 1
+          maximum: 5
+        review_text:
+          type: string
+          nullable: true
+        review_image_url:
+          type: string
+          format: uri
+          nullable: true
+        is_hidden:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required: [review_id, product_id, user_id, rating, is_hidden, created_at, updated_at]
+
+    CreateProductReviewInput:
+      type: object
+      properties:
+        product_id:
+          type: string
+        user_id:
+          type: string
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        review_text:
+          type: string
+          nullable: true
+        review_image_url:
+          type: string
+          format: uri
+          nullable: true
+        is_hidden:
+          type: boolean
+      required: [product_id, user_id, rating]
+
+    UpdateProductReviewInput:
+      type: object
+      properties:
+        review_id:
+          type: string
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        review_text:
+          type: string
+          nullable: true
+        review_image_url:
+          type: string
+          format: uri
+          nullable: true
+        is_hidden:
+          type: boolean
+      required: [review_id]
+
+    SearchProductReviewInput:
+      type: object
+      properties:
+        product_id:
+          type: string
+        user_id:
+          type: string
+        is_hidden:
+          type: boolean
+        limit:
+          type: integer
+          default: 10
+        offset:
+          type: integer
+          default: 0
+        sort_by:
+          type: string
+          enum: [created_at, rating]
+          default: created_at
+        sort_order:
+          type: string
+          enum: [asc, desc]
+          default: desc
+      required: []
+
+    # ---- NOTIFICATIONS ----
+    Notification:
+      type: object
+      properties:
+        notification_id:
+          type: string
+        user_id:
+          type: string
+          nullable: true
+        content:
+          type: string
+        type:
+          type: string
+        is_read:
+          type: boolean
+        related_entity_type:
+          type: string
+          nullable: true
+        related_entity_id:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+      required: [notification_id, content, type, is_read, created_at]
+
+    CreateNotificationInput:
+      type: object
+      properties:
+        user_id:
+          type: string
+          nullable: true
+        content:
+          type: string
+          minLength: 1
+          maxLength: 1024
+        type:
+          type: string
+          minLength: 1
+          maxLength: 128
+        is_read:
+          type: boolean
+        related_entity_type:
+          type: string
+          nullable: true
+        related_entity_id:
+          type: string
+          nullable: true
+      required: [content, type]
+
+    UpdateNotificationInput:
+      type: object
+      properties:
+        notification_id:
+          type: string
+        is_read:
+          type: boolean
+      required: [notification_id]
+
+    SearchNotificationInput:
+      type: object
+      properties:
+        user_id:
+          type: string
+        type:
+          type: string
+        is_read:
+          type: boolean
+        limit:
+          type: integer
+          default: 10
+        offset:
+          type: integer
+          default: 0
+        sort_by:
+          type: string
+          enum: [created_at]
+          default: created_at
+        sort_order:
+          type: string
+          enum: [asc, desc]
+          default: desc
+      required: []
+
+    # ---- AI RECOMMENDATION ----
+    AIRecommendation:
+      type: object
+      properties:
+        recommendation_id:
+          type: string
+        user_id:
+          type: string
+          nullable: true
+        product_id:
+          type: string
+        context_type:
+          type: string
+        context_product_id:
+          type: string
+          nullable: true
+        reason:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+      required: [recommendation_id, product_id, context_type, reason, created_at]
+
+    CreateAIRecommendationInput:
+      type: object
+      properties:
+        user_id:
+          type: string
+          nullable: true
+        product_id:
+          type: string
+        context_type:
+          type: string
+        context_product_id:
+          type: string
+          nullable: true
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 1024
+      required: [product_id, context_type, reason]
+
+    UpdateAIRecommendationInput:
+      type: object
+      properties:
+        recommendation_id:
+          type: string
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 1024
+      required: [recommendation_id]
+
+    SearchAIRecommendationInput:
+      type: object
+      properties:
+        user_id:
+          type: string
+        product_id:
+          type: string
+        context_type:
+          type: string
+        limit:
+          type: integer
+          default: 10
+        offset:
+          type: integer
+          default: 0
+        sort_by:
+          type: string
+          enum: [created_at]
+          default: created_at
+        sort_order:
+          type: string
+          enum: [asc, desc]
+          default: desc
+      required: []
+
+    # ---- ANALYTICS SNAPSHOT ----
+    AnalyticsSnapshot:
+      type: object
+      properties:
+        snapshot_id:
+          type: string
+        date_range:
+          type: string
+        revenue_total:
+          type: number
+        avg_order_value:
+          type: number
+        total_orders:
+          type: integer
+        inventory_low_count:
+          type: integer
+        user_registration_count:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+      required: [snapshot_id, date_range, revenue_total, avg_order_value, total_orders, inventory_low_count, user_registration_count, created_at]
+
+    CreateAnalyticsSnapshotInput:
+      type: object
+      properties:
+        date_range:
+          type: string
+        revenue_total:
+          type: number
+          minimum: 0
+        avg_order_value:
+          type: number
+          minimum: 0
+        total_orders:
+          type: integer
+          minimum: 0
+        inventory_low_count:
+          type: integer
+          minimum: 0
+        user_registration_count:
+          type: integer
+          minimum: 0
+      required: [date_range, revenue_total, avg_order_value, total_orders, inventory_low_count, user_registration_count]
+
+    UpdateAnalyticsSnapshotInput:
+      type: object
+      properties:
+        snapshot_id:
+          type: string
+        revenue_total:
+          type: number
+          minimum: 0
+        avg_order_value:
+          type: number
+          minimum: 0
+        total_orders:
+          type: integer
+          minimum: 0
+        inventory_low_count:
+          type: integer
+          minimum: 0
+        user_registration_count:
+          type: integer
+          minimum: 0
+      required: [snapshot_id]
+
+    SearchAnalyticsSnapshotInput:
+      type: object
+      properties:
+        date_range:
+          type: string
+        limit:
+          type: integer
+          default: 10
+        offset:
+          type: integer
+          default: 0
+        sort_by:
+          type: string
+          enum: [created_at]
+          default: created_at
+        sort_order:
+          type: string
+          enum: [asc, desc]
+          default: desc
+      required: []
+
+    # ---- BULK PRODUCT IMPORT ----
+    BulkProductImport:
+      type: object
+      properties:
+        import_id:
+          type: string
+        user_id:
+          type: string
+        status:
+          type: string
+        file_url:
+          type: string
+          format: uri
+        error_log:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+      required: [import_id, user_id, status, file_url, created_at]
+
+    CreateBulkProductImportInput:
+      type: object
+      properties:
+        user_id:
+          type: string
+        status:
+          type: string
+          minLength: 1
+          maxLength: 64
+        file_url:
+          type: string
+          format: uri
+        error_log:
+          type: string
+          nullable: true
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+      required: [user_id, status, file_url]
+
+    UpdateBulkProductImportInput:
+      type: object
+      properties:
+        import_id:
+          type: string
+        status:
+          type: string
+          minLength: 1
+          maxLength: 64
+        error_log:
+          type: string
+          nullable: true
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+      required: [import_id]
+
+    SearchBulkProductImportInput:
+      type: object
+      properties:
+        user_id:
+          type: string
+        status:
+          type: string
+        limit:
+          type: integer
+          default: 10
+        offset:
+          type: integer
+          default: 0
+        sort_by:
+          type: string
+          enum: [created_at, status]
+          default: created_at
+        sort_order:
+          type: string
+          enum: [asc, desc]
+          default: desc
+      required: []
+
+    # ---- SEARCH TERMS ----
+    SearchTerm:
+      type: object
+      properties:
+        search_term_id:
+          type: string
+        user_id:
+          type: string
+          nullable: true
+        query:
+          type: string
+        result_count:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+      required: [search_term_id, query, result_count, created_at]
+
+    CreateSearchTermInput:
+      type: object
+      properties:
+        user_id:
+          type: string
+          nullable: true
+        query:
+          type: string
+          minLength: 1
+          maxLength: 512
+        result_count:
+          type: integer
+          minimum: 0
+      required: [query, result_count]
+
+    UpdateSearchTermInput:
+      type: object
+      properties:
+        search_term_id:
+          type: string
+        query:
+          type: string
+          minLength: 1
+          maxLength: 512
+        result_count:
+          type: integer
+          minimum: 0
+      required: [search_term_id]
+
+    SearchSearchTermInput:
+      type: object
+      properties:
+        user_id:
+          type: string
+        query:
+          type: string
+        limit:
+          type: integer
+          default: 10
+        offset:
+          type: integer
+          default: 0
+        sort_by:
+          type: string
+          enum: [created_at, result_count]
+          default: created_at
+        sort_order:
+          type: string
+          enum: [asc, desc]
+          default: desc
+      required: []
+
+  parameters:
+    limitParam:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        default: 10
+      description: Number of items to return
+    offsetParam:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        default: 0
+      description: Result offset (for pagination)
+    sort_orderParam:
+      name: sort_order
+      in: query
+      schema:
+        type: string
+        enum: [asc, desc]
+        default: desc
+      description: Sort order
+
+paths:
+  # ------ AUTHENTICATION ------
+  /auth/register:
+    post:
+      summary: Register a new user account
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/CreateUserInput'
+      responses:
+        '201':
+          description: User created with JWT token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  token:
+                    type: string
+        '409':
+          description: Email already used
+        '400':
+          description: Invalid input
+
+  /auth/login:
+    post:
+      summary: Log in as a user and obtain JWT token
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+              required: [email, password]
+      responses:
+        '200':
+          description: Login successful; JWT token returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  token:
+                    type: string
+        '401':
+          description: Invalid credentials
+
+  /auth/logout:
+    post:
+      summary: Log out a user (client only; no server action)
+      operationId: logoutUser
+      responses:
+        '204':
+          description: Successfully logged out (stateless)
+
+  /auth/password/forgot:
+    post:
+      summary: Request a password reset email
+      operationId: requestPasswordReset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+              required: [email]
+      responses:
+        '200':
+          description: Password reset email sent (simulated)
+        '404':
+          description: Email not found
+
+  /auth/password/reset:
+    post:
+      summary: Reset password using a reset token
+      operationId: resetPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reset_token:
+                  type: string
+                password_hash:
+                  type: string
+                  minLength: 8
+              required: [reset_token, password_hash]
+      responses:
+        '200':
+          description: Password reset successfully
+        '400':
+          description: Invalid or expired token
+
+  # ------ USERS ------
+  /users/me:
+    get:
+      summary: Get the current user's profile
+      operationId: getCurrentUser
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: The current user profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Not authenticated
+
+  /users:
+    get:
+      summary: Search users (admin only)
+      operationId: searchUsers
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: query
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            default: 0
+        - in: query
+          name: sort_by
+          schema:
+            type: string
+            enum: [name, email, role, created_at, updated_at]
+            default: created_at
+        - in: query
+          name: sort_order
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+        - in: query
+          name: is_blocked
+          schema:
+            type: boolean
+        - in: query
+          name: role
+          schema:
+            type: string
+            enum: [customer, admin, vendor]
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+
+    post:
+      summary: Create a new user (admin only)
+      operationId: adminCreateUser
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserInput'
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  /users/{user_id}:
+    get:
+      summary: View user profile (public for displaying info)
+      operationId: getUserById
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: Not found
+
+    patch:
+      summary: Update a user profile (self or admin)
+      operationId: updateUser
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserInput'
+      responses:
+        '200':
+          description: Updated user info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '403':
+          description: Forbidden
+
+    delete:
+      summary: Delete a user (admin)
+      operationId: deleteUser
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Deleted
+
+  # ------ CATEGORIES ------
+  /categories:
+    get:
+      summary: Search and list categories
+      operationId: searchCategories
+      parameters:
+        - in: query
+          name: query
+          schema:
+            type: string
+        - in: query
+          name: parent_category_id
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            default: 0
+        - in: query
+          name: sort_by
+          schema:
+            type: string
+            enum: [name, created_at]
+            default: created_at
+        - in: query
+          name: sort_order
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+      responses:
+        '200':
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  categories:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Category'
+
+    post:
+      summary: Create a category (admin)
+      operationId: createCategory
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCategoryInput'
+      responses:
+        '201':
+          description: Category created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+
+  /categories/{category_id}:
+    get:
+      summary: Get a category by ID
+      operationId: getCategoryById
+      parameters:
+        - in: path
+          name: category_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Category info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '404':
+          description: Not found
+
+    patch:
+      summary: Update a category (admin)
+      operationId: updateCategory
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: category_id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCategoryInput'
+      responses:
+        '200':
+          description: Updated category
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+
+    delete:
+      summary: Delete a category (admin)
+      operationId: deleteCategory
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: category_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Deleted
+
+  # ------ VENDORS ------
+  /vendors:
+    get:
+      summary: Search and list vendors
+      operationId: searchVendors
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: query
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            default: 0
+        - in: query
+          name: sort_by
+          schema:
+            type: string
+            enum: [display_name, created_at]
+            default: created_at
+        - in: query
+          name: sort_order
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+      responses:
+        '200':
+          description: List of vendors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  vendors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Vendor'
+
+    post:
+      summary: Create a vendor (admin only)
+      operationId: createVendor
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateVendorInput'
+      responses:
+        '201':
+          description: Vendor created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vendor'
+
+  /vendors/{vendor_id}:
+    get:
+      summary: Get a vendor by ID
+      operationId: getVendorById
+      parameters:
+        - in: path
+          name: vendor_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Vendor info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vendor'
+        '404':
+          description: Not found
+
+    patch:
+      summary: Update a vendor (admin only)
+      operationId: updateVendor
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: vendor_id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateVendorInput'
+      responses:
+        '200':
+          description: Updated vendor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vendor'
+
+    delete:
+      summary: Delete a vendor (admin only)
+      operationId: deleteVendor
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: vendor_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Deleted
+
+  # ------ PRODUCTS (catalog, search, discovery, vendor-specific) ------
+  /products:
+    get:
+      summary: Search and filter products (all filters supported)
+      operationId: searchProducts
+      parameters:
+        - in: query
+          name: query
+          schema:
+            type: string
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [active, inactive, pending, deleted]
+        - in: query
+          name: vendor_id
+          schema:
+            type: string
+        - in: query
+          name: min_price
+          schema:
+            type: number
+            minimum: 0
+        - in: query
+          name: max_price
+          schema:
+            type: number
+            minimum: 0
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            default: 0
+        - in: query
+          name: sort_by
+          schema:
+            type: string
+            enum: [name, price, created_at, average_rating]
+            default: created_at
+        - in: query
+          name: sort_order
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+      responses:
+        '200':
+          description: List of products
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  products:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+
+    post:
+      summary: Create a new product (admin or vendor)
+      operationId: createProduct
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductInput'
+      responses:
+        '201':
+          description: Product created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+
+  /products/{product_id}:
+    get:
+      summary: Get detailed info for a product (public)
+      operationId: getProductById
+      parameters:
+        - in: path
+          name: product_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Product details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Not found
+
+    patch:
+      summary: Update product (admin/vendor)
+      operationId: updateProduct
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: product_id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProductInput'
+      responses:
+        '200':
+          description: Updated product
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+
+    delete:
+      summary: Delete product (admin/vendor)
+      operationId: deleteProduct
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: product_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Product deleted
+
+  # ------ PRODUCT IMAGES ------
+  /products/{product_id}/images:
+    get:
+      summary: List product images for a product
+      operationId: listProductImages
+      parameters:
+        - in: path
+          name: product_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of images for a product
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  images:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductImage'
+
+    post:
+      summary: Add a product image (admin/vendor)
+      operationId: createProductImage
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: product_id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductImageInput'
+      responses:
+        '201':
+          description: Product image created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductImage'
+
+  /product_images/{product_image_id}:
+    patch:
+      summary: Update a product image (admin/vendor)
+      operationId: updateProductImage
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: product_image_id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProductImageInput'
+      responses:
+        '200':
+          description: Updated image
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductImage'
+
+    delete:
+      summary: Delete product image (admin/vendor)
+      operationId: deleteProductImage
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: product_image_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Image deleted
+
+  # PRODUCT CATEGORY ASSIGNMENT
+  /products/{product_id}/categories:
+    get:
+      summary: List categories for a product
+      operationId: listProductCategories
+      parameters:
+        - in: path
+          name: product_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Categories for product
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  categories:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Category'
+
+    post:
+      summary: Assign a category to a product (admin/vendor)
+      operationId: createProductCategory
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: product_id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                category_id:
+                  type: string
+              required: [category_id]
+      responses:
+        '201':
+          description: Product-category linked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductCategory'
+
+  /product_categories:
+    get:
+      summary: List product_category relationships
+      operationId: listProductCategoryMappings
+      parameters:
+        - in: query
+          name: product_id
+          schema:
+            type: string
+        - in: query
+          name: category_id
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            default: 0
+        - in: query
+          name: sort_by
+          schema:
+            type: string
+            enum: [created_at]
+            default: created_at
+        - in: query
+          name: sort_order
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+      responses:
+        '200':
+          description: Product category relations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  product_categories:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductCategory'
+
+    post:
+      summary: Add product-category link (admin/vendor)
+      operationId: createProductCategoryMapping
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductCategoryInput'
+      responses:
+        '201':
+          description: Product-category mapping created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductCategory'
+
+    delete:
+      summary: Remove product-category mapping (admin/vendor)
+      operationId: deleteProductCategoryMapping
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProductCategoryInput'
+      responses:
+        '204':
+          description: Mapping deleted
+
+  # ----------- WISHLISTS -----------
+  /wishlists:
+    get:
+      summary: List or search wishlists for a user
+      operationId: listWishlists
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: user_id
+          schema:
+            type: string
+        - in: query
+          name: title
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            type: integer
+        - in: query
+          name: offset
+          schema:
+            type: integer
+        - in: query
+          name: sort_by
+          schema:
+            type: string
+            enum: [created_at, title]
+            default: created_at
+        - in: query
+          name: sort_order
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+      responses:
+        '200':
+          description: Wishlists found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  wishlists:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Wishlist'
+
+    post:
+      summary: Create a new wishlist for user
+      operationId: createWishlist
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWishlistInput'
+      responses:
+        '201':
+          description: Wishlist created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wishlist'
+
+  /wishlists/{wishlist_id}:
+    get:
+      summary: Get details about a specific wishlist
+      operationId: getWishlistById
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: wishlist_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Wishlist info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wishlist'
+
+    patch:
+      summary: Rename or update a wishlist
+      operationId: updateWishlist
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: wishlist_id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWishlistInput'
+      responses:
+        '200':
+          description: Wishlist updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wishlist'
+
+    delete:
+      summary: Delete a wishlist
+      operationId: deleteWishlist
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: wishlist_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Wishlist deleted
+
+  # Wishlist Items (Products in Wishlist)
+  /wishlists/{wishlist_id}/products:
+    get:
+      summary: List products in a wishlist
+      operationId: listWishlistProducts
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: wishlist_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Wishlist products
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  products:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/WishlistProduct'
+
+    post:
+      summary: Add product to wishlist
+      operationId: addProductToWishlist
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: wishlist_id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                product_id:
+                  type: string
+              required: [product_id]
+      responses:
+        '201':
+          description: Product added to wishlist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WishlistProduct'
+
+    delete:
+      summary: Remove product from wishlist
+      operationId: removeProductFromWishlist
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: wishlist_id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                product_id:
+                  type: string
+              required: [product_id]
+      responses:
+        '204':
+          description: Product removed from wishlist
+
+  # Move/Copy product between wishlists
+  /wishlists/{wishlist_id}/products/{product_id}/move:
+    post:
+      summary: Move or copy a product between wishlists
+      operationId: moveProductBetweenWishlists
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: wishlist_id
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: product_id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                target_wishlist_id:
+                  type: string
+                action:
+                  type: string
+                  enum: [move, copy]
+              required: [target_wishlist_id, action]
+      responses:
+        '200':
+          description: Product moved or copied
+
+  # ----------- CARTS / CART ITEMS -----------
+  /carts:
+    get:
+      summary: Search or get carts
+      operationId: searchCarts
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: user_id
+          schema:
+            type: string
+        - in: query
+          name: is_guest
+          schema:
+            type: boolean
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          required: false
+        - in: query
+          name: offset
+          schema:
+            type: integer
+          required: false
+        - in: query
+          name: sort_by
+          schema:
+            type: string
+            enum: [created_at, updated_at]
+            default: updated_at
+        - in: query
+          name: sort_order
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+      responses:
+        '200':
+          description: Carts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  carts:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Cart'
+
+    post:
+      summary: Create a (guest or user) cart
+      operationId: createCart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCartInput'
+      responses:
+        '201':
+          description: Cart created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+
+  /carts/{cart_id}:
+    get:
+      summary: Get cart by cart_id
+      operationId: getCartById
+      parameters:
+        - in: path
+          name: cart_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Cart details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+          links:
+            cartItems:
+              operationId: listCartItems
+    patch:
+      summary: Update a cart
+      operationId: updateCart
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: cart_id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCartInput'
+      responses:
+        '200':
+          description: Updated cart
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+    delete:
+      summary: Delete cart (or clear for guest)
+      operationId: deleteCart
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: cart_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Cart deleted
+
+  # Cart Items (subresource)
+  /carts/{cart_id}/items:
+    get:

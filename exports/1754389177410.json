@@ -1,0 +1,19 @@
+{
+  "timestamp": 1754389177410,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_Admin_Orders",
+      "version": "1754388992109"
+    }
+  },
+  "projectId": "ai-powered-e-commerce-platform",
+  "files": [
+    {
+      "path": "../../apps/ai-powered-e-commerce-platform/vitereact/src/components/views/UV_Admin_Orders.tsx",
+      "type": "text",
+      "size": 27712,
+      "dependencies": false
+    }
+  ]
+}

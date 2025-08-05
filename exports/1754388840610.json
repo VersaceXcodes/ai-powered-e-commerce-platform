@@ -1,0 +1,21 @@
+{
+  "timestamp": 1754388840610,
+  "operation": {
+    "id": "settings:config:package"
+  },
+  "projectId": "ai-powered-e-commerce-platform",
+  "files": [
+    {
+      "path": "../../apps/ai-powered-e-commerce-platform/backend/package.json",
+      "type": "text",
+      "size": 1447,
+      "dependencies": true
+    },
+    {
+      "path": "../../apps/ai-powered-e-commerce-platform/backend/.env",
+      "type": "text",
+      "size": 422,
+      "dependencies": false
+    }
+  ]
+}

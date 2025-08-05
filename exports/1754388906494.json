@@ -1,0 +1,21 @@
+{
+  "timestamp": 1754388906494,
+  "operation": {
+    "id": "backend:tests:main"
+  },
+  "projectId": "ai-powered-e-commerce-platform",
+  "files": [
+    {
+      "path": "../../apps/ai-powered-e-commerce-platform/backend/server.test.js",
+      "type": "text",
+      "size": 12511,
+      "dependencies": false
+    },
+    {
+      "path": "../../apps/ai-powered-e-commerce-platform/backend/jest.config.js",
+      "type": "text",
+      "size": 121,
+      "dependencies": false
+    }
+  ]
+}

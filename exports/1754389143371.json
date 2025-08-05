@@ -1,0 +1,19 @@
+{
+  "timestamp": 1754389143371,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_Auth_Login",
+      "version": "1754388992015"
+    }
+  },
+  "projectId": "ai-powered-e-commerce-platform",
+  "files": [
+    {
+      "path": "../../apps/ai-powered-e-commerce-platform/vitereact/src/components/views/UV_Auth_Login.tsx",
+      "type": "text",
+      "size": 10873,
+      "dependencies": false
+    }
+  ]
+}

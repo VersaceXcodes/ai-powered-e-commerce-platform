@@ -1,0 +1,848 @@
+asyncapi: 2.0.0
+info:
+  title: AIOCart Realtime Events API
+  version: 1.0.0
+  description: >
+    AsyncAPI spec for AIOCart real-time events: notifications, carts, orders,
+    wishlists, reviews, product/inventory, admin/vendor alerts, and
+    recommendation updates.
+
+    All schemas are strictly aligned with Zod schema types.
+servers:
+  websocket:
+    url: ws://localhost:3000
+    protocol: ws
+    description: Local development WebSocket endpoint for real-time features.
+channels:
+  notification/user/{user_id}:
+    parameters:
+      user_id:
+        $ref: "#/components/parameters/user_id"
+    subscribe:
+      operationId: onNotificationUser
+      summary: Subscribe to a user's notifications stream.
+      message:
+        oneOf:
+          - $ref: "#/components/messages/notificationCreated"
+          - $ref: "#/components/messages/notificationUpdated"
+  notification/admin:
+    subscribe:
+      operationId: onNotificationAdmin
+      summary: Subscribe to admin-wide notifications (alerts, new orders, low stock,
+        etc.).
+      message:
+        oneOf:
+          - $ref: "#/components/messages/notificationCreated"
+          - $ref: "#/components/messages/notificationUpdated"
+  notification/vendor/{vendor_id}:
+    parameters:
+      vendor_id:
+        $ref: "#/components/parameters/vendor_id"
+    subscribe:
+      operationId: onNotificationVendor
+      summary: Subscribe to vendor-wide notifications (vendor's orders, low stock,
+        etc.).
+      message:
+        oneOf:
+          - $ref: "#/components/messages/notificationCreated"
+          - $ref: "#/components/messages/notificationUpdated"
+  cart/user/{user_id}:
+    parameters:
+      user_id:
+        $ref: "#/components/parameters/user_id"
+    subscribe:
+      operationId: onCartUser
+      summary: Subscribe to changes in the authenticated user's cart (sync across
+        devices).
+      message:
+        oneOf:
+          - $ref: "#/components/messages/cartUpdated"
+          - $ref: "#/components/messages/cartItemAdded"
+          - $ref: "#/components/messages/cartItemUpdated"
+          - $ref: "#/components/messages/cartItemRemoved"
+          - $ref: "#/components/messages/cartCleared"
+          - $ref: "#/components/messages/cartInventoryAlert"
+  cart/guest/{cart_id}:
+    parameters:
+      cart_id:
+        $ref: "#/components/parameters/cart_id"
+    subscribe:
+      operationId: onCartGuest
+      summary: Subscribe to changes in a guest cart by cart_id (device/browser scope).
+      message:
+        oneOf:
+          - $ref: "#/components/messages/cartUpdated"
+          - $ref: "#/components/messages/cartItemAdded"
+          - $ref: "#/components/messages/cartItemUpdated"
+          - $ref: "#/components/messages/cartItemRemoved"
+          - $ref: "#/components/messages/cartCleared"
+          - $ref: "#/components/messages/cartInventoryAlert"
+  wishlist/user/{user_id}:
+    parameters:
+      user_id:
+        $ref: "#/components/parameters/user_id"
+    subscribe:
+      operationId: onWishlistUser
+      summary: Subscribe to all wishlists belonging to a user (sync wishlists state in
+        real time).
+      message:
+        oneOf:
+          - $ref: "#/components/messages/wishlistCreated"
+          - $ref: "#/components/messages/wishlistUpdated"
+          - $ref: "#/components/messages/wishlistDeleted"
+          - $ref: "#/components/messages/wishlistProductAdded"
+          - $ref: "#/components/messages/wishlistProductRemoved"
+          - $ref: "#/components/messages/wishlistProductMoved"
+  order/user/{user_id}:
+    parameters:
+      user_id:
+        $ref: "#/components/parameters/user_id"
+    subscribe:
+      operationId: onOrderUser
+      summary: Subscribe to a user's order events (placed/updated/status/history).
+      message:
+        oneOf:
+          - $ref: "#/components/messages/orderCreated"
+          - $ref: "#/components/messages/orderUpdated"
+          - $ref: "#/components/messages/orderCancelled"
+          - $ref: "#/components/messages/orderStatusChanged"
+          - $ref: "#/components/messages/orderItemAdded"
+          - $ref: "#/components/messages/orderItemUpdated"
+  order/admin:
+    subscribe:
+      operationId: onOrderAdmin
+      summary: Subscribe to all order events for admins (new order, cancelled, status,
+        etc).
+      message:
+        oneOf:
+          - $ref: "#/components/messages/orderCreated"
+          - $ref: "#/components/messages/orderUpdated"
+          - $ref: "#/components/messages/orderCancelled"
+          - $ref: "#/components/messages/orderStatusChanged"
+  order/vendor/{vendor_id}:
+    parameters:
+      vendor_id:
+        $ref: "#/components/parameters/vendor_id"
+    subscribe:
+      operationId: onOrderVendor
+      summary: Subscribe to order events relevant to a vendor (new order with vendor
+        items, status changes).
+      message:
+        oneOf:
+          - $ref: "#/components/messages/orderVendorRelevant"
+  review/product/{product_id}:
+    parameters:
+      product_id:
+        $ref: "#/components/parameters/product_id"
+    subscribe:
+      operationId: onProductReviewRealtime
+      summary: Subscribe to real-time product review creations, updates, moderation.
+      message:
+        oneOf:
+          - $ref: "#/components/messages/reviewCreated"
+          - $ref: "#/components/messages/reviewUpdated"
+          - $ref: "#/components/messages/reviewHidden"
+  review/user/{user_id}:
+    parameters:
+      user_id:
+        $ref: "#/components/parameters/user_id"
+    subscribe:
+      operationId: onUserReviewRealtime
+      summary: Subscribe to own review submissions, edits, deletions, moderation.
+      message:
+        oneOf:
+          - $ref: "#/components/messages/reviewCreated"
+          - $ref: "#/components/messages/reviewUpdated"
+          - $ref: "#/components/messages/reviewHidden"
+  review/admin:
+    subscribe:
+      operationId: onAdminReviewModerate
+      summary: Admin panel review events (submitted, hidden, etc).
+      message:
+        oneOf:
+          - $ref: "#/components/messages/reviewCreated"
+          - $ref: "#/components/messages/reviewUpdated"
+          - $ref: "#/components/messages/reviewHidden"
+  product/{product_id}:
+    parameters:
+      product_id:
+        $ref: "#/components/parameters/product_id"
+    subscribe:
+      operationId: onProductRealtime
+      summary: Subscribe to product inventory and status events (stock update, status,
+        price, etc).
+      message:
+        oneOf:
+          - $ref: "#/components/messages/productUpdated"
+          - $ref: "#/components/messages/productInventoryLow"
+  product/inventorylow:
+    subscribe:
+      operationId: onProductInventoryLow
+      summary: Subscribe to system-wide low inventory alerts (admin/vendor).
+      message:
+        $ref: "#/components/messages/productInventoryLow"
+  recommendation/user/{user_id}:
+    parameters:
+      user_id:
+        $ref: "#/components/parameters/user_id"
+    subscribe:
+      operationId: onPersonalizedRecommendation
+      summary: Personalized or session-based AI-generated product recommendations,
+        dynamically updated.
+      message:
+        $ref: "#/components/messages/aiRecommendationUpdated"
+  recommendation/homepage:
+    subscribe:
+      operationId: onHomepageRecommendations
+      summary: Anonymous/trending homepage recommendations updated in real-time.
+      message:
+        $ref: "#/components/messages/aiRecommendationGlobalUpdated"
+components:
+  parameters:
+    user_id:
+      description: User identifier (string)
+      schema:
+        type: string
+    vendor_id:
+      description: Vendor identifier (string)
+      schema:
+        type: string
+    cart_id:
+      description: Cart identifier (string)
+      schema:
+        type: string
+    product_id:
+      description: Product identifier (string)
+      schema:
+        type: string
+  messages:
+    notificationCreated:
+      name: notificationCreated
+      summary: New notification created for user/admin/vendor
+      payload:
+        $ref: "#/components/schemas/Notification"
+    notificationUpdated:
+      name: notificationUpdated
+      summary: Notification updated (e.g., marked as read)
+      payload:
+        $ref: "#/components/schemas/Notification"
+    cartUpdated:
+      name: cartUpdated
+      summary: Entire cart recalculated/updated (e.g., totals, cleared, merged)
+      payload:
+        $ref: "#/components/schemas/Cart"
+    cartItemAdded:
+      name: cartItemAdded
+      summary: Product added to user/guest cart
+      payload:
+        $ref: "#/components/schemas/CartItem"
+    cartItemUpdated:
+      name: cartItemUpdated
+      summary: Cart item quantity/price updated (e.g., inventory validated)
+      payload:
+        $ref: "#/components/schemas/CartItem"
+    cartItemRemoved:
+      name: cartItemRemoved
+      summary: Product removed from cart
+      payload:
+        type: object
+        required:
+          - cart_item_id
+          - cart_id
+          - product_id
+        properties:
+          cart_item_id:
+            type: string
+          cart_id:
+            type: string
+          product_id:
+            type: string
+    cartCleared:
+      name: cartCleared
+      summary: Entire cart cleared (user action or after checkout)
+      payload:
+        type: object
+        required:
+          - cart_id
+        properties:
+          cart_id:
+            type: string
+    cartInventoryAlert:
+      name: cartInventoryAlert
+      summary: Alert client of out-of-stock or max inventory for a cart item
+      payload:
+        type: object
+        required:
+          - cart_item_id
+          - max_quantity
+          - message
+        properties:
+          cart_item_id:
+            type: string
+          max_quantity:
+            type: integer
+          message:
+            type: string
+    wishlistCreated:
+      name: wishlistCreated
+      summary: User creates a new wishlist
+      payload:
+        $ref: "#/components/schemas/Wishlist"
+    wishlistUpdated:
+      name: wishlistUpdated
+      summary: Wishlist renamed or otherwise updated
+      payload:
+        $ref: "#/components/schemas/Wishlist"
+    wishlistDeleted:
+      name: wishlistDeleted
+      summary: User deletes a wishlist
+      payload:
+        type: object
+        required:
+          - wishlist_id
+        properties:
+          wishlist_id:
+            type: string
+    wishlistProductAdded:
+      name: wishlistProductAdded
+      summary: Product added to wishlist
+      payload:
+        $ref: "#/components/schemas/WishlistProduct"
+    wishlistProductRemoved:
+      name: wishlistProductRemoved
+      summary: Product removed from wishlist
+      payload:
+        type: object
+        required:
+          - wishlist_id
+          - product_id
+        properties:
+          wishlist_id:
+            type: string
+          product_id:
+            type: string
+    wishlistProductMoved:
+      name: wishlistProductMoved
+      summary: Product moved/copied between wishlists
+      payload:
+        type: object
+        required:
+          - from_wishlist_id
+          - to_wishlist_id
+          - product_id
+          - moved
+        properties:
+          from_wishlist_id:
+            type: string
+          to_wishlist_id:
+            type: string
+          product_id:
+            type: string
+          moved:
+            type: boolean
+    orderCreated:
+      name: orderCreated
+      summary: New order placed (user or admin)
+      payload:
+        $ref: "#/components/schemas/Order"
+    orderUpdated:
+      name: orderUpdated
+      summary: Order metadata updated (excluding status)
+      payload:
+        $ref: "#/components/schemas/Order"
+    orderCancelled:
+      name: orderCancelled
+      summary: Order has been cancelled by user, admin or system
+      payload:
+        type: object
+        required:
+          - order_id
+          - user_id
+        properties:
+          order_id:
+            type: string
+          user_id:
+            type: string
+          cancelled_at:
+            type: string
+            format: date-time
+          cancelled_by_user_id:
+            type: string
+            nullable: true
+    orderStatusChanged:
+      name: orderStatusChanged
+      summary: Order status changed/advanced (including audit)
+      payload:
+        $ref: "#/components/schemas/OrderStatusHistory"
+    orderItemAdded:
+      name: orderItemAdded
+      summary: Line item added to order (during creation or adjustment)
+      payload:
+        $ref: "#/components/schemas/OrderItem"
+    orderItemUpdated:
+      name: orderItemUpdated
+      summary: Line item updated (e.g., price, vendor, etc)
+      payload:
+        $ref: "#/components/schemas/OrderItem"
+    orderVendorRelevant:
+      name: orderVendorRelevant
+      summary: Any order event (created, status change) where a vendor is involved
+      payload:
+        type: object
+        required:
+          - order
+          - vendor_id
+        properties:
+          order:
+            $ref: "#/components/schemas/Order"
+          vendor_id:
+            type: string
+    reviewCreated:
+      name: reviewCreated
+      summary: New review submitted (product page, admin, user)
+      payload:
+        $ref: "#/components/schemas/ProductReview"
+    reviewUpdated:
+      name: reviewUpdated
+      summary: Review updated (edit by user, admin moderation, etc)
+      payload:
+        $ref: "#/components/schemas/ProductReview"
+    reviewHidden:
+      name: reviewHidden
+      summary: Review was soft-deleted/hidden by admin
+      payload:
+        type: object
+        required:
+          - review_id
+          - product_id
+          - is_hidden
+        properties:
+          review_id:
+            type: string
+          product_id:
+            type: string
+          is_hidden:
+            type: boolean
+    productUpdated:
+      name: productUpdated
+      summary: Product detail changes, e.g., price, status, description, etc.
+      payload:
+        $ref: "#/components/schemas/Product"
+    productInventoryLow:
+      name: productInventoryLow
+      summary: Inventory alert for product low stock (admin, vendor, user if recently
+        interacted)
+      payload:
+        type: object
+        required:
+          - product_id
+          - inventory_count
+          - message
+        properties:
+          product_id:
+            type: string
+          inventory_count:
+            type: integer
+          message:
+            type: string
+    aiRecommendationUpdated:
+      name: aiRecommendationUpdated
+      summary: AI-powered personalized product recommendations for this user/session
+        updated.
+      payload:
+        type: object
+        required:
+          - user_id
+          - recommendations
+        properties:
+          user_id:
+            type: string
+            nullable: true
+          recommendations:
+            type: array
+            items:
+              $ref: "#/components/schemas/AIRecommendation"
+    aiRecommendationGlobalUpdated:
+      name: aiRecommendationGlobalUpdated
+      summary: Global AI recommendations, including trending for home page updates
+        (for anonymous/anyone).
+      payload:
+        type: object
+        required:
+          - recommendations
+        properties:
+          recommendations:
+            type: array
+            items:
+              $ref: "#/components/schemas/AIRecommendation"
+  schemas:
+    Notification:
+      type: object
+      required:
+        - notification_id
+        - content
+        - type
+        - is_read
+        - created_at
+      properties:
+        notification_id:
+          type: string
+        user_id:
+          type: string
+          nullable: true
+        content:
+          type: string
+        type:
+          type: string
+        is_read:
+          type: boolean
+        related_entity_type:
+          type: string
+          nullable: true
+        related_entity_id:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+    Cart:
+      type: object
+      required:
+        - cart_id
+        - is_guest
+        - subtotal
+        - tax
+        - shipping
+        - total
+        - updated_at
+        - created_at
+      properties:
+        cart_id:
+          type: string
+        user_id:
+          type: string
+          nullable: true
+        is_guest:
+          type: boolean
+        subtotal:
+          type: number
+        tax:
+          type: number
+        shipping:
+          type: number
+        total:
+          type: number
+        updated_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+    CartItem:
+      type: object
+      required:
+        - cart_item_id
+        - cart_id
+        - product_id
+        - name
+        - price
+        - quantity
+        - max_quantity
+        - added_at
+      properties:
+        cart_item_id:
+          type: string
+        cart_id:
+          type: string
+        product_id:
+          type: string
+        name:
+          type: string
+        price:
+          type: number
+        quantity:
+          type: integer
+        image_url:
+          type: string
+          nullable: true
+        max_quantity:
+          type: integer
+        vendor_name:
+          type: string
+          nullable: true
+        added_at:
+          type: string
+          format: date-time
+    Wishlist:
+      type: object
+      required:
+        - wishlist_id
+        - user_id
+        - title
+        - created_at
+        - updated_at
+      properties:
+        wishlist_id:
+          type: string
+        user_id:
+          type: string
+        title:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    WishlistProduct:
+      type: object
+      required:
+        - wishlist_id
+        - product_id
+        - added_at
+      properties:
+        wishlist_id:
+          type: string
+        product_id:
+          type: string
+        added_at:
+          type: string
+          format: date-time
+    Order:
+      type: object
+      required:
+        - order_id
+        - user_id
+        - order_number
+        - status
+        - subtotal
+        - tax
+        - shipping
+        - total
+        - shipping_address
+        - billing_address
+        - phone
+        - email
+        - created_at
+        - updated_at
+      properties:
+        order_id:
+          type: string
+        user_id:
+          type: string
+        order_number:
+          type: string
+        status:
+          type: string
+          enum:
+            - created
+            - processing
+            - shipped
+            - delivered
+            - cancelled
+        subtotal:
+          type: number
+        tax:
+          type: number
+        shipping:
+          type: number
+        total:
+          type: number
+        shipping_address:
+          type: string
+        billing_address:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        cancelled_at:
+          type: string
+          format: date-time
+          nullable: true
+        cancelled_by_user_id:
+          type: string
+          nullable: true
+    OrderItem:
+      type: object
+      required:
+        - order_item_id
+        - order_id
+        - product_id
+        - name
+        - price
+        - quantity
+      properties:
+        order_item_id:
+          type: string
+        order_id:
+          type: string
+        product_id:
+          type: string
+        name:
+          type: string
+        price:
+          type: number
+        quantity:
+          type: integer
+        image_url:
+          type: string
+          nullable: true
+        vendor_id:
+          type: string
+          nullable: true
+    OrderStatusHistory:
+      type: object
+      required:
+        - order_status_history_id
+        - order_id
+        - status
+        - updated_by_user_id
+        - updated_at
+      properties:
+        order_status_history_id:
+          type: string
+        order_id:
+          type: string
+        status:
+          type: string
+          enum:
+            - created
+            - processing
+            - shipped
+            - delivered
+            - cancelled
+        updated_by_user_id:
+          type: string
+        updated_at:
+          type: string
+          format: date-time
+    ProductReview:
+      type: object
+      required:
+        - review_id
+        - product_id
+        - user_id
+        - rating
+        - is_hidden
+        - created_at
+        - updated_at
+      properties:
+        review_id:
+          type: string
+        product_id:
+          type: string
+        user_id:
+          type: string
+        rating:
+          type: number
+          minimum: 1
+          maximum: 5
+        review_text:
+          type: string
+          nullable: true
+        review_image_url:
+          type: string
+          nullable: true
+        is_hidden:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    Product:
+      type: object
+      required:
+        - product_id
+        - name
+        - description
+        - price
+        - inventory_count
+        - status
+        - average_rating
+        - total_ratings
+        - created_at
+        - updated_at
+      properties:
+        product_id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        inventory_count:
+          type: number
+        status:
+          type: string
+          enum:
+            - active
+            - inactive
+            - pending
+            - deleted
+        vendor_id:
+          type: string
+          nullable: true
+        average_rating:
+          type: number
+        total_ratings:
+          type: number
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    AIRecommendation:
+      type: object
+      required:
+        - recommendation_id
+        - product_id
+        - context_type
+        - reason
+        - created_at
+      properties:
+        recommendation_id:
+          type: string
+        user_id:
+          type: string
+          nullable: true
+        product_id:
+          type: string
+        context_type:
+          type: string
+        context_product_id:
+          type: string
+          nullable: true
+        reason:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+tags:
+  - name: notifications
+    description: Real-time notification system for users, admins, and vendors.
+  - name: cart
+    description: Real-time cart updates, merge, and inventory validation.
+  - name: wishlist
+    description: Real-time management for multi-list wishlists.
+  - name: orders
+    description: Instant order placement, updating, cancellations, and status flows.
+  - name: reviews
+    description: Real-time reviews and ratings system (user, product, admin mod).
+  - name: products
+    description: Live product/inventory status, admin/vendor low inventory.
+  - name: ai-recommendation
+    description: Live AI-powered recommendations personalized per-user/anon session.
+externalDocs:
+  description: Zod schemas are the source of truth for all entity types.
+  url: https://github.com/your-org/aiocart-backend/blob/main/db/zodschemas.ts

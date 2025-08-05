@@ -1,0 +1,19 @@
+{
+  "timestamp": 1754389101420,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_Admin_Reviews",
+      "version": "1754388992178"
+    }
+  },
+  "projectId": "ai-powered-e-commerce-platform",
+  "files": [
+    {
+      "path": "../../apps/ai-powered-e-commerce-platform/vitereact/src/components/views/UV_Admin_Reviews.tsx",
+      "type": "text",
+      "size": 24088,
+      "dependencies": false
+    }
+  ]
+}

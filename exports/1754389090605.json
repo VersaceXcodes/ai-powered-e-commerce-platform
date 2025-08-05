@@ -1,0 +1,19 @@
+{
+  "timestamp": 1754389090605,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_Landing",
+      "version": "1754388991884"
+    }
+  },
+  "projectId": "ai-powered-e-commerce-platform",
+  "files": [
+    {
+      "path": "../../apps/ai-powered-e-commerce-platform/vitereact/src/components/views/UV_Landing.tsx",
+      "type": "text",
+      "size": 15983,
+      "dependencies": false
+    }
+  ]
+}

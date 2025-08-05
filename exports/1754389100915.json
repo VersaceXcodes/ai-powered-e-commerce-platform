@@ -1,0 +1,19 @@
+{
+  "timestamp": 1754389100915,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_OrderConfirmation",
+      "version": "1754388991961"
+    }
+  },
+  "projectId": "ai-powered-e-commerce-platform",
+  "files": [
+    {
+      "path": "../../apps/ai-powered-e-commerce-platform/vitereact/src/components/views/UV_OrderConfirmation.tsx",
+      "type": "text",
+      "size": 14504,
+      "dependencies": false
+    }
+  ]
+}

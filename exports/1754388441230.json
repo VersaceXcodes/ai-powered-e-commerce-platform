@@ -1,0 +1,15 @@
+{
+  "timestamp": 1754388441230,
+  "operation": {
+    "id": "db:schemas:zod"
+  },
+  "projectId": "ai-powered-e-commerce-platform",
+  "files": [
+    {
+      "path": "../../apps/ai-powered-e-commerce-platform/backend/schema.ts",
+      "type": "text",
+      "size": 29481,
+      "dependencies": false
+    }
+  ]
+}

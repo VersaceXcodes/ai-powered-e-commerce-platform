@@ -1,0 +1,15 @@
+{
+  "timestamp": 1754388595625,
+  "operation": {
+    "id": "backend:specifications:openapi"
+  },
+  "projectId": "ai-powered-e-commerce-platform",
+  "files": [
+    {
+      "path": "../../apps/ai-powered-e-commerce-platform/backend/openapi.yaml",
+      "type": "text",
+      "size": 70346,
+      "dependencies": false
+    }
+  ]
+}

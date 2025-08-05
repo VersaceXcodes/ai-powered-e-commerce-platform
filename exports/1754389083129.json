@@ -1,0 +1,19 @@
+{
+  "timestamp": 1754389083129,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_Auth_PasswordResetRequest",
+      "version": "latest"
+    }
+  },
+  "projectId": "ai-powered-e-commerce-platform",
+  "files": [
+    {
+      "path": "../../apps/ai-powered-e-commerce-platform/vitereact/src/components/views/UV_Auth_PasswordResetRequest.tsx",
+      "type": "text",
+      "size": 7977,
+      "dependencies": false
+    }
+  ]
+}

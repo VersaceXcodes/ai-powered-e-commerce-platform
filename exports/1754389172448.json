@@ -1,0 +1,19 @@
+{
+  "timestamp": 1754389172448,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_Admin_Notifications",
+      "version": "1754388992189"
+    }
+  },
+  "projectId": "ai-powered-e-commerce-platform",
+  "files": [
+    {
+      "path": "../../apps/ai-powered-e-commerce-platform/vitereact/src/components/views/UV_Admin_Notifications.tsx",
+      "type": "text",
+      "size": 18769,
+      "dependencies": false
+    }
+  ]
+}

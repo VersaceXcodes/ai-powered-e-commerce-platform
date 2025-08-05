@@ -1,0 +1,15 @@
+{
+  "timestamp": 1754388329525,
+  "operation": {
+    "id": "backend:specifications:asyncapi"
+  },
+  "projectId": "ai-powered-e-commerce-platform",
+  "files": [
+    {
+      "path": "../../apps/ai-powered-e-commerce-platform/backend/asyncapi.yaml",
+      "type": "text",
+      "size": 19471,
+      "dependencies": false
+    }
+  ]
+}

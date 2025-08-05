@@ -1,0 +1,19 @@
+{
+  "timestamp": 1754389168621,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "GV_NotificationToasts",
+      "version": "latest"
+    }
+  },
+  "projectId": "ai-powered-e-commerce-platform",
+  "files": [
+    {
+      "path": "../../apps/ai-powered-e-commerce-platform/vitereact/src/components/views/GV_NotificationToasts.tsx",
+      "type": "text",
+      "size": 11296,
+      "dependencies": false
+    }
+  ]
+}

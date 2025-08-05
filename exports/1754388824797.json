@@ -1,0 +1,15 @@
+{
+  "timestamp": 1754388824797,
+  "operation": {
+    "id": "backend:server:main"
+  },
+  "projectId": "ai-powered-e-commerce-platform",
+  "files": [
+    {
+      "path": "../../apps/ai-powered-e-commerce-platform/backend/server.ts",
+      "type": "text",
+      "size": 16719,
+      "dependencies": false
+    }
+  ]
+}

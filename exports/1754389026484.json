@@ -1,0 +1,19 @@
+{
+  "timestamp": 1754389026484,
+  "operation": {
+    "id": "webapp:react:store",
+    "refs": {
+      "id": "redux",
+      "version": "latest"
+    }
+  },
+  "projectId": "ai-powered-e-commerce-platform",
+  "files": [
+    {
+      "path": "../../apps/ai-powered-e-commerce-platform/vitereact/src/store/main.tsx",
+      "type": "text",
+      "size": 21894,
+      "dependencies": false
+    }
+  ]
+}

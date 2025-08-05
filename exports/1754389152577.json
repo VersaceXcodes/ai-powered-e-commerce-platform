@@ -1,0 +1,19 @@
+{
+  "timestamp": 1754389152577,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "GV_TopNav",
+      "version": "1754388992298"
+    }
+  },
+  "projectId": "ai-powered-e-commerce-platform",
+  "files": [
+    {
+      "path": "../../apps/ai-powered-e-commerce-platform/vitereact/src/components/views/GV_TopNav.tsx",
+      "type": "text",
+      "size": 25274,
+      "dependencies": false
+    }
+  ]
+}

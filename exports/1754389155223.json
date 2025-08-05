@@ -1,0 +1,19 @@
+{
+  "timestamp": 1754389155223,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "GV_Footer",
+      "version": "1754388992323"
+    }
+  },
+  "projectId": "ai-powered-e-commerce-platform",
+  "files": [
+    {
+      "path": "../../apps/ai-powered-e-commerce-platform/vitereact/src/components/views/GV_Footer.tsx",
+      "type": "text",
+      "size": 6351,
+      "dependencies": false
+    }
+  ]
+}

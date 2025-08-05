@@ -1,0 +1,15 @@
+{
+  "timestamp": 1754388937934,
+  "operation": {
+    "id": "settings:config:package"
+  },
+  "projectId": "ai-powered-e-commerce-platform",
+  "files": [
+    {
+      "path": "../../apps/ai-powered-e-commerce-platform/vitereact/package.json",
+      "type": "text",
+      "size": 2980,
+      "dependencies": true
+    }
+  ]
+}
