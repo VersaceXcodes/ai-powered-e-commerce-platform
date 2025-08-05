@@ -1,5 +1,14 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  // testMatch: ['**/tests/**/*.test.ts'], // Only test files inside `tests/` folder
+  transform: {
+    '^.+\\.ts$': ['ts-jest', {
+      useESM: false
+    }]
+  },
+  testMatch: ['**/*.test.ts'],
+  testPathIgnorePatterns: ['/node_modules/', '/dist/'],
+  testTimeout: 30000,
+  verbose: true,
+  forceExit: true
 };

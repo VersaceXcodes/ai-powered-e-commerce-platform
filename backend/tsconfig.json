@@ -17,7 +17,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": false,
-    "types": ["node"]
+    "types": ["node", "jest"]
   },
   "include": [
     "*.ts",
