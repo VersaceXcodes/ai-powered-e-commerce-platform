@@ -1787,4 +1787,671 @@ export type SearchTerm = z.infer<typeof searchTermSchema>;
 export type CreateSearchTermInput = z.infer<typeof createSearchTermInputSchema>;
 export type UpdateSearchTermInput = z.infer<typeof updateSearchTermInputSchema>;
 export type SearchSearchTermInput = z.infer<typeof searchSearchTermInputSchema>;
+export declare const notificationListResponseSchema: z.ZodObject<{
+    notifications: z.ZodArray<z.ZodObject<{
+        notification_id: z.ZodString;
+        user_id: z.ZodNullable<z.ZodString>;
+        content: z.ZodString;
+        type: z.ZodString;
+        is_read: z.ZodBoolean;
+        related_entity_type: z.ZodNullable<z.ZodString>;
+        related_entity_id: z.ZodNullable<z.ZodString>;
+        created_at: z.ZodDate;
+    }, "strip", z.ZodTypeAny, {
+        user_id?: string;
+        created_at?: Date;
+        type?: string;
+        notification_id?: string;
+        content?: string;
+        is_read?: boolean;
+        related_entity_type?: string;
+        related_entity_id?: string;
+    }, {
+        user_id?: string;
+        created_at?: Date;
+        type?: string;
+        notification_id?: string;
+        content?: string;
+        is_read?: boolean;
+        related_entity_type?: string;
+        related_entity_id?: string;
+    }>, "many">;
+    total: z.ZodNumber;
+}, "strip", z.ZodTypeAny, {
+    total?: number;
+    notifications?: {
+        user_id?: string;
+        created_at?: Date;
+        type?: string;
+        notification_id?: string;
+        content?: string;
+        is_read?: boolean;
+        related_entity_type?: string;
+        related_entity_id?: string;
+    }[];
+}, {
+    total?: number;
+    notifications?: {
+        user_id?: string;
+        created_at?: Date;
+        type?: string;
+        notification_id?: string;
+        content?: string;
+        is_read?: boolean;
+        related_entity_type?: string;
+        related_entity_id?: string;
+    }[];
+}>;
+export declare const orderListResponseSchema: z.ZodObject<{
+    orders: z.ZodArray<z.ZodObject<{
+        order_id: z.ZodString;
+        user_id: z.ZodString;
+        order_number: z.ZodString;
+        status: z.ZodDefault<z.ZodEnum<["created", "processing", "shipped", "delivered", "cancelled"]>>;
+        subtotal: z.ZodNumber;
+        tax: z.ZodNumber;
+        shipping: z.ZodNumber;
+        total: z.ZodNumber;
+        shipping_address: z.ZodString;
+        billing_address: z.ZodString;
+        phone: z.ZodString;
+        email: z.ZodString;
+        created_at: z.ZodDate;
+        updated_at: z.ZodDate;
+        cancelled_at: z.ZodNullable<z.ZodDate>;
+        cancelled_by_user_id: z.ZodNullable<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        user_id?: string;
+        email?: string;
+        created_at?: Date;
+        updated_at?: Date;
+        status?: "created" | "processing" | "shipped" | "delivered" | "cancelled";
+        subtotal?: number;
+        tax?: number;
+        shipping?: number;
+        total?: number;
+        order_id?: string;
+        order_number?: string;
+        shipping_address?: string;
+        billing_address?: string;
+        phone?: string;
+        cancelled_at?: Date;
+        cancelled_by_user_id?: string;
+    }, {
+        user_id?: string;
+        email?: string;
+        created_at?: Date;
+        updated_at?: Date;
+        status?: "created" | "processing" | "shipped" | "delivered" | "cancelled";
+        subtotal?: number;
+        tax?: number;
+        shipping?: number;
+        total?: number;
+        order_id?: string;
+        order_number?: string;
+        shipping_address?: string;
+        billing_address?: string;
+        phone?: string;
+        cancelled_at?: Date;
+        cancelled_by_user_id?: string;
+    }>, "many">;
+    total: z.ZodNumber;
+}, "strip", z.ZodTypeAny, {
+    total?: number;
+    orders?: {
+        user_id?: string;
+        email?: string;
+        created_at?: Date;
+        updated_at?: Date;
+        status?: "created" | "processing" | "shipped" | "delivered" | "cancelled";
+        subtotal?: number;
+        tax?: number;
+        shipping?: number;
+        total?: number;
+        order_id?: string;
+        order_number?: string;
+        shipping_address?: string;
+        billing_address?: string;
+        phone?: string;
+        cancelled_at?: Date;
+        cancelled_by_user_id?: string;
+    }[];
+}, {
+    total?: number;
+    orders?: {
+        user_id?: string;
+        email?: string;
+        created_at?: Date;
+        updated_at?: Date;
+        status?: "created" | "processing" | "shipped" | "delivered" | "cancelled";
+        subtotal?: number;
+        tax?: number;
+        shipping?: number;
+        total?: number;
+        order_id?: string;
+        order_number?: string;
+        shipping_address?: string;
+        billing_address?: string;
+        phone?: string;
+        cancelled_at?: Date;
+        cancelled_by_user_id?: string;
+    }[];
+}>;
+export declare const productReviewListResponseSchema: z.ZodObject<{
+    product_reviews: z.ZodArray<z.ZodObject<{
+        review_id: z.ZodString;
+        product_id: z.ZodString;
+        user_id: z.ZodString;
+        rating: z.ZodNumber;
+        review_text: z.ZodNullable<z.ZodString>;
+        review_image_url: z.ZodNullable<z.ZodString>;
+        is_hidden: z.ZodBoolean;
+        created_at: z.ZodDate;
+        updated_at: z.ZodDate;
+    }, "strip", z.ZodTypeAny, {
+        user_id?: string;
+        created_at?: Date;
+        updated_at?: Date;
+        product_id?: string;
+        review_id?: string;
+        rating?: number;
+        review_text?: string;
+        review_image_url?: string;
+        is_hidden?: boolean;
+    }, {
+        user_id?: string;
+        created_at?: Date;
+        updated_at?: Date;
+        product_id?: string;
+        review_id?: string;
+        rating?: number;
+        review_text?: string;
+        review_image_url?: string;
+        is_hidden?: boolean;
+    }>, "many">;
+    total: z.ZodNumber;
+}, "strip", z.ZodTypeAny, {
+    total?: number;
+    product_reviews?: {
+        user_id?: string;
+        created_at?: Date;
+        updated_at?: Date;
+        product_id?: string;
+        review_id?: string;
+        rating?: number;
+        review_text?: string;
+        review_image_url?: string;
+        is_hidden?: boolean;
+    }[];
+}, {
+    total?: number;
+    product_reviews?: {
+        user_id?: string;
+        created_at?: Date;
+        updated_at?: Date;
+        product_id?: string;
+        review_id?: string;
+        rating?: number;
+        review_text?: string;
+        review_image_url?: string;
+        is_hidden?: boolean;
+    }[];
+}>;
+export declare const userListResponseSchema: z.ZodObject<{
+    users: z.ZodArray<z.ZodObject<{
+        user_id: z.ZodString;
+        name: z.ZodString;
+        email: z.ZodString;
+        password_hash: z.ZodString;
+        role: z.ZodDefault<z.ZodEnum<["customer", "admin", "vendor"]>>;
+        profile_image_url: z.ZodNullable<z.ZodString>;
+        is_blocked: z.ZodBoolean;
+        created_at: z.ZodDate;
+        updated_at: z.ZodDate;
+    }, "strip", z.ZodTypeAny, {
+        user_id?: string;
+        name?: string;
+        email?: string;
+        password_hash?: string;
+        role?: "customer" | "admin" | "vendor";
+        profile_image_url?: string;
+        is_blocked?: boolean;
+        created_at?: Date;
+        updated_at?: Date;
+    }, {
+        user_id?: string;
+        name?: string;
+        email?: string;
+        password_hash?: string;
+        role?: "customer" | "admin" | "vendor";
+        profile_image_url?: string;
+        is_blocked?: boolean;
+        created_at?: Date;
+        updated_at?: Date;
+    }>, "many">;
+    total: z.ZodNumber;
+}, "strip", z.ZodTypeAny, {
+    total?: number;
+    users?: {
+        user_id?: string;
+        name?: string;
+        email?: string;
+        password_hash?: string;
+        role?: "customer" | "admin" | "vendor";
+        profile_image_url?: string;
+        is_blocked?: boolean;
+        created_at?: Date;
+        updated_at?: Date;
+    }[];
+}, {
+    total?: number;
+    users?: {
+        user_id?: string;
+        name?: string;
+        email?: string;
+        password_hash?: string;
+        role?: "customer" | "admin" | "vendor";
+        profile_image_url?: string;
+        is_blocked?: boolean;
+        created_at?: Date;
+        updated_at?: Date;
+    }[];
+}>;
+export declare const productListResponseSchema: z.ZodObject<{
+    products: z.ZodArray<z.ZodObject<{
+        product_id: z.ZodString;
+        name: z.ZodString;
+        description: z.ZodString;
+        price: z.ZodNumber;
+        inventory_count: z.ZodNumber;
+        status: z.ZodDefault<z.ZodEnum<["active", "inactive", "pending", "deleted"]>>;
+        vendor_id: z.ZodNullable<z.ZodString>;
+        average_rating: z.ZodNumber;
+        total_ratings: z.ZodNumber;
+        created_at: z.ZodDate;
+        updated_at: z.ZodDate;
+    }, "strip", z.ZodTypeAny, {
+        name?: string;
+        created_at?: Date;
+        updated_at?: Date;
+        status?: "active" | "inactive" | "pending" | "deleted";
+        vendor_id?: string;
+        product_id?: string;
+        description?: string;
+        price?: number;
+        inventory_count?: number;
+        average_rating?: number;
+        total_ratings?: number;
+    }, {
+        name?: string;
+        created_at?: Date;
+        updated_at?: Date;
+        status?: "active" | "inactive" | "pending" | "deleted";
+        vendor_id?: string;
+        product_id?: string;
+        description?: string;
+        price?: number;
+        inventory_count?: number;
+        average_rating?: number;
+        total_ratings?: number;
+    }>, "many">;
+    total: z.ZodNumber;
+}, "strip", z.ZodTypeAny, {
+    total?: number;
+    products?: {
+        name?: string;
+        created_at?: Date;
+        updated_at?: Date;
+        status?: "active" | "inactive" | "pending" | "deleted";
+        vendor_id?: string;
+        product_id?: string;
+        description?: string;
+        price?: number;
+        inventory_count?: number;
+        average_rating?: number;
+        total_ratings?: number;
+    }[];
+}, {
+    total?: number;
+    products?: {
+        name?: string;
+        created_at?: Date;
+        updated_at?: Date;
+        status?: "active" | "inactive" | "pending" | "deleted";
+        vendor_id?: string;
+        product_id?: string;
+        description?: string;
+        price?: number;
+        inventory_count?: number;
+        average_rating?: number;
+        total_ratings?: number;
+    }[];
+}>;
+export declare const categoryListResponseSchema: z.ZodObject<{
+    categories: z.ZodArray<z.ZodObject<{
+        category_id: z.ZodString;
+        name: z.ZodString;
+        parent_category_id: z.ZodNullable<z.ZodString>;
+        created_at: z.ZodDate;
+        updated_at: z.ZodDate;
+    }, "strip", z.ZodTypeAny, {
+        name?: string;
+        created_at?: Date;
+        updated_at?: Date;
+        category_id?: string;
+        parent_category_id?: string;
+    }, {
+        name?: string;
+        created_at?: Date;
+        updated_at?: Date;
+        category_id?: string;
+        parent_category_id?: string;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    categories?: {
+        name?: string;
+        created_at?: Date;
+        updated_at?: Date;
+        category_id?: string;
+        parent_category_id?: string;
+    }[];
+}, {
+    categories?: {
+        name?: string;
+        created_at?: Date;
+        updated_at?: Date;
+        category_id?: string;
+        parent_category_id?: string;
+    }[];
+}>;
+export declare const productImageListResponseSchema: z.ZodObject<{
+    product_images: z.ZodArray<z.ZodObject<{
+        product_image_id: z.ZodString;
+        product_id: z.ZodString;
+        image_url: z.ZodString;
+        sort_order: z.ZodNumber;
+        is_thumbnail: z.ZodBoolean;
+    }, "strip", z.ZodTypeAny, {
+        sort_order?: number;
+        product_id?: string;
+        product_image_id?: string;
+        image_url?: string;
+        is_thumbnail?: boolean;
+    }, {
+        sort_order?: number;
+        product_id?: string;
+        product_image_id?: string;
+        image_url?: string;
+        is_thumbnail?: boolean;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    product_images?: {
+        sort_order?: number;
+        product_id?: string;
+        product_image_id?: string;
+        image_url?: string;
+        is_thumbnail?: boolean;
+    }[];
+}, {
+    product_images?: {
+        sort_order?: number;
+        product_id?: string;
+        product_image_id?: string;
+        image_url?: string;
+        is_thumbnail?: boolean;
+    }[];
+}>;
+export declare const productCategoryListResponseSchema: z.ZodObject<{
+    product_categories: z.ZodArray<z.ZodObject<{
+        product_id: z.ZodString;
+        category_id: z.ZodString;
+        created_at: z.ZodDate;
+        updated_at: z.ZodDate;
+    }, "strip", z.ZodTypeAny, {
+        created_at?: Date;
+        updated_at?: Date;
+        category_id?: string;
+        product_id?: string;
+    }, {
+        created_at?: Date;
+        updated_at?: Date;
+        category_id?: string;
+        product_id?: string;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    product_categories?: {
+        created_at?: Date;
+        updated_at?: Date;
+        category_id?: string;
+        product_id?: string;
+    }[];
+}, {
+    product_categories?: {
+        created_at?: Date;
+        updated_at?: Date;
+        category_id?: string;
+        product_id?: string;
+    }[];
+}>;
+export declare const vendorProductListResponseSchema: z.ZodObject<{
+    vendor_products: z.ZodArray<z.ZodObject<{
+        product_id: z.ZodString;
+        name: z.ZodString;
+        description: z.ZodString;
+        price: z.ZodNumber;
+        inventory_count: z.ZodNumber;
+        status: z.ZodDefault<z.ZodEnum<["active", "inactive", "pending", "deleted"]>>;
+        vendor_id: z.ZodNullable<z.ZodString>;
+        average_rating: z.ZodNumber;
+        total_ratings: z.ZodNumber;
+        created_at: z.ZodDate;
+        updated_at: z.ZodDate;
+    }, "strip", z.ZodTypeAny, {
+        name?: string;
+        created_at?: Date;
+        updated_at?: Date;
+        status?: "active" | "inactive" | "pending" | "deleted";
+        vendor_id?: string;
+        product_id?: string;
+        description?: string;
+        price?: number;
+        inventory_count?: number;
+        average_rating?: number;
+        total_ratings?: number;
+    }, {
+        name?: string;
+        created_at?: Date;
+        updated_at?: Date;
+        status?: "active" | "inactive" | "pending" | "deleted";
+        vendor_id?: string;
+        product_id?: string;
+        description?: string;
+        price?: number;
+        inventory_count?: number;
+        average_rating?: number;
+        total_ratings?: number;
+    }>, "many">;
+    total: z.ZodNumber;
+}, "strip", z.ZodTypeAny, {
+    total?: number;
+    vendor_products?: {
+        name?: string;
+        created_at?: Date;
+        updated_at?: Date;
+        status?: "active" | "inactive" | "pending" | "deleted";
+        vendor_id?: string;
+        product_id?: string;
+        description?: string;
+        price?: number;
+        inventory_count?: number;
+        average_rating?: number;
+        total_ratings?: number;
+    }[];
+}, {
+    total?: number;
+    vendor_products?: {
+        name?: string;
+        created_at?: Date;
+        updated_at?: Date;
+        status?: "active" | "inactive" | "pending" | "deleted";
+        vendor_id?: string;
+        product_id?: string;
+        description?: string;
+        price?: number;
+        inventory_count?: number;
+        average_rating?: number;
+        total_ratings?: number;
+    }[];
+}>;
+export declare const ordersListResponseSchema: z.ZodObject<{
+    orders: z.ZodArray<z.ZodObject<{
+        order_id: z.ZodString;
+        user_id: z.ZodString;
+        order_number: z.ZodString;
+        status: z.ZodDefault<z.ZodEnum<["created", "processing", "shipped", "delivered", "cancelled"]>>;
+        subtotal: z.ZodNumber;
+        tax: z.ZodNumber;
+        shipping: z.ZodNumber;
+        total: z.ZodNumber;
+        shipping_address: z.ZodString;
+        billing_address: z.ZodString;
+        phone: z.ZodString;
+        email: z.ZodString;
+        created_at: z.ZodDate;
+        updated_at: z.ZodDate;
+        cancelled_at: z.ZodNullable<z.ZodDate>;
+        cancelled_by_user_id: z.ZodNullable<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        user_id?: string;
+        email?: string;
+        created_at?: Date;
+        updated_at?: Date;
+        status?: "created" | "processing" | "shipped" | "delivered" | "cancelled";
+        subtotal?: number;
+        tax?: number;
+        shipping?: number;
+        total?: number;
+        order_id?: string;
+        order_number?: string;
+        shipping_address?: string;
+        billing_address?: string;
+        phone?: string;
+        cancelled_at?: Date;
+        cancelled_by_user_id?: string;
+    }, {
+        user_id?: string;
+        email?: string;
+        created_at?: Date;
+        updated_at?: Date;
+        status?: "created" | "processing" | "shipped" | "delivered" | "cancelled";
+        subtotal?: number;
+        tax?: number;
+        shipping?: number;
+        total?: number;
+        order_id?: string;
+        order_number?: string;
+        shipping_address?: string;
+        billing_address?: string;
+        phone?: string;
+        cancelled_at?: Date;
+        cancelled_by_user_id?: string;
+    }>, "many">;
+    total: z.ZodNumber;
+}, "strip", z.ZodTypeAny, {
+    total?: number;
+    orders?: {
+        user_id?: string;
+        email?: string;
+        created_at?: Date;
+        updated_at?: Date;
+        status?: "created" | "processing" | "shipped" | "delivered" | "cancelled";
+        subtotal?: number;
+        tax?: number;
+        shipping?: number;
+        total?: number;
+        order_id?: string;
+        order_number?: string;
+        shipping_address?: string;
+        billing_address?: string;
+        phone?: string;
+        cancelled_at?: Date;
+        cancelled_by_user_id?: string;
+    }[];
+}, {
+    total?: number;
+    orders?: {
+        user_id?: string;
+        email?: string;
+        created_at?: Date;
+        updated_at?: Date;
+        status?: "created" | "processing" | "shipped" | "delivered" | "cancelled";
+        subtotal?: number;
+        tax?: number;
+        shipping?: number;
+        total?: number;
+        order_id?: string;
+        order_number?: string;
+        shipping_address?: string;
+        billing_address?: string;
+        phone?: string;
+        cancelled_at?: Date;
+        cancelled_by_user_id?: string;
+    }[];
+}>;
+export declare const notificationResponseSchema: z.ZodObject<{
+    notification_id: z.ZodString;
+    user_id: z.ZodNullable<z.ZodString>;
+    content: z.ZodString;
+    type: z.ZodString;
+    is_read: z.ZodBoolean;
+    related_entity_type: z.ZodNullable<z.ZodString>;
+    related_entity_id: z.ZodNullable<z.ZodString>;
+    created_at: z.ZodDate;
+}, "strip", z.ZodTypeAny, {
+    user_id?: string;
+    created_at?: Date;
+    type?: string;
+    notification_id?: string;
+    content?: string;
+    is_read?: boolean;
+    related_entity_type?: string;
+    related_entity_id?: string;
+}, {
+    user_id?: string;
+    created_at?: Date;
+    type?: string;
+    notification_id?: string;
+    content?: string;
+    is_read?: boolean;
+    related_entity_type?: string;
+    related_entity_id?: string;
+}>;
+export declare const searchSuggestionSchema: z.ZodObject<{
+    product_id: z.ZodString;
+    name: z.ZodString;
+    price: z.ZodNumber;
+    image_url: z.ZodNullable<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    name?: string;
+    product_id?: string;
+    price?: number;
+    image_url?: string;
+}, {
+    name?: string;
+    product_id?: string;
+    price?: number;
+    image_url?: string;
+}>;
+export type NotificationListResponse = z.infer<typeof notificationListResponseSchema>;
+export type OrderListResponse = z.infer<typeof orderListResponseSchema>;
+export type ProductReviewListResponse = z.infer<typeof productReviewListResponseSchema>;
+export type UserListResponse = z.infer<typeof userListResponseSchema>;
+export type ProductListResponse = z.infer<typeof productListResponseSchema>;
+export type CategoryListResponse = z.infer<typeof categoryListResponseSchema>;
+export type ProductImageListResponse = z.infer<typeof productImageListResponseSchema>;
+export type ProductCategoryListResponse = z.infer<typeof productCategoryListResponseSchema>;
+export type VendorProductListResponse = z.infer<typeof vendorProductListResponseSchema>;
+export type OrdersListResponse = z.infer<typeof ordersListResponseSchema>;
+export type NotificationResponse = z.infer<typeof notificationResponseSchema>;
+export type SearchSuggestion = z.infer<typeof searchSuggestionSchema>;
 //# sourceMappingURL=schema.d.ts.map
