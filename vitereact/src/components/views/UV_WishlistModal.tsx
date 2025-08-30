@@ -7,11 +7,11 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 // --- Types (from Zod schemas)
 interface Wishlist {
   wishlist_id: string;
-  user_id: string;
+  user_id?: string;
   title: string;
   created_at: string;
   updated_at: string;
-  products?: WishlistProduct[];
+  products: WishlistProduct[];
 }
 
 interface WishlistProduct {
@@ -51,7 +51,7 @@ const UV_WishlistModal: React.FC = () => {
   const setWishlistState = useAppStore(state => state.set_wishlist_state);
   const setSelectedWishlistId = useAppStore(state => state.set_selected_wishlist_id);
   const cartState = useAppStore(state => state.cart_state);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
   // Local state/UI controls
@@ -113,9 +113,7 @@ const UV_WishlistModal: React.FC = () => {
   // React-query: Fetch wishlists (stale but true real-time from WS - so just use for initial load/fallback)
   const {
     isLoading: isWishlistsLoading,
-    isError: isWishlistsError,
-    error: wishlistsError,
-    refetch: refetchWishlists,
+
   } = useQuery({
     queryKey: ['wishlists_for_user', currentUser?.user_id],
     queryFn: async (): Promise<Wishlist[]> => {
