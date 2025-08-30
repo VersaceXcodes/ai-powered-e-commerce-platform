@@ -196,10 +196,10 @@ async function sendEmail(to, subject, body) {
 // -- AUTH & USER ENDPOINTS --
 
 /**
- * POST /auth/register
+ * POST /api/auth/register
  * Registers new user as per CreateUserInput, issues JWT on success
  */
-app.post('/auth/register', async (req, res) => {
+app.post('/api/auth/register', async (req, res) => {
   try {
     const input = schemas.createUserInputSchema.parse(req.body);
 
@@ -256,10 +256,10 @@ app.post('/auth/register', async (req, res) => {
 });
 
 /**
- * POST /auth/login
+ * POST /api/auth/login
  * Login via email/password, return JWT and user
  */
-app.post('/auth/login', async (req, res) => {
+app.post('/api/auth/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ message: "Missing fields" });
@@ -283,18 +283,18 @@ app.post('/auth/login', async (req, res) => {
 });
 
 /**
- * POST /auth/logout
+ * POST /api/auth/logout
  */
-app.post('/auth/logout', (req, res) => {
+app.post('/api/auth/logout', (req, res) => {
   // Purely client-dispatched. Nothing to do server-side.
   res.status(204).send();
 });
 
 /**
- * POST /auth/password/forgot
+ * POST /api/auth/password/forgot
  * Email-based password reset (mock)
  */
-app.post('/auth/password/forgot', async (req, res) => {
+app.post('/api/auth/password/forgot', async (req, res) => {
   try {
     const { email } = req.body;
     if (!email) return res.status(400).json({ message: "Missing email" });
@@ -320,10 +320,10 @@ app.post('/auth/password/forgot', async (req, res) => {
 });
 
 /**
- * POST /auth/password/reset
+ * POST /api/auth/password/reset
  * Resets password using reset_token (mock)
  */
-app.post('/auth/password/reset', async (req, res) => {
+app.post('/api/auth/password/reset', async (req, res) => {
   try {
     const { reset_token, password_hash } = req.body;
     if (!reset_token || !password_hash) return res.status(400).json({ message: "Missing params" });
@@ -346,10 +346,10 @@ app.post('/auth/password/reset', async (req, res) => {
 });
 
 /**
- * GET /users/me
+ * GET /api/users/me
  * Get current profile
  */
-app.get('/users/me', authenticateToken, async (req, res) => {
+app.get('/api/users/me', authenticateToken, async (req, res) => {
   const user = req.user;
   res.json({
     user_id: user.user_id,
@@ -365,10 +365,10 @@ app.get('/users/me', authenticateToken, async (req, res) => {
 });
 
 /**
- * GET /users
+ * GET /api/users
  * List/search users (admin)
  */
-app.get('/users', authenticateToken, requireAdmin, async (req, res) => {
+app.get('/api/users', authenticateToken, requireAdmin, async (req, res) => {
   try {
     // Build query per SearchUserInput
     let q = "SELECT * FROM users";
@@ -407,10 +407,10 @@ app.get('/users', authenticateToken, requireAdmin, async (req, res) => {
 });
 
 /**
- * POST /users (admin only)
+ * POST /api/users (admin only)
  * Admin creates user
  */
-app.post('/users', authenticateToken, requireAdmin, async (req, res) => {
+app.post('/api/users', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const input = schemas.createUserInputSchema.parse(req.body);
     // Accept admin/vendor if specified here
@@ -449,10 +449,10 @@ app.post('/users', authenticateToken, requireAdmin, async (req, res) => {
 });
 
 /**
- * GET /users/{user_id}
+ * GET /api/users/{user_id}
  * Fetch user (public info)
  */
-app.get('/users/:user_id', async (req, res) => {
+app.get('/api/users/:user_id', async (req, res) => {
   try {
     const { user_id } = req.params;
     const userRow = await pool.query('SELECT * FROM users WHERE user_id = $1', [user_id]);
@@ -464,10 +464,10 @@ app.get('/users/:user_id', async (req, res) => {
 });
 
 /**
- * PATCH /users/{user_id}
+ * PATCH /api/users/{user_id}
  * Update self or admin, restricts role
  */
-app.patch('/users/:user_id', authenticateToken, async (req, res) => {
+app.patch('/api/users/:user_id', authenticateToken, async (req, res) => {
   try {
     const { user_id } = req.params;
     // Only self or admin can update
@@ -510,10 +510,10 @@ app.patch('/users/:user_id', authenticateToken, async (req, res) => {
 });
 
 /**
- * DELETE /users/{user_id}
+ * DELETE /api/users/{user_id}
  * Delete user (admin only)
  */
-app.delete('/users/:user_id', authenticateToken, requireAdmin, async (req, res) => {
+app.delete('/api/users/:user_id', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { user_id } = req.params;
     await pool.query('DELETE FROM users WHERE user_id = $1', [user_id]);
@@ -530,12 +530,9 @@ app.delete('/users/:user_id', authenticateToken, requireAdmin, async (req, res) 
 // --- The pattern should be repeated for every endpoint/event using the schemas/permissions/socket logic applied above.
 
 
-// --- END STATIC / PUBLIC AND CATCH-ALL ROUTE ---
-app.get("/", (req, res) => {
-  res.json({ message: "AIOCart backend API running!" });
-});
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+// --- HEALTH CHECK ENDPOINT ---
+app.get('/api/health', (req, res) => {
+  res.json({ message: "AIOCart backend API running!", status: "healthy" });
 });
 
 // EXPORT app and pool for tests and other processes (as required)

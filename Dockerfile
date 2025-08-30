@@ -6,6 +6,8 @@ COPY vitereact/package.json  ./
 RUN npm install --legacy-peer-deps
 RUN npm install --save-dev eslint-plugin-import eslint-plugin-react @typescript-eslint/parser @typescript-eslint/eslint-plugin
 RUN npm install --save-dev eslint-import-resolver-typescript
+# Copy backend schema file needed for frontend build
+COPY backend/schema.ts ../backend/schema.ts
 # Copy the rest of the frontend files and build
 COPY vitereact ./
 # Clear any existing build artifacts to force fresh build
