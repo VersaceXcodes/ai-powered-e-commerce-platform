@@ -121,7 +121,7 @@ const UV_Admin_Products: React.FC = () => {
     data: productsData,
     isLoading: loadingProducts,
     isError: productsError,
-    refetch: refetchProducts,
+
   } = useQuery<{ products: Product[]; total: number }, Error>({
     queryKey: ["admin-products", { ...apiParams }],
     queryFn: async () => {

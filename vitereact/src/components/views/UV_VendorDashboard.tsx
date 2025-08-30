@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useAppStore } from "@/store/main";
 import { Link } from "react-router-dom";

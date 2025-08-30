@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useAppStore } from '@/store/main';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
 // --- Types (from Zod schemas)
 interface Wishlist {
@@ -21,10 +21,7 @@ interface WishlistProduct {
   price: number;
 }
 
-interface WishlistProductListResponse {
-  wishlist_products: WishlistProduct[];
-  total: number;
-}
+
 
 interface CartItemInput {
   cart_id: string;

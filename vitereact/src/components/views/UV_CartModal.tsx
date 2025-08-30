@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppStore } from '@/store/main';
@@ -18,8 +18,8 @@ interface Cart {
 }
 
 interface CartItem {
-  cart_item_id: string;
-  cart_id: string;
+  cart_item_id?: string;
+  cart_id?: string;
   product_id: string;
   name: string;
   price: number;
@@ -35,7 +35,7 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 // --- Cart Modal Component ---
 const UV_CartModal: React.FC = () => {
   // --- Zustand selectors (ALWAYS use individual selectors!) ---
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
+
   const authToken = useAppStore(state => state.authentication_state.auth_token);
   const cartState = useAppStore(state => state.cart_state);
   const setCartState = useAppStore(state => state.set_cart_state);

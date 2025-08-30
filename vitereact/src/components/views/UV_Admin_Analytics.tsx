@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { useAppStore } from "@/store/main";
 import axios from "axios";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 import { analyticsSnapshotSchema } from "@schema";
 import type { AnalyticsSnapshot } from "@schema";
@@ -26,8 +26,7 @@ function LineChart({ data, yKey = "value", xKey = "label", color = "blue" }: {
   xKey: string;
   color?: string;
 }) {
-  // Use xKey for accessibility or future enhancements
-  const _ = xKey;
+
   // Defensive: ensure >1 point
   if (!data || data.length < 2) {
     return (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Link, useSearchParams } from "react-router-dom";
@@ -156,7 +156,7 @@ const UV_Vendor_Orders: React.FC = () => {
     isLoading,
     isError,
     error,
-    refetch,
+
     isFetching,
   } = useQuery<OrdersListResponse, Error>({
     queryKey: [

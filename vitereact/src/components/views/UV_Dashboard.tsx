@@ -57,7 +57,7 @@ const UV_Dashboard: React.FC = () => {
                     <strong>Email:</strong> {currentUser?.email}
                   </p>
                   <p className="text-blue-700 text-sm mt-1">
-                    <strong>User ID:</strong> {currentUser?.id}
+                    <strong>User ID:</strong> {currentUser?.user_id}
                   </p>
                 </div>
               </div>

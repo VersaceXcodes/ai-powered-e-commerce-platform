@@ -79,7 +79,7 @@ const UV_OrderDetail: React.FC = () => {
     isLoading: isOrderLoading,
     isError: isOrderError,
     error: orderError,
-    refetch: refetchOrder,
+
   } = useQuery<Order, Error>({
     queryKey: ["order", orderId],
     queryFn: () => fetchOrder(orderId ?? ""),
@@ -92,7 +92,7 @@ const UV_OrderDetail: React.FC = () => {
     isLoading: isItemsLoading,
     isError: isItemsError,
     error: itemsError,
-    refetch: refetchOrderItems,
+
   } = useQuery<OrderItem[], Error>({
     queryKey: ["orderItems", orderId],
     queryFn: () => fetchOrderItems(orderId ?? ""),
@@ -105,7 +105,7 @@ const UV_OrderDetail: React.FC = () => {
     isLoading: isStatusLoading,
     isError: isStatusError,
     error: statusError,
-    refetch: refetchStatusHistory,
+
   } = useQuery<OrderStatusHistory[], Error>({
     queryKey: ["orderStatusHistory", orderId],
     queryFn: () => fetchOrderStatusHistory(orderId ?? ""),
@@ -182,9 +182,7 @@ const UV_OrderDetail: React.FC = () => {
     cancelButtonRef.current?.focus();
   };
 
-  const handleBackToOrders = () => {
-    navigate("/orders", { replace: true });
-  };
+
 
   // --- UX: Focus trap for modal ---
   useEffect(() => {
@@ -313,7 +311,7 @@ const UV_OrderDetail: React.FC = () => {
               {timeline.length === 0 ? (
                 <li className="text-gray-500 text-sm">No history available.</li>
               ) : (
-                timeline.map((hist, idx) => (
+                timeline.map((hist) => (
                   <li key={hist.order_status_history_id} className="mb-4 ml-2">
                     <div className="flex items-center gap-2">
                       <span className="h-2 w-2 rounded-full bg-blue-500"></span>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -14,7 +14,7 @@ import type {
 
 // ----- Types -----
 interface FormErrors {
-  [key: string]: string;
+  [key: string]: string | undefined;
 }
 
 // 'params.id' for the :id param in the router
@@ -46,8 +46,8 @@ const UV_Vendor_ProductEdit: React.FC = () => {
           vendor_id: current_user?.user_id ?? null,
           average_rating: 0,
           total_ratings: 0,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
+          created_at: new Date(),
+          updated_at: new Date(),
         }
   );
   const [product_images, setProductImages] = useState<ProductImage[]>([]);
@@ -72,7 +72,7 @@ const UV_Vendor_ProductEdit: React.FC = () => {
   const {
     data: productData,
     isLoading: productLoading,
-    isError: productError,
+
     refetch: refetchProduct,
   } = useQuery<Product, Error>({
     queryKey: ["vendor-product", product_id_param],
@@ -90,7 +90,7 @@ const UV_Vendor_ProductEdit: React.FC = () => {
   const {
     data: productImagesData,
     isLoading: imagesLoading,
-    isError: imagesError,
+
     refetch: refetchImages,
   } = useQuery<{ product_images: ProductImage[] }, Error>({
     queryKey: ["product-images", product_id_param],
@@ -108,8 +108,7 @@ const UV_Vendor_ProductEdit: React.FC = () => {
   const {
     data: categoriesData,
     isLoading: categoriesLoading,
-    isError: categoriesError,
-    refetch: refetchCategories,
+
   } = useQuery<{ categories: Category[] }, Error>({
     queryKey: ["categories"],
     queryFn: async () => {
@@ -124,7 +123,7 @@ const UV_Vendor_ProductEdit: React.FC = () => {
   const {
     data: assignedCategoriesRaw,
     isLoading: assignedCategoriesLoading,
-    isError: assignedCategoriesError,
+
     refetch: refetchAssignedCategories,
   } = useQuery<{ product_categories: ProductCategory[] }, Error>({
     queryKey: ["product-assigned-categories", product_id_param],
@@ -322,7 +321,7 @@ const UV_Vendor_ProductEdit: React.FC = () => {
   };
 
   // --- Form input handlers (NO setState in render phase; always via handlers)
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormErrors((prev) => ({ ...prev, [e.target.name]: undefined, root: undefined }));
     setSuccessMsg(null);
     if (!product) return;

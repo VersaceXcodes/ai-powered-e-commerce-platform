@@ -60,10 +60,8 @@ const CSV_HEADERS = [
 const UV_Admin_Orders: React.FC = () => {
   // Global state: auth
   const authToken = useAppStore((state) => state.authentication_state.auth_token);
-  const currentUser = useAppStore((state) => state.authentication_state.current_user);
   const socket = useAppStore((state) => state.socket);
   const setError = useAppStore((state) => state.set_error);
-  const clearError = useAppStore((state) => state.clear_error);
   const queryClient = useQueryClient();
 
   // Routing
@@ -76,9 +74,7 @@ const UV_Admin_Orders: React.FC = () => {
 
   // For controlled UI
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
-  const [showExportDialog, setShowExportDialog] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
-  const [csvBlob, setCsvBlob] = useState<Blob | null>(null);
 
   // Error/message UI
   const [formError, setFormError] = useState<string | null>(null);

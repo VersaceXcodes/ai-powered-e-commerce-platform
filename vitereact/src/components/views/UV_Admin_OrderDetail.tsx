@@ -560,7 +560,7 @@ const UV_Admin_OrderDetail: React.FC = () => {
                   <ol className="relative border-l border-gray-300 ml-2">
                     {orderStatusHistory.slice().sort((a, b) =>
                       new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime()
-                    ).map((h, idx) => (
+                    ).map((h) => (
                       <li key={h.order_status_history_id} className="mb-6 ml-4">
                         <div className="absolute w-3 h-3 bg-gray-200 rounded-full mt-1.5 -left-1.5 border border-gray-400"></div>
                         <div>

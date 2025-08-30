@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAppStore } from '@/store/main';
 
 // --- Type Imports (from Zod schemas, see provided types) ---
-import type { Product, ProductImage, ProductReview, AiRecommendation, Vendor } from '@schema';
+import type { Product, ProductImage, ProductReview, AIRecommendation, Vendor } from '@schema';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
@@ -21,8 +21,7 @@ const UV_ProductDetail: React.FC = () => {
   const isAuthenticated = useAppStore(state => state.authentication_state.authentication_status.is_authenticated);
   const cartState = useAppStore(state => state.cart_state);
   const wishlistState = useAppStore(state => state.wishlist_state);
-  const setError = useAppStore(state => state.set_error);
-  const clearError = useAppStore(state => state.clear_error);
+
 
   // For review sort/filter UI
   const [reviewSort, setReviewSort] = useState<'created_at_desc' | 'created_at_asc' | 'rating_desc' | 'rating_asc'>('created_at_desc');
@@ -63,7 +62,7 @@ const UV_ProductDetail: React.FC = () => {
   // Fetch PRODUCT IMAGES
   const {
     data: imagesData,
-    isLoading: isLoadingImages,
+
     error: errorImages,
   } = useQuery<{ product_images: ProductImage[] }, Error>({
     queryKey: ['product_images', product_id],
@@ -79,7 +78,7 @@ const UV_ProductDetail: React.FC = () => {
   const vendor_id = productData?.vendor_id || null;
   const {
     data: vendorData,
-    isLoading: isLoadingVendor,
+
   } = useQuery<Vendor | null, Error>({
     queryKey: ['vendor', vendor_id],
     queryFn: async () => {
@@ -96,7 +95,7 @@ const UV_ProductDetail: React.FC = () => {
     data: reviewsData,
     isLoading: isLoadingReviews,
     error: errorReviews,
-    refetch: refetchReviews,
+
   } = useQuery<{ product_reviews: ProductReview[], total: number }, Error>({
     queryKey: ['product_reviews', product_id, reviewSort],
     queryFn: async () => {
@@ -162,7 +161,7 @@ const UV_ProductDetail: React.FC = () => {
 
   // ============ MUTATIONS =============
 
-  const queryClient = useQueryClient();
+
 
   // -- Add to Cart Mutation
   const addToCartMutation = useMutation({

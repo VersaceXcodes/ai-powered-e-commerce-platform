@@ -8,7 +8,7 @@ import { useAppStore } from '@/store/main';
 
 // Zod types
 // As per guidelines, types only, all data fields are used as Zod/DB specify
-import type { CartItem, CartState, User } from '@/store/main';
+import type { CartItem } from '@/store/main';
 
 // Utility for client order number
 const generateOrderNumber = (user_id: string) => `ORD-${user_id}-${Date.now()}`;
@@ -37,7 +37,7 @@ const UV_Checkout: React.FC = () => {
   const currentUser = useAppStore(state => state.authentication_state.current_user);
   const authToken = useAppStore(state => state.authentication_state.auth_token);
   const cartState = useAppStore(state => state.cart_state);
-  const set_cart_state = useAppStore(state => state.set_cart_state);
+
   const clear_cart_state = useAppStore(state => state.clear_cart_state);
 
   // --- LOCAL STATE ---

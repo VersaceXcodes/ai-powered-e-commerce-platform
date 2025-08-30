@@ -25,9 +25,7 @@ interface ReviewTableFilters {
 }
 
 // --- For product/user name enrichment ---
-interface ProductMeta {
-  name: string;
-}
+
 interface UserMeta {
   name: string;
   email: string;
@@ -223,9 +221,7 @@ const UV_Admin_Reviews: React.FC = () => {
   }, [reviewData]);
 
   // --- 4. Real-time (Socket): Listen for product.review.submitted/hidden and refetch table
-  const realtimeConnection = useAppStore(
-    (state) => state.realtime_connection
-  );
+
   const socket = useAppStore((state) => state.socket);
   useEffect(() => {
     if (!socket) return;

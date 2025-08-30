@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { z } from 'zod';
+
 import { useAppStore } from '@/store/main';
 
 // --- Types from backend Zod schema ---
@@ -39,7 +39,7 @@ const UV_Admin_ProductEdit: React.FC = () => {
 
   // Auth
   const auth_token = useAppStore(state => state.authentication_state.auth_token);
-  const current_user = useAppStore(state => state.authentication_state.current_user);
+
 
   const [fieldsTouched, setFieldsTouched] = useState<Record<string, boolean>>({});
   const [showUnsavedWarning, setShowUnsavedWarning] = useState(false);
@@ -69,7 +69,7 @@ const UV_Admin_ProductEdit: React.FC = () => {
   // Unsaved changes navigation guard
   const navigate = useNavigate();
   const location = useLocation();
-  const initialUrl = useRef(location.pathname);
+
 
   // Query client
   const queryClient = useQueryClient();
@@ -131,7 +131,7 @@ const UV_Admin_ProductEdit: React.FC = () => {
   // Fetch product categories (category_ids)
   const {
     data: fetchedProductCategories,
-    isLoading: isCategoriesLoading,
+    isLoading: 
   } = useQuery<ProductCategory[]>({
     queryKey: ['admin_product_categories', product_id],
     queryFn: async () => {
@@ -149,7 +149,7 @@ const UV_Admin_ProductEdit: React.FC = () => {
   // Fetch images for product
   const {
     data: fetchedImages,
-    isLoading: isImagesLoading,
+
   } = useQuery<ProductImage[]>({
     queryKey: ['admin_product_images', product_id],
     queryFn: async () => {
@@ -193,7 +193,7 @@ const UV_Admin_ProductEdit: React.FC = () => {
   }, [fetchedImages, isEditMode]);
 
   // --- Form field handlers ---
-  function handleFieldChange(field: string, value: any) {
+  function handleFieldChange(field: string) {
     setFieldsTouched(prev => ({ ...prev, [field]: true }));
     setSuccessMessage(null);
     setError(null);

@@ -57,8 +57,8 @@ const UV_Landing: React.FC = () => {
     data: aiRecs,
     isLoading: aiRecsLoading,
     error: aiRecsError,
-    refetch: refetchAi,
-  } = useQuery<AiRecommendation[], Error>({
+
+  } = useQuery<AIRecommendation[], Error>({
     queryKey: [
       "ai_recommendations",
       currentUser?.user_id || "guest",

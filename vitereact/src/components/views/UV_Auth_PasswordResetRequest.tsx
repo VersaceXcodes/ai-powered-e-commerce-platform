@@ -66,7 +66,7 @@ const UV_Auth_PasswordResetRequest: React.FC = () => {
       // The backend *always* returns { message } 200, regardless of presence, per spec
       return data;
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       setSubmitted(true);
       setErrorMessage(null);
       setIsLoading(false);
@@ -74,7 +74,7 @@ const UV_Auth_PasswordResetRequest: React.FC = () => {
     onError: (error) => {
       // Should not happen (API always returns 200, but fall back for network failures)
       let msg =
-        error.response?.data?.message ||
+        (error as any).response?.data?.message ||
         error.message ||
         "Error sending reset email.";
       setErrorMessage(msg);

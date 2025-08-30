@@ -54,7 +54,7 @@ const UV_Vendor_OrderDetail: React.FC = () => {
   const [updateSuccess, setUpdateSuccess] = useState<string | null>(null);
 
   // --- React Query Client ---
-  const queryClient = useQueryClient();
+
 
   // --- Fetch Order (GET /orders/{order_id}) ---
   const {
@@ -151,7 +151,7 @@ const UV_Vendor_OrderDetail: React.FC = () => {
       setUpdateError(error.message);
       setUpdateSuccess(null);
     },
-    onSuccess: data => {
+    onSuccess: () => {
       setUpdateSuccess('Status updated successfully.');
       setUpdateError(null);
       setStatusUpdate('');

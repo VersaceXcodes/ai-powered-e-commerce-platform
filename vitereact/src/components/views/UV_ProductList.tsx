@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams, useNavigate, Link, useLocation } from "react-router-dom";
 import axios from "axios";
-import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useAppStore } from "@/store/main";
 
 // --- Types from Zod schemas (copy/paste, for type-safety) ---
@@ -114,11 +114,7 @@ function useDebouncedValue<T>(value: T, delay: number): T {
 const UV_ProductList: React.FC = () => {
   // ------ URL state ------
   const [searchParams, setSearchParams] = useSearchParams();
-  const location = useLocation();
-  const navigate = useNavigate();
 
-  // ---- Zustand auth for future navigation or context ----
-  const currentUser = useAppStore((state) => state.authentication_state.current_user);
 
   // --- Filter state from URL, with React state for inputs ---
   const [searchInput, setSearchInput] = useState(() => searchParams.get("query") || "");
@@ -284,11 +280,7 @@ const UV_ProductList: React.FC = () => {
     setSortOrder(e.target.value as any);
     setPage(1);
   };
-  const handlePriceRange = (min: number, max: number) => {
-    setPriceMin(min);
-    setPriceMax(max);
-    setPage(1);
-  };
+
   const handleRatingMin = (v: number) => {
     setRatingMin(v);
     setPage(1);
@@ -333,7 +325,7 @@ const UV_ProductList: React.FC = () => {
   }
 
   // Skeleton loading cards
-  const skeletonCards = [];
+  const skeletonCards: React.ReactElement[] = [];
   for (let i = 0; i < perPage; ++i) {
     skeletonCards.push(
       <div

@@ -55,10 +55,10 @@ const UV_Profile: React.FC = () => {
 
   // --- Fetch profile (on mount/if currentUser) ---
   const {
-    data: userFetch,
+
     isLoading: profileLoading,
     isError: profileError,
-    refetch: refetchProfile,
+
   } = useQuery<User>({
     queryKey: ['profile'],
     queryFn: async () => {
@@ -70,10 +70,6 @@ const UV_Profile: React.FC = () => {
     },
     enabled: !!authToken,
     staleTime: 0,
-    onSuccess: (data) => {
-      setLocalUser(data);
-      updateUserProfile(data); // hydrate Zustand
-    },
     onError: (err: any) => {
       // If error is 401/403, logout (session expired / blocked)
       if (axios.isAxiosError(err) && (err.response?.status === 401 || err.response?.status === 403)) {

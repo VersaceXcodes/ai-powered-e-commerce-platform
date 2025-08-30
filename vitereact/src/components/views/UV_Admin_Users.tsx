@@ -8,11 +8,7 @@ import { User } from "@schema"; // type, not used for runtime validation
 // Constants
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 const ROLES = ["admin", "vendor", "customer"] as const;
-const STATUS_OPTIONS = [
-  { value: undefined, label: "All" },
-  { value: false, label: "Active" },
-  { value: true, label: "Blocked" },
-];
+
 const SORT_COLUMNS = [
   { value: "created_at", label: "Created" },
   { value: "name", label: "Name" },
@@ -75,7 +71,7 @@ const UV_Admin_Users: React.FC = () => {
     data: userData,
     isLoading,
     isFetching,
-    error: userListError,
+
     refetch,
   } = useQuery<{
     users: User[];
@@ -162,12 +158,8 @@ const UV_Admin_Users: React.FC = () => {
   ]);
 
   // --- Mutations: Single User Block/Unblock ---
-  const blockUserMutation = useMutation<
-    User,
-    Error,
-    { user_id: string; is_blocked: boolean }
-  >(
-    async (payload) => {
+  const blockUserMutation = useMutation({
+    mutationFn: async (payload: { user_id: string; is_blocked: boolean }) => {
       const res = await axios.patch(
         `${API_BASE}/users/${payload.user_id}/block`,
         { is_blocked: payload.is_blocked },
@@ -175,27 +167,21 @@ const UV_Admin_Users: React.FC = () => {
       );
       return res.data;
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["admin_users"] });
-        setPendingUserAction(null);
-        setActionError(null);
-      },
-      onError: (err: any) => {
-        setActionError(typeof err?.response?.data?.message === "string"
-          ? err.response.data.message
-          : "Failed to update user block status.");
-      },
-    }
-  );
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin_users"] });
+      setPendingUserAction(null);
+      setActionError(null);
+    },
+    onError: (err: any) => {
+      setActionError(typeof err?.response?.data?.message === "string"
+        ? err.response.data.message
+        : "Failed to update user block status.");
+    },
+  });
 
   // --- Mutations: Single Role Change ---
-  const changeRoleMutation = useMutation<
-    User,
-    Error,
-    { user_id: string; newRole: string }
-  >(
-    async ({ user_id, newRole }) => {
+  const changeRoleMutation = useMutation({
+    mutationFn: async ({ user_id, newRole }: { user_id: string; newRole: string }) => {
       const payload = { user_id, role: newRole };
       const res = await axios.put(
         `${API_BASE}/profile`,
@@ -204,14 +190,13 @@ const UV_Admin_Users: React.FC = () => {
       );
       return res.data;
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["admin_users"] });
-        setPendingUserAction(null);
-        setActionError(null);
-      },
-      onError: (err: any) => {
-        setActionError(typeof err?.response?.data?.message === "string"
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin_users"] });
+      setPendingUserAction(null);
+      setActionError(null);
+    },
+    onError: (err: any) => {
+      setActionError(typeof err?.response?.data?.message === "string"
           ? err.response.data.message
           : "Failed to update role.");
       },
@@ -281,9 +266,7 @@ const UV_Admin_Users: React.FC = () => {
   };
 
   // --- Handler: Table filter input ---
-  const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFilters((f) => ({ ...f, query: e.target.value }));
-  };
+
   // Handle pressing Enter in search
   const handleQueryEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
@@ -90,7 +90,7 @@ const UV_OrderHistory: React.FC = () => {
   // For accessibility: error messages
   const [localError, setLocalError] = useState<string | null>(null);
 
-  const queryClient = useQueryClient();
+
   const navigate = useNavigate();
 
   // Update user_id in filters if user changes
@@ -105,20 +105,11 @@ const UV_OrderHistory: React.FC = () => {
   const {
     data,
     isFetching,
-    isError,
-    error,
     refetch,
-    isPreviousData,
   } = useQuery<{ orders: Order[]; total: number }, Error>({
     queryKey: getOrderHistoryQueryKey(filters),
     queryFn: () => fetchOrders(filters, authToken || ''),
     enabled: !!filters.user_id && !!authToken,
-    staleTime: 60 * 1000, // 1 minute
-    placeholderData: (previousData) => previousData,
-    retry: 1,
-    onError: (err) => {
-      setLocalError(err.message || 'Failed to load your orders.');
-    },
   });
 
   // --- Handle Real-time Order Events (Refresh Orders) ---
@@ -152,7 +143,7 @@ const UV_OrderHistory: React.FC = () => {
     const val = e.target.value;
     setFilters(prev => ({
       ...prev,
-      status: val ? val : undefined,
+      status: val ? (val as "created" | "processing" | "shipped" | "delivered" | "cancelled") : undefined,
       offset: 0,
     }));
     setLocalError(null);

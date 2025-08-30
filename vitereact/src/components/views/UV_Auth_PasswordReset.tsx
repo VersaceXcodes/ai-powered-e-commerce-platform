@@ -12,7 +12,7 @@ const PasswordResetTokenSchema = z.object({
   used: z.boolean(),
   created_at: z.coerce.date(),
 });
-type PasswordResetToken = z.infer<typeof PasswordResetTokenSchema>;
+
 
 // --- CONSTANTS
 const PASSWORD_MIN_LENGTH = 8;
@@ -22,7 +22,7 @@ const API_BASE = `${import.meta.env.VITE_API_BASE_URL || "http://localhost:3000"
 const UV_Auth_PasswordReset: React.FC = () => {
   // ----- ROUTER: Get reset_token from URL -----
   const params = useParams();
-  const navigate = useNavigate();
+
 
   // params key can be 'token' OR 'reset_token' depending on router/config
   const rawToken = params.reset_token || params.token || "";

@@ -23,8 +23,8 @@ const fetchOrderById = async ({
       Authorization: `Bearer ${token}`,
     },
   });
-  // API returns shape: { order: { ... } }
-  return res.data.order;
+  // API returns the order directly
+  return res.data;
 };
 
 // --- Simulated Invoice Download (PDF) ---
@@ -70,7 +70,7 @@ const UV_OrderConfirmation: React.FC = () => {
   const clearCartState = useAppStore((state) => state.clear_cart_state);
 
   // --- Router Navigation ---
-  const navigate = useNavigate();
+
 
   // --- Side Effect: Cart is cleared after order placed
   useEffect(() => {
@@ -85,19 +85,17 @@ const UV_OrderConfirmation: React.FC = () => {
     isLoading,
     isError,
     error,
-    refetch,
-  } = useQuery<Order, Error>(
-    ["order", orderId, token],
-    async () => {
+  } = useQuery<Order, Error>({
+    queryKey: ["order", orderId, token],
+    queryFn: async () => {
       if (!orderId || !token) throw new Error("Missing orderId or token");
       // zod validation on fetch
       const orderData = await fetchOrderById({ orderId, token });
       orderSchema.parse(orderData); // throws if invalid
       return orderData;
     },
-    {
-      enabled: !!orderId && !!token,
-      retry: 1,
+    enabled: !!orderId && !!token,
+    retry: 1,
     }
   );
 

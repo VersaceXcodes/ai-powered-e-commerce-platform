@@ -154,7 +154,7 @@ const UV_Vendor_Products: React.FC = () => {
     isLoading,
     isError,
     error,
-    refetch,
+
     isFetching,
   } = useQuery({
     queryKey: [
@@ -181,8 +181,7 @@ const UV_Vendor_Products: React.FC = () => {
   // --- DELETE PRODUCT ---
   const {
     mutate: mutateDeleteProduct,
-    isLoading: isDeleting,
-    variables: deleteVars,
+    isPending: isDeleting,
   } = useMutation({
     mutationFn: (vars: { product_id: string; token: string }) =>
       deleteVendorProduct(vars),
@@ -199,8 +198,7 @@ const UV_Vendor_Products: React.FC = () => {
   // --- UPDATE PRODUCT STATUS ---
   const {
     mutate: mutateStatus,
-    isLoading: isStatusUpdating,
-    variables: statusVars,
+    isPending: isStatusUpdating,
   } = useMutation({
     mutationFn: (vars: { product: Product; next_status: ProductStatus; token: string }) =>
       updateVendorProductStatus(vars),
