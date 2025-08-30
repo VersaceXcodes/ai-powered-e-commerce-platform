@@ -41,7 +41,11 @@ export default defineConfig({
 		alias: {
 			"@": path.resolve(__dirname, "./src"),
 			"@schema": path.resolve(__dirname, "../backend/schema.ts"),
+			"zod": path.resolve(__dirname, "./node_modules/zod"),
 		},
+	},
+	optimizeDeps: {
+		include: ["zod"],
 	},
 	build: {
 		outDir: "public",

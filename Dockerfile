@@ -8,6 +8,8 @@ RUN npm install --save-dev eslint-plugin-import eslint-plugin-react @typescript-
 RUN npm install --save-dev eslint-import-resolver-typescript
 # Copy backend schema file needed for frontend build
 COPY backend/schema.ts ../backend/schema.ts
+# Create a symlink to make zod available for the backend schema file
+RUN mkdir -p ../backend/node_modules && ln -sf /app/vitereact/node_modules/zod ../backend/node_modules/zod
 # Copy the rest of the frontend files and build
 COPY vitereact ./
 # Clear any existing build artifacts to force fresh build
