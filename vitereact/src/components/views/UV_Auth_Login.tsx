@@ -99,13 +99,33 @@ const UV_Auth_Login: React.FC = () => {
 
   return (
     <>
-      <div className="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
-          <div className="mb-8 text-center">
-            <img alt="AIOCart Logo" src="https://picsum.photos/seed/aiocartloginlogo/60/60" className="mx-auto rounded-full mb-2" />
-            <h1 className="text-2xl font-bold text-gray-800">Sign in to your account</h1>
-            <p className="text-gray-500 mt-2 text-sm">Welcome back! Please sign in to access your shopping dashboard.</p>
+      <div className="min-h-screen flex bg-gray-50">
+        {/* Left side - Hero Image */}
+        <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 to-purple-700 relative overflow-hidden">
+          <div className="absolute inset-0 bg-black bg-opacity-20"></div>
+          <img 
+            src="/src/assets/cofounder.webp" 
+            alt="Welcome to AIOCart" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-center text-white p-8">
+              <h2 className="text-4xl font-bold mb-4">Welcome to AIOCart</h2>
+              <p className="text-xl opacity-90">Your intelligent shopping companion</p>
+            </div>
           </div>
+        </div>
+
+        {/* Right side - Login Form */}
+        <div className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-md w-full bg-white rounded-lg shadow-xl p-8 lg:shadow-2xl">
+            <div className="mb-8 text-center">
+              <div className="mb-6">
+                <img alt="AIOCart Logo" src="https://picsum.photos/seed/aiocartloginlogo/80/80" className="mx-auto rounded-full shadow-lg" />
+              </div>
+              <h1 className="text-3xl font-bold text-gray-800 mb-2">Sign in to your account</h1>
+              <p className="text-gray-500 text-sm">Welcome back! Please sign in to access your shopping dashboard.</p>
+            </div>
 
           {contextMsg && (
             <div className="mb-6 py-2 bg-yellow-100 border border-yellow-300 text-yellow-800 rounded-md text-sm text-center" aria-live="polite">
@@ -211,8 +231,9 @@ const UV_Auth_Login: React.FC = () => {
             </div>
           </form>
 
-          <div className="mt-8 text-xs text-center text-gray-400">
-            © {new Date().getFullYear()} AIOCart. All rights reserved.
+            <div className="mt-8 text-xs text-center text-gray-400">
+              © {new Date().getFullYear()} AIOCart. All rights reserved.
+            </div>
           </div>
         </div>
       </div>
