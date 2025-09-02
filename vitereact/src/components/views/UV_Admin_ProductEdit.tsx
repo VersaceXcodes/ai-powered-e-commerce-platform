@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 
@@ -68,7 +68,6 @@ const UV_Admin_ProductEdit: React.FC = () => {
 
   // Unsaved changes navigation guard
   const navigate = useNavigate();
-  const location = useLocation();
 
 
   // Query client
@@ -130,8 +129,7 @@ const UV_Admin_ProductEdit: React.FC = () => {
 
   // Fetch product categories (category_ids)
   const {
-    data: fetchedProductCategories,
-    isLoading: 
+    data: fetchedProductCategories
   } = useQuery<ProductCategory[]>({
     queryKey: ['admin_product_categories', product_id],
     queryFn: async () => {
@@ -148,8 +146,7 @@ const UV_Admin_ProductEdit: React.FC = () => {
 
   // Fetch images for product
   const {
-    data: fetchedImages,
-
+    data: fetchedImages
   } = useQuery<ProductImage[]>({
     queryKey: ['admin_product_images', product_id],
     queryFn: async () => {
@@ -586,7 +583,7 @@ const UV_Admin_ProductEdit: React.FC = () => {
                 value={name}
                 onChange={e => {
                   setName(sanitizeString(e.target.value));
-                  handleFieldChange('name', e.target.value);
+                  handleFieldChange('name');
                 }}
                 required
                 minLength={3}
@@ -602,7 +599,7 @@ const UV_Admin_ProductEdit: React.FC = () => {
                 value={description}
                 onChange={e => {
                   setDescription(sanitizeString(e.target.value));
-                  handleFieldChange('description', e.target.value);
+                  handleFieldChange('description');
                 }}
                 minLength={6}
                 required
@@ -624,7 +621,7 @@ const UV_Admin_ProductEdit: React.FC = () => {
                     value={price}
                     onChange={e => {
                       setPrice(Number(e.target.value));
-                      handleFieldChange('price', e.target.value);
+                      handleFieldChange('price');
                     }}
                     required
                     className="block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-blue-300"
@@ -641,7 +638,7 @@ const UV_Admin_ProductEdit: React.FC = () => {
                     value={inventory_count}
                     onChange={e => {
                       setInventoryCount(Number(e.target.value));
-                      handleFieldChange('inventory_count', e.target.value);
+                      handleFieldChange('inventory_count');
                     }}
                     required
                     className="block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-blue-300"
@@ -658,7 +655,7 @@ const UV_Admin_ProductEdit: React.FC = () => {
                 required
                 onChange={e => {
                   setStatus(e.target.value as ProductStatus);
-                  handleFieldChange('status', e.target.value);
+                  handleFieldChange('status');
                 }}
                 className="block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-blue-300"
               >
@@ -678,7 +675,7 @@ const UV_Admin_ProductEdit: React.FC = () => {
                     value={vendor_id || ''}
                     onChange={e => {
                       setVendorId(e.target.value || null);
-                      handleFieldChange('vendor_id', e.target.value);
+                      handleFieldChange('vendor_id');
                     }}
                     className="block w-full border border-gray-300 rounded-md px-3 py-2 focus:ring focus:ring-blue-300"
                   >
