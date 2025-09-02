@@ -69,15 +69,19 @@ const UV_Profile: React.FC = () => {
       return data as User;
     },
     enabled: !!authToken,
-    staleTime: 0,
-    onError: (err: any) => {
+    staleTime: 0
+  });
+
+  // Handle profile error separately
+  React.useEffect(() => {
+    if (profileError) {
       // If error is 401/403, logout (session expired / blocked)
-      if (axios.isAxiosError(err) && (err.response?.status === 401 || err.response?.status === 403)) {
+      if (axios.isAxiosError(profileError) && (profileError.response?.status === 401 || profileError.response?.status === 403)) {
         logoutUser();
         navigate('/login', { replace: true });
       }
     }
-  });
+  }, [profileError, logoutUser, navigate]);
 
   // --- Synchronize localUser with currentUser (e.g. if store updates) ---
   useEffect(() => {

@@ -1,11 +1,11 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { useAppStore } from '@/store/main';
 
 // --- Type Imports (from Zod schemas, see provided types) ---
-import type { Product, ProductImage, ProductReview, AIRecommendation, Vendor } from '@schema';
+import type { Product, ProductImage, ProductReview, Vendor } from '@schema';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
@@ -115,7 +115,7 @@ const UV_ProductDetail: React.FC = () => {
     data: aiRecsData,
     isLoading: isLoadingRecs,
     error: errorRecs,
-  } = useQuery<{ ai_recommendations: AiRecommendation[], total: number }, Error>({
+  } = useQuery<{ ai_recommendations: any[], total: number }, Error>({
     queryKey: ['ai_recs', product_id, currentUser?.user_id],
     queryFn: async () => {
       let params = `context_type=product_detail&context_product_id=${encodeURIComponent(product_id)}`;

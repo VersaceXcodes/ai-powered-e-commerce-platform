@@ -513,7 +513,7 @@ export const useAppStore = create<AppStoreState>()(
 
       // --- ERROR / LOADING ---
       set_error: (error_message: string, last_action: string | null = null) =>
-        set((state) => ({
+        set(() => ({
           error_state: { error_message, last_action },
         })),
       clear_error: () => set(() => ({ error_state: { error_message: null, last_action: null } })),
@@ -579,7 +579,7 @@ export const useAppStore = create<AppStoreState>()(
         });
         socket.on('cart.item_stock_invalid', (payload) => {
           // Payload: { cart_item: CartItem, error_message: string }
-          set((state) => ({
+          set(() => ({
             error_state: {
               error_message: payload.error_message || "One or more cart items are unavailable.",
               last_action: "cart_item_stock_invalid",
@@ -639,13 +639,13 @@ export const useAppStore = create<AppStoreState>()(
         });
 
         // ORDER (no state mutators - handled per-view, but can be used for global notif)
-        socket.on('order.status.changed', (payload) => {
+        socket.on('order.status.changed', () => {
           // Optionally, show notification
         });
-        socket.on('order.created', (payload) => {
+        socket.on('order.created', () => {
           // Optionally, show notification
         });
-        socket.on('order.cancelled', (payload) => {
+        socket.on('order.cancelled', () => {
           // Optionally, show notification
         });
 

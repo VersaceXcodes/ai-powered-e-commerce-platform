@@ -341,7 +341,7 @@ const UV_CartModal: React.FC = () => {
                           tabIndex={0}
                           className="p-2 bg-gray-50 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                           disabled={item.quantity <= 1 || loading || quantityActionId === item.cart_item_id}
-                          onClick={() => handleQtyChange(item.cart_item_id, item.quantity, item.max_quantity, -1)}
+                          onClick={() => item.cart_item_id && handleQtyChange(item.cart_item_id, item.quantity, item.max_quantity, -1)}
                         >-</button>
                         <div className="px-3 py-1 min-w-[2ch] text-center text-sm font-medium">{item.quantity}</div>
                         <button
@@ -350,7 +350,7 @@ const UV_CartModal: React.FC = () => {
                           tabIndex={0}
                           className="p-2 bg-gray-50 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                           disabled={item.quantity >= item.max_quantity || loading || quantityActionId === item.cart_item_id}
-                          onClick={() => handleQtyChange(item.cart_item_id, item.quantity, item.max_quantity, 1)}
+                          onClick={() => item.cart_item_id && handleQtyChange(item.cart_item_id, item.quantity, item.max_quantity, 1)}
                         >+</button>
                       </div>
                       {item.quantity >= item.max_quantity && (
@@ -363,7 +363,7 @@ const UV_CartModal: React.FC = () => {
                         tabIndex={0}
                         className="flex items-center gap-1 px-2 py-1 rounded bg-red-50 text-red-600 hover:bg-red-100 text-xs font-semibold transition-colors focus:outline-none disabled:opacity-70"
                         disabled={loading || removingId === item.cart_item_id}
-                        onClick={() => handleRemove(item.cart_item_id)}
+                        onClick={() => item.cart_item_id && handleRemove(item.cart_item_id)}
                       >
                         <svg className="h-4 w-4 mr-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <title>Remove</title>

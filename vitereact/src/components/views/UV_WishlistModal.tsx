@@ -113,7 +113,8 @@ const UV_WishlistModal: React.FC = () => {
   // React-query: Fetch wishlists (stale but true real-time from WS - so just use for initial load/fallback)
   const {
     isLoading: isWishlistsLoading,
-
+    data: wishlistsData,
+    error: wishlistsError
   } = useQuery({
     queryKey: ['wishlists_for_user', currentUser?.user_id],
     queryFn: async (): Promise<Wishlist[]> => {
@@ -125,18 +126,25 @@ const UV_WishlistModal: React.FC = () => {
       return res.data.wishlists as Wishlist[];
     },
     enabled: !!currentUser && !!authToken,
-    onSuccess: (data) => {
-      setWishlistState({ wishlists: data });
-      // For global consistency, auto-select first if none
-      if (!wishlistState.selected_wishlist_id && data.length > 0)
-        setSelectedWishlistId(data[0].wishlist_id);
-    },
-    onError: (err: any) => {
-      setErrorMessage(err?.response?.data?.message || 'Could not load wishlists.');
-    },
     staleTime: 3 * 60 * 1000,
     refetchOnWindowFocus: false
   });
+
+  // Handle wishlist data and errors separately
+  React.useEffect(() => {
+    if (wishlistsData) {
+      setWishlistState({ wishlists: wishlistsData });
+      // For global consistency, auto-select first if none
+      if (!wishlistState.selected_wishlist_id && wishlistsData.length > 0)
+        setSelectedWishlistId(wishlistsData[0].wishlist_id);
+    }
+  }, [wishlistsData, wishlistState.selected_wishlist_id, setWishlistState, setSelectedWishlistId]);
+
+  React.useEffect(() => {
+    if (wishlistsError) {
+      setErrorMessage((wishlistsError as any)?.response?.data?.message || 'Could not load wishlists.');
+    }
+  }, [wishlistsError]);
 
   // Helper: get active wishlist and its products (could fallback to GET /wishlists/{wishlist_id}/products if not present)
   const activeWishlist = wishlists.find(w => w.wishlist_id === activeWishlistId) || null;
@@ -175,7 +183,7 @@ const UV_WishlistModal: React.FC = () => {
       );
       return res.data as Wishlist;
     },
-    onSuccess: (data, variables) => {
+    onSuccess: (_, variables) => {
       setWishlistState({
         wishlists: wishlists.map(wl => wl.wishlist_id === variables.wishlist_id ? { ...wl, title: variables.title } : wl)
       });

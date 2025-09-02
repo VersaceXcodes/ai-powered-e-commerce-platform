@@ -1,8 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useSearchParams, useNavigate, Link, useLocation } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
-import { useAppStore } from "@/store/main";
 
 // --- Types from Zod schemas (copy/paste, for type-safety) ---
 interface Product {

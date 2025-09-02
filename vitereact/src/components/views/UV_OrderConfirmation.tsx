@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { z } from "zod";
@@ -316,7 +316,7 @@ const UV_OrderConfirmation: React.FC = () => {
                 <span className="font-bold">
                   {/* Estimate delivery as +5 days from created_at */}
                   {order.created_at
-                    ? new Date(Date.parse(order.created_at) + 5 * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, {
+                    ? new Date(new Date(order.created_at).getTime() + 5 * 24 * 60 * 60 * 1000).toLocaleDateString(undefined, {
                         weekday: "short",
                         month: "short",
                         day: "numeric",

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useAppStore } from "@/store/main";
 import axios from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -30,7 +30,7 @@ const STATUS_COLORS: Record<string, string> = {
 const UV_OrderDetail: React.FC = () => {
   // --- Route Param: orderId ---
   const { orderId } = useParams<{ orderId: string }>();
-  const navigate = useNavigate();
+
 
   // --- Global Auth State (Zustand, selectors only, never object destructure) ---
   const currentUser = useAppStore((state) => state.authentication_state.current_user);

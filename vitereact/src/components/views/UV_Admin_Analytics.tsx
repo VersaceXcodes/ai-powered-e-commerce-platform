@@ -20,10 +20,9 @@ const DATE_RANGE_PRESETS = [
 
 // --- SIMPLE MINI-CHART RENDERERS ---
 // Only use JSX/SVG/Tailwind (no external libs)
-function LineChart({ data, yKey = "value", xKey = "label", color = "blue" }: {
+function LineChart({ data, yKey = "value", color = "blue" }: {
   data: { [k: string]: any }[];
   yKey: string;
-  xKey: string;
   color?: string;
 }) {
 
@@ -313,7 +312,7 @@ const UV_Admin_Analytics: React.FC = () => {
                         </button>
                       </div>
                       <div className="mb-0">
-                        <LineChart data={revenueSeries} yKey="value" xKey="label" color="blue" />
+                        <LineChart data={revenueSeries} yKey="value" color="blue" />
                       </div>
                     </div>
                     <Link
@@ -346,7 +345,7 @@ const UV_Admin_Analytics: React.FC = () => {
                           <svg className="w-4 h-4 text-green-400" fill="none" viewBox="0 0 19 19"><circle cx="9.5" cy="9.5" r="8.5" stroke="currentColor" /><line x1="9.5" y1="5" x2="9.5" y2="9.5" stroke="currentColor" strokeLinecap="round"/><circle cx="9.5" cy="13.5" r="1" fill="currentColor" /></svg>
                         </button>
                       </div>
-                      <LineChart data={avgOrderValueSeries} yKey="value" xKey="label" color="green" />
+                      <LineChart data={avgOrderValueSeries} yKey="value" color="green" />
                     </div>
                     <Link
                       to="/admin/orders"
@@ -378,7 +377,7 @@ const UV_Admin_Analytics: React.FC = () => {
                           <svg className="w-4 h-4 text-indigo-400" fill="none" viewBox="0 0 19 19"><circle cx="9.5" cy="9.5" r="8.5" stroke="currentColor" /><line x1="9.5" y1="5" x2="9.5" y2="9.5" stroke="currentColor" strokeLinecap="round"/><circle cx="9.5" cy="13.5" r="1" fill="currentColor" /></svg>
                         </button>
                       </div>
-                      <LineChart data={totalOrdersSeries} yKey="value" xKey="label" color="indigo" />
+                      <LineChart data={totalOrdersSeries} yKey="value" color="indigo" />
                     </div>
                     <Link
                       to="/admin/orders"
@@ -410,7 +409,7 @@ const UV_Admin_Analytics: React.FC = () => {
                           <svg className="w-4 h-4 text-orange-400" fill="none" viewBox="0 0 19 19"><circle cx="9.5" cy="9.5" r="8.5" stroke="currentColor" /><line x1="9.5" y1="5" x2="9.5" y2="9.5" stroke="currentColor" strokeLinecap="round"/><circle cx="9.5" cy="13.5" r="1" fill="currentColor" /></svg>
                         </button>
                       </div>
-                      <LineChart data={lowInventorySeries} yKey="value" xKey="label" color="orange" />
+                      <LineChart data={lowInventorySeries} yKey="value" color="orange" />
                     </div>
                     <Link
                       to="/admin/products"
@@ -442,7 +441,7 @@ const UV_Admin_Analytics: React.FC = () => {
                           <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 19 19"><circle cx="9.5" cy="9.5" r="8.5" stroke="currentColor" /><line x1="9.5" y1="5" x2="9.5" y2="9.5" stroke="currentColor" strokeLinecap="round"/><circle cx="9.5" cy="13.5" r="1" fill="currentColor" /></svg>
                         </button>
                       </div>
-                      <LineChart data={userRegistrationSeries} yKey="value" xKey="label" color="gray" />
+                      <LineChart data={userRegistrationSeries} yKey="value" color="gray" />
                     </div>
                     <Link
                       to="/admin/users"
@@ -475,7 +474,6 @@ const UV_Admin_Analytics: React.FC = () => {
                         <LineChart
                           data={chartDrilldown.extra?.series || []}
                           yKey="value"
-                          xKey="label"
                           color={
                             chartDrilldown.metric === "revenue_total"
                               ? "blue"

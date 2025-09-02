@@ -325,7 +325,6 @@ const UV_Admin_Orders: React.FC = () => {
         ),
       ];
       const blob = new Blob([lines.join("\n")], { type: "text/csv" });
-      setCsvBlob(blob);
 
       // Download immediately
       const url = URL.createObjectURL(blob);
@@ -335,7 +334,7 @@ const UV_Admin_Orders: React.FC = () => {
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      setShowExportDialog(false);
+      URL.revokeObjectURL(url);
     } catch (e: any) {
       setError(e.message || "Export failed", "exportOrderData");
     }
