@@ -599,6 +599,14 @@ const GV_TopNav: React.FC = () => {
             role="dialog"
           >
             <div className="p-4 flex flex-col space-y-3">
+              {/* Sidebar Image */}
+              <div className="flex justify-center mb-4">
+                <img 
+                  src="/src/assets/cofounder.webp" 
+                  alt="Cofounder" 
+                  className="w-24 h-24 rounded-full object-cover border-2 border-blue-200 shadow-md"
+                />
+              </div>
               {/* Always show Shop/Home */}
               <Link to="/" className="block py-2 px-3 text-blue-700 font-bold rounded hover:bg-blue-50 transition" onClick={()=>setMobileMenuOpen(false)} tabIndex={0}>Home</Link>
               <Link to="/products" className="block py-2 px-3 rounded hover:bg-blue-50 transition" onClick={()=>setMobileMenuOpen(false)} tabIndex={0}>Shop</Link>
