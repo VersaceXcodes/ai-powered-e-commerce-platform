@@ -1,0 +1,281 @@
+VALIDATION FAILURE - Lint Project (Attempt 1/100)
+
+The project validation failed at the "Lint Project" step. You need to analyze the error and fix it.
+
+## Error Details:
+
+> conductor@0.0.0 lint
+> eslint .
+
+
+/app/vitereact/src/components/views/GV_NotificationCenter.tsx
+  425:27  error  'meta' is never reassigned. Use 'const' instead  prefer-const
+
+/app/vitereact/src/components/views/GV_NotificationToasts.tsx
+   89:5  warning  Unused eslint-disable directive (no problems were reported)
+  114:5  warning  Unused eslint-disable directive (no problems were reported)
+
+/app/vitereact/src/components/views/GV_TopNav.tsx
+   14:10  error    '_key' is assigned a value but never used                    @typescript-eslint/no-unused-vars
+  136:5   warning  Unused eslint-disable directive (no problems were reported)
+
+/app/vitereact/src/components/views/UV_Admin_Analytics.tsx
+   23:10  warning  Fast refresh only works when a file only exports components. Move your component(s) to a separate file  react-refresh/only-export-components
+  152:7   error    Expected an assignment or function call and instead saw an expression                                   @typescript-eslint/no-unused-expressions
+  154:5   warning  Unused eslint-disable directive (no problems were reported)
+
+/app/vitereact/src/components/views/UV_Admin_Categories.tsx
+  603:7  warning  Fast refresh only works when a file only exports components. Move your component(s) to a separate file  react-refresh/only-export-components
+
+/app/vitereact/src/components/views/UV_Admin_Notifications.tsx
+  121:17  error    '_data' is defined but never used                                                                                             @typescript-eslint/no-unused-vars
+  121:24  error    '_notification_id' is defined but never used                                                                                  @typescript-eslint/no-unused-vars
+  141:9   warning  Unused eslint-disable directive (no problems were reported from 'no-await-in-loop')
+  166:6   warning  React Hook useEffect has missing dependencies: 'notifData' and 'refetch'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+/app/vitereact/src/components/views/UV_Admin_OrderDetail.tsx
+   53:10  error  '_key' is assigned a value but never used                @typescript-eslint/no-unused-vars
+   61:10  error  '_key' is assigned a value but never used                @typescript-eslint/no-unused-vars
+   69:10  error  '_key' is assigned a value but never used                @typescript-eslint/no-unused-vars
+   77:10  error  '_key' is assigned a value but never used                @typescript-eslint/no-unused-vars
+  175:11  error  'nowISOString' is never reassigned. Use 'const' instead  prefer-const
+  201:11  error  'msg' is never reassigned. Use 'const' instead           prefer-const
+  230:11  error  'msg' is never reassigned. Use 'const' instead           prefer-const
+  252:11  error  'msg' is never reassigned. Use 'const' instead           prefer-const
+
+/app/vitereact/src/components/views/UV_Admin_Orders.tsx
+  217:5  warning  Unused eslint-disable directive (no problems were reported from 'react-hooks/exhaustive-deps')
+
+/app/vitereact/src/components/views/UV_Admin_Products.tsx
+  186:9  warning  Unused eslint-disable directive (no problems were reported from 'no-await-in-loop')
+
+/app/vitereact/src/components/views/UV_Admin_Reviews.tsx
+   98:11  error  'url' is never reassigned. Use 'const' instead      prefer-const
+  752:21  error  'maxPage' is never reassigned. Use 'const' instead  prefer-const
+
+/app/vitereact/src/components/views/UV_Admin_Users.tsx
+  138:9  warning  The 'users' logical expression could make the dependencies of useMemo Hook (at line 278) change on every render. To fix this, wrap the initialization of 'users' in its own useMemo() Hook  react-hooks/exhaustive-deps
+
+/app/vitereact/src/components/views/UV_Auth_Login.tsx
+  47:5   warning  Unused eslint-disable directive (no problems were reported)
+  75:14  error    '_e' is defined but never used                               @typescript-eslint/no-unused-vars
+
+/app/vitereact/src/components/views/UV_Auth_PasswordResetRequest.tsx
+  76:11  error  'msg' is never reassigned. Use 'const' instead  prefer-const
+
+/app/vitereact/src/components/views/UV_Auth_Register.tsx
+  102:16  error  'issue' is never reassigned. Use 'const' instead  prefer-const
+  113:14  error  'err' is defined but never used                   @typescript-eslint/no-unused-vars
+
+/app/vitereact/src/components/views/UV_CartModal.tsx
+  102:6  warning  React Hook useEffect has missing dependencies: 'fetchCart' and 'fetchCartItems'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+/app/vitereact/src/components/views/UV_Checkout.tsx
+  205:11  error  'msg' is never reassigned. Use 'const' instead  prefer-const
+  397:93  error  Unnecessary escape character: \/                no-useless-escape
+
+/app/vitereact/src/components/views/UV_OrderHistory.tsx
+  120:31  error    '_payload' is defined but never used                         @typescript-eslint/no-unused-vars
+  136:5   warning  Unused eslint-disable directive (no problems were reported)
+
+/app/vitereact/src/components/views/UV_ProductList.tsx
+  173:5  warning  React Hook useEffect has a complex expression in the dependency array. Extract it to a separate variable so it can be statically checked  react-hooks/exhaustive-deps
+  242:3  warning  Unused eslint-disable directive (no problems were reported)
+  245:5  warning  React Hook useEffect has a complex expression in the dependency array. Extract it to a separate variable so it can be statically checked  react-hooks/exhaustive-deps
+
+/app/vitereact/src/components/views/UV_Profile.tsx
+   91:6   warning  React Hook useEffect has a missing dependency: 'localUser'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  189:14  error    'e' is defined but never used                                                                                 @typescript-eslint/no-unused-vars
+  214:14  error    'err' is defined but never used                                                                               @typescript-eslint/no-unused-vars
+
+/app/vitereact/src/components/views/UV_VendorDashboard.tsx
+   91:7   warning  Fast refresh only works when a file only exports components. Move your component(s) to a separate file                                                                                      react-refresh/only-export-components
+  144:7   error    React Hook "useQuery" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
+  156:7   error    React Hook "useQuery" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
+  168:7   error    React Hook "useQuery" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
+  175:99  error    React Hook "useMemo" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?   react-hooks/rules-of-hooks
+
+/app/vitereact/src/components/views/UV_Vendor_ProductEdit.tsx
+  217:17  error  '_data' is defined but never used                  @typescript-eslint/no-unused-vars
+  342:9   error  'errors' is never reassigned. Use 'const' instead  prefer-const
+
+/app/vitereact/src/components/views/UV_Vendor_Products.tsx
+  236:5  warning  Unused eslint-disable directive (no problems were reported)
+
+/app/vitereact/src/components/views/UV_WishlistModal.tsx
+  81:9  error  'targetId' is never reassigned. Use 'const' instead  prefer-const
+
+/app/vitereact/src/hooks/use-toast.ts
+  15:7  error  'actionTypes' is assigned a value but only used as a type  @typescript-eslint/no-unused-vars
+
+/app/vitereact/src/store/main.tsx
+  368:17  error  Empty block statement                             no-empty
+  428:18  error  'e' is defined but never used                     @typescript-eslint/no-unused-vars
+  538:13  error  'token' is never reassigned. Use 'const' instead  prefer-const
+  553:18  error  'error' is defined but never used                 @typescript-eslint/no-unused-vars
+
+✖ 56 problems (36 errors, 20 warnings)
+  13 errors and 11 warnings potentially fixable with the `--fix` option.
+
+
+
+## Validation Context:
+- Step: Lint Project
+- Working Directory: /app/vitereact
+- Attempt: 1/100
+- Previous failures for this step: 1
+
+## Project Memory Summary:
+- Total validation attempts: 6
+- Common issues encountered: None
+- Known dependencies: @hookform/resolvers, @radix-ui/react-accordion, @radix-ui/react-alert-dialog, @radix-ui/react-aspect-ratio, @radix-ui/react-avatar, @radix-ui/react-checkbox, @radix-ui/react-collapsible, @radix-ui/react-context-menu, @radix-ui/react-dialog, @radix-ui/react-dropdown-menu
+- Missing dependencies: None
+
+## Project Structure:
+FULL PROJECT STRUCTURE CONTEXT for Agent:
+=====================================
+
+Working Directory: /app/vitereact
+
+PROJECT DIRECTORIES:
+/app
+/app/.git
+/app/.git/branches
+/app/.git/info
+/app/.git/hooks
+/app/.git/refs
+/app/.git/refs/heads
+/app/.git/refs/tags
+/app/.git/refs/remotes
+/app/.git/objects
+/app/.git/objects/pack
+/app/.git/objects/info
+/app/.git/objects/8f
+/app/.git/objects/d5
+/app/.git/objects/55
+/app/.git/objects/6a
+/app/.git/objects/9e
+/app/.git/objects/7e
+/app/.git/objects/62
+/app/.git/objects/a7
+
+
+KEY PROJECT FILES:
+/app/README.md
+/app/backend/dist/jest.config.d.ts
+/app/backend/dist/jest.config.js
+/app/backend/dist/schema.d.ts
+/app/backend/dist/schema.js
+/app/backend/dist/server.d.ts
+/app/backend/dist/server.js
+/app/backend/dist/server.test.d.ts
+/app/backend/dist/server.test.js
+/app/backend/initdb.js
+/app/backend/jest.config.ts
+/app/backend/package-lock.json
+/app/backend/package.json
+/app/backend/schema.ts
+/app/backend/server.test.ts
+/app/backend/server.ts
+/app/backend/tsconfig.json
+/app/exports/1754388190916.json
+/app/exports/1754388280048.json
+/app/exports/1754388329525.json
+/app/exports/1754388365892.json
+/app/exports/1754388441230.json
+/app/exports/1754388462156.json
+/app/exports/1754388538400.json
+/app/exports/1754388595625.json
+/app/exports/1754388742876.json
+/app/exports/1754388767937.json
+/app/exports/1754388824797.json
+/app/exports/1754388840610.json
+/app/exports/1754388906494.json
+/app/exports/1754388908568.json
+/app/exports/1754388935391.json
+/app/exports/1754388935392.json
+/app/exports/1754388937934.json
+/app/exports/1754388987174.json
+/app/exports/1754388989300.json
+/app/exports/1754389026484.json
+/app/exports/1754389026594.json
+/app/exports/1754389028387.json
+/app/exports/1754389042797.json
+/app/exports/1754389042847.json
+/app/exports/1754389044455.json
+/app/exports/1754389069747.json
+/app/exports/1754389074853.json
+/app/exports/1754389076444.json
+/app/exports/1754389083129.json
+/app/exports/1754389084167.json
+/app/exports/1754389085695.json
+/app/exports/1754389089329.json
+/app/exports/1754389089564.json
+
+
+FRONTEND (vitereact) PACKAGE.JSON:
+  Scripts: dev, build, lint, preview
+  Dependencies: 63 packages
+  DevDependencies: 16 packages
+  Key Dependencies: @hookform/resolvers, @radix-ui/react-accordion, @radix-ui/react-alert-dialog, @radix-ui/react-aspect-ratio, @radix-ui/react-avatar, @radix-ui/react-checkbox, @radix-ui/react-collapsible, @radix-ui/react-context-menu, @radix-ui/react-dialog, @radix-ui/react-dropdown-menu
+
+BACKEND PACKAGE.JSON:
+  Scripts: start, build, dev, test, test:watch, test:coverage
+  Dependencies: 18 packages
+  Key Dependencies: @electric-sql/pglite, @types/bcryptjs, bcryptjs, cors, dotenv, express, jsonwebtoken, morgan, pg, ts-node
+
+ROOT PACKAGE.JSON:
+  Scripts: dev
+
+BACKEND SCHEMA AVAILABLE:
+  Location: /app/backend/schema.ts
+  Size: 31849 characters
+  Contains Zod schemas for type validation
+
+BACKEND SERVER AVAILABLE:
+  Location: /app/backend/server.ts
+  Size: 17176 characters
+  Contains actual API endpoints and implementations
+
+PROTECTED DIRECTORIES (DO NOT MODIFY):
+  - /app/vitereact/src/components/ui/** (UI library)
+  - /app/node_modules/** (Dependencies)
+  - /app/.git/** (Version control)
+
+
+
+## Previous Validation Failures for Lint Project:
+- 1:32:28 PM: 
+
+## Your Task:
+1. **Analyze the Error**: Understand what specifically went wrong in the Lint Project step
+2. **Check Previous Attempts**: Consider if this is a recurring issue based on validation history
+3. **Locate the Problem**: Identify which files need to be modified
+4. **Apply Fixes**: Use the available tools to fix the specific issues
+5. **Focus on Root Cause**: Don't just suppress errors, fix the underlying problems
+
+
+
+
+
+## Important Notes:
+- You are working in a Modal Sandbox environment at /app/vitereact
+- Make changes to the actual project files that will be used in the next validation attempt
+- Always check packages are installed correctly, if not, install them, npm install
+- For TypeScript errors: Fix type issues, missing imports, etc.
+- For Build errors: Fix configuration issues, missing dependencies, syntax errors
+- For Lint errors: Fix code style issues, unused variables, missing dependencies, etc.
+- For Install errors: Fix package.json issues, dependency conflicts, etc.
+- For SQL errors: Fix syntax issues, schema problems, foreign key constraints, etc.
+- Use your memory context to avoid repeating failed approaches
+
+after you have fixed the issues, run the following commands to make sure there are no errors left:
+for typescript errors, run: cd /app/vitereact && npx tsc -b in /app/vitereact, it is important to run this command with -b so npx tsc -b in /app/vitereact
+for lint errors run npm run lint in vitereact
+for test errors, run: npm test in the appropriate directory (backend or vitereact)
+for SQL errors, run: node initdb.js in the backend directory to test database initialization
+
+MAKE SURE TO FIX ALL ERRORS! SMALL AND BIG!
+
+
+The validation will retry this step after your fixes. Make sure to address the specific error shown above.
